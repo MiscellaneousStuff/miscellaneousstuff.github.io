@@ -18,9 +18,7 @@ League of Legends are summarised below:
 - 
 
 ### LeagueAI
----
-youtubeId: https://www.youtube.com/watch?v=iB4PoNJuXzc&ab_channel=OliverAi
----
+{% include youtubePlayer.html id=page.youtubeId %}
 
 ### Problems with Existing Solutions
 
