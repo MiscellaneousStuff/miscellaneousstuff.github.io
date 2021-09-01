@@ -18,7 +18,7 @@ League of Legends are summarised below:
 - 
 
 ### LeagueAI
-{% include youtubePlayer.html id=page.youtubeId %}
+{% include youtubePlayer.html id=iB4PoNJuXzc %}
 
 ### Problems with Existing Solutions
 
