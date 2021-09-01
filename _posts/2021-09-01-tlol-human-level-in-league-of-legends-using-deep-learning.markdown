@@ -4,7 +4,7 @@ comments: true
 title:  "Initial Human level League of Legends Deep Learning Agent ideas"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions,initial ideas, problem analysis, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-01 14:00:00
-categories: [League of Legends]
+categories: League of Legends
 leagueAiYoutubeId: iB4PoNJuXzc
 ---
 
