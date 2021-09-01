@@ -1,0 +1,9 @@
+html, body { height: 100%; }
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 300;
+    background-color: #fdfdfd;
+}
