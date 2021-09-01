@@ -12,14 +12,11 @@ leagueAiYoutubeId: iB4PoNJuXzc
 
 ## Existing Solutions
 
-### List of Existing Solutions
-
-Existing approaches to creating an artificial intelligence system which can play
-League of Legends are summarised below:
-- LeagueAI
-
 ### LeagueAI
 {% include youtubePlayer.html id=page.leagueAiYouTubeID %}
+
+LeagueAI is a project created by a PhD student from Aalto University in Finland.
+The project uses YOLOv3 
 
 ### Problems with Existing Solutions
 
