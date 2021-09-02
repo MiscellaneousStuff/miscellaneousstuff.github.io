@@ -9,9 +9,6 @@ leagueAiYoutubeId: iB4PoNJuXzc
 ---
 
 
-# TLoL: Human level in League of Legends using Deep Learning (Part 1 - Existing Solutions)
-
-
 ## Existing Solutions
 
 
