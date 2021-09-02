@@ -50,10 +50,29 @@ Lee Sedol in 2016. Prior to this accomplishment, the best computer Go engines
 were unable to take even a single game from a professional Go player due to
 the greater complexity of Go where the state space is estimated to be
 
-\$$ 10^170 $$
+\$$ 10^170 $$.
+AlphaGo used a deep reinforcement learning model to train the weights of a
+Monte Carlo tree search (MCTS). The deep learning model used 2 artificial
+neural networks, a policy network to predict the probabilities of potential
+moves by opponents, and a value network to predict the win chance of a given state.
+This model allowed teh agent to explore potential game states more efficiently than
+a vanilla MCTS. The network was initialised using human professional go data and
+was then further refined by optimising the policy and value network by using
+a large distributed reinforcement learning approach.
+
+Afterwards, Deepmind created an improved version of the system called AlphaGo Zero
+where the Zero denotes zero-human knowledge. This system was trained using pure
+reinforcement learning and wasn't pre-trained human knowledge and achieved superior
+results to the original AlphaGo system.
+
+This marked a significant shift from the previous approach as artificial neural networks
+were know being used to approximate the next action to take instead of the more traditional
+approach used by IBM Deep Blue.
 
 
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
 - [Wikipedia: Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
 - [Wikipedia: Go Complexity](https://en.wikipedia.org/wiki/Machine_learning_in_video_games#Deep_learning_agents)
+- [Wikipedia: AlphaGo](https://en.wikipedia.org/wiki/AlphaGo)
+- [Wikipedia: AlphaStar](https://en.wikipedia.org/wiki/AlphaStar)
