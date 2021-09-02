@@ -69,10 +69,41 @@ This marked a significant shift from the previous approach as artificial neural 
 were know being used to approximate the next action to take instead of the more traditional
 approach used by IBM Deep Blue.
 
+#### AlphaStar
+AlphaStar was the first AI agent to beat professional StarCraft 2 players without any
+in-game advantages and represented a major milestone for game playing AI systems.
+The first version of the game was trained to use a simplied zoomed out version of the game
+which was a pygame rendering of the actual game which was derived from the games raw features
+which were extracted using the PySC2 library. The system was later adapted to play the game
+from raw RGB features just as a human would.
+
+The AlphaStar system was trained by bootstrapping a machine learning using a supervised
+learning approach with 971,000 replays from players from the top 22% of players. The
+supervised agent used the same model as the reinforcement learning (RL) agent so the RL agent
+could be further trained on the same model. A separate model was trained for each race within
+the game.
+
+After initial training, the policy was further fine-tuned using only winning replays with MMR
+above 6,200 MMR (16,000 games) which are players within the top 10 to 15 players. Further
+fine-tuning the system on this data increased the win-rate of the bot against the built-in
+elite bot from 87% to 96% in Protoss versus Protoss games. This aligns with other approaches
+within the literature which show that fine-tuning a pre-trained system on the most skilled 
+players winning replays can significantly improve the performance of the system.
+
+The supervised learning approach produced an agent which performed within the top 16% of
+players, which in itself was a remarkable achievement.
+
+Further to this, the pre-trained bot was further refined using a reinforcement learning
+approach which used a population training scheme where different versions of the agent
+were trained to exploit the specific weaknesses of other agents to ensure that the best
+overall agent was robust to a range of strategies.
+
+The final agent was able to beat a professional Starcraft 2 player 10-1.
 
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
 - [Wikipedia: Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
 - [Wikipedia: Go Complexity](https://en.wikipedia.org/wiki/Machine_learning_in_video_games#Deep_learning_agents)
 - [Wikipedia: AlphaGo](https://en.wikipedia.org/wiki/AlphaGo)
-- [Wikipedia: AlphaStar](https://en.wikipedia.org/wiki/AlphaStar)
+- [Paper: AlphaStar](https://www.nature.com/articles/s41586-019-1724-z)
+- [GitHub: PySC2](https://github.com/deepmind/pysc2)
