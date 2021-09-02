@@ -1,5 +1,10 @@
 /* site base */
-html, body { height: 100%; }
+html, body { height: 100%; margin: 0; }
+
+
+a {
+  text-decoration: none;
+}
 
 body {
     font-family: Helvetica, Arial, sans-serif;
