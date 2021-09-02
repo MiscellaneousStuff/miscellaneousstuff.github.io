@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Initial Human level League of Legends Deep Learning Agent ideas (Part 1)"
+title:  "TLoL: Human level in League of Legends using Deep Learning (Part 1 - Existing Solutions)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions,problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-01 14:00:00
 categories: [League of Legends]
