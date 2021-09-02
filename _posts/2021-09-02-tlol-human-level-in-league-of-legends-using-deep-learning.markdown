@@ -246,3 +246,4 @@ refinement from the very best players winning game replays.
 - [Wiki: Dota 2 Hero Count](https://dota.fandom.com/wiki/DOTA_2_Heroes#:~:text=DOTA%202%20currently%20features%20121,the%20original%20version%20of%20DotA.)
 - [Paper: Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
 - [Blog: Estimated OpenAI Five Training Costs](https://www.yuzeh.com/data/openai-five.html)
+- [Paper: Open AI Five Paper](https://cdn.openai.com/dota-2.pdf)
