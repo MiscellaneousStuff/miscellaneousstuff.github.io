@@ -43,6 +43,18 @@ as saying "Normally, I would calculate three to five moves",
 So despite IBM Deep Blue being a remarkable achievement, clearly smarter
 algorithms could produce more efficient results.
 
+#### AlphaGo
+The next prominent example of game playing AI would be the AlphaGo system 
+which was created by Google Deepmind and went on to beat the world champion
+Lee Sedol in 2016. Prior to this accomplishment, the best computer Go engines
+were unable to take even a single game from a professional Go player due to
+the greater complexity of Go where the state space is estimated to be
+$$
+10^170
+$$
+
+
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
 - [Wikipedia: Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
+- [Wikipedia: Go Complexity](https://en.wikipedia.org/wiki/Machine_learning_in_video_games#Deep_learning_agents)
