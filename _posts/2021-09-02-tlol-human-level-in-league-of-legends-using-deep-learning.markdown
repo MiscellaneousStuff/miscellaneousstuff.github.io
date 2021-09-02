@@ -132,8 +132,71 @@ accumulating 180 years of game experience each day, before facing professional p
 Eventually the system was able to beat the world champions in 2019.
 
 ### Observations on Approaches
+Recent machine learning approaches for game playing AIs revolve around using reinforcement
+learning to run simulations or actual games in a massively distributed and parallel setup
+which allows gathering a large amount of data. This data is then supplied to a machine
+learning model which most often uses a policy optimization method such as PPO to train
+a machine learning model based on in-game trajectories. In-game trajectories consist of
+a combination of (state, action, reward) or (s, a, r) tuples which denote the state of the
+game at the timestep which is being observed, the action which the agent decided to take
+and the reward which was received for performing that action.
 
+Before this large scale reinforcement learning approach is applied, many approaches also
+use supervised learning to pre-train the machine learning models, as exploration for
+some games would take too long to converge on basic concepts of the game, such as the
+case for AlphaStar.
 
+### Relevance to Human-level League of Legends AI
+The previous approaches highlights several major points about current AI game playing systems
+which have achieved human, or even in some cases, super human performance.
+
+1. **Co-Operation with Game Developers**
+
+  For complex modern games, it is unfeasible to create a simulator for each game which
+  AI researchers would like to tackle. This means that a main priority when deciding
+  which projects to undergo are either an existing API for the game, or the co-operation
+  and willingness of the game developers to create this for the researchers. In the case
+  of Dota 2, Valve already had created a Dota Bot Scripting API which was originally intended
+  to allow people to create better in-game bots. This also had the side-effect of making it
+  easier to create AI systems which can play the game. In the case of AlphaStar, Deepmind
+  entered an arragement with Blizzard (the developers of Starcraft 2) to create an interface
+  into the game using the Google Protobuf API which provided a remote procedure call (RPC)
+  interface which allowed the development ofthe PySC2 library.
+
+  Therefore the options for creating a Human-level League of Legends AI would involve either,
+  contacting Riot Games and getting their co-operation for the task, or creating a custom API
+  around the game which fulfills the same objectives but would be limited as it would be impossible
+  to scale the system to the number of games required to train a reinforcement learning agent,
+  or to create a simulation of the game which would be an intractable problem.
+
+  In summary, the best solution to this approach would be to use the supervised learning
+  approach which has already been demonstrated to achieve impressive results in the AlphaStar
+  system. After training their initial model using purely supervised learning on 971,000 replays,
+  the system was able to perform as well as the top 16% of players.
+
+2. **Cost and Infrastructure**
+
+  The estimated cost of training the OpenAI Five system (which is the most similar to this
+  project), was $14 million dollars, or around $25,000 dollars a day.
+  That is a substantial amount of money to throw at a research project.
+  A large bulk of the cost comes from the 128,000 CPUs which were used to simulate the game.
+  The reason so many CPUs were used to simulate games is because PPO is a model-free, online
+  reinforcement learning algorithm. The model-free approach means that, as the system doesn't
+  inherently have a model of the environment or any inherent hierarchical structure to it's
+  decision making, the only way the process can improve is by randomly varying it's behaviour
+  at each timestep during training. Because this process is relatively random and only very
+  gradually improves over-time, along with the massive state space and observation space at
+  each timestep, this makes training using model-free reinforcement learning approaches very
+  gradual.
+
+  The summary to this point is that, using a supervised learning approach on high level
+  human data is a far cheaper option as it only involves recovering a large number of
+  human replays, storing those files, processing them, training on them and testing them on
+  the real game. In comparison, that requires far far less hardware as an estimated 90% of
+  the cost of the Open AI Five system comes from simulating the massive number of games
+  required to train the system to a superhuman level within a reasonable time frame. This
+  would only require GPUs to be used as you'd only need to process the data within the replays
+  which would dramatically reduce the cost of the system.
 
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
@@ -144,3 +207,5 @@ Eventually the system was able to beat the world champions in 2019.
 - [GitHub: PySC2](https://github.com/deepmind/pysc2)
 - [Wikipedia: The International 2019 (Dota 2 World Championship)](https://en.wikipedia.org/wiki/The_International_2019)
 - [Wiki: Dota 2 Hero Count](https://dota.fandom.com/wiki/DOTA_2_Heroes#:~:text=DOTA%202%20currently%20features%20121,the%20original%20version%20of%20DotA.)
+- [Paper: Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
+- [Blog: Estimated OpenAI Five Training Costs](https://www.yuzeh.com/data/openai-five.html)
