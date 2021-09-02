@@ -20,7 +20,7 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning"]
 ### History of Game Playing AI
 In the last few decades, there have been many successful examples of
 artificial intelligence being used to produce human level gameplay in
-a variety of different games.
+a variety of different games with the most prominent ones outlined below.
 
 
 #### IBM Deep Blue
@@ -72,7 +72,11 @@ approach used by IBM Deep Blue.
 #### AlphaStar
 AlphaStar was the first AI agent to beat professional StarCraft 2 players without any
 in-game advantages and represented a major milestone for game playing AI systems.
-The first version of the game was trained to use a simplied zoomed out version of the game
+Starcraft 2 is a real-time strategy game widely considered by many people to be one of the
+hardest real-time video games which humans play and has even been used by the US military as
+training for their officers for strategic response planning under pressure.
+
+The first version of the agent was trained to use a simplied zoomed out version of the game
 which was a pygame rendering of the actual game which was derived from the games raw features
 which were extracted using the PySC2 library. The system was later adapted to play the game
 from raw RGB features just as a human would.
@@ -100,6 +104,37 @@ overall agent was robust to a range of strategies.
 
 The final agent was able to beat a professional Starcraft 2 player 10-1.
 
+#### OpenAI Five
+OpenAI Five was a deep learning agent produced by OpenAI which successfully beat
+the world champions at Dota 2. Dota 2 is widely considered to be one of the hardest
+co-operative and competitive multiplayer, partially observable games with a long
+term strategy horizon which humans play competitively.
+
+Dota 2 is also one of the world's most competitive e-sports games with a prize pool
+in 2019 of over $34 million dollars making it by far the largest prize pool for an
+e-sports competition.
+
+Dota 2 is a MOBA (multiplayer online battle arena) which is a type of real-time
+strategy game where players assume the role of one of five players and against
+5 enemy players and each player assumes the role of one hero.
+
+The difficulty in the game comes from the fog-of-war present in the game, the complexity
+of managing resources against the other team, prioristing short-term against long-term
+strategies and many other tactical and strategic considerations. An additional complexity
+in the game is that each player plays one of 121 heroes (as of 02/09/2021).
+
+OpenAI Five utilized a separate LSTM network to learn each possible hero in the game. It
+trained using a reinforcement learning technique known as Proximal Policy Optimization (PPO)
+which was invented by OpenAI and ran on a system containing 256 GPUs and 128,000 CPUs. The
+GPUs were used to infer the next action based on an in-game observation and the large number
+of CPUs was used to simulate multiple games simultaneously. The system trained for five months,
+accumulating 180 years of game experience each day, before facing professional players.
+Eventually the system was able to beat the world champions in 2019.
+
+### Observations on Approaches
+
+
+
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
 - [Wikipedia: Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
@@ -107,3 +142,5 @@ The final agent was able to beat a professional Starcraft 2 player 10-1.
 - [Wikipedia: AlphaGo](https://en.wikipedia.org/wiki/AlphaGo)
 - [Paper: AlphaStar](https://www.nature.com/articles/s41586-019-1724-z)
 - [GitHub: PySC2](https://github.com/deepmind/pysc2)
+- [Wikipedia: The International 2019 (Dota 2 World Championship)](https://en.wikipedia.org/wiki/The_International_2019)
+- [Wiki: Dota 2 Hero Count](https://dota.fandom.com/wiki/DOTA_2_Heroes#:~:text=DOTA%202%20currently%20features%20121,the%20original%20version%20of%20DotA.)
