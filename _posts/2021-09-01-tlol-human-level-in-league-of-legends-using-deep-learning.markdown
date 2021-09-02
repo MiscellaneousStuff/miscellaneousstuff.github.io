@@ -22,20 +22,26 @@ including the following:
 - Vayne (a champion within the game)
 - Minions (important NPC characters within the game)
 - etc.
+
 The agent then uses the real-time object recognition model to determine which game
 objects are within it's view and uses a simple neural network to determine which actions
 to perform.
 
-### Bots
+### Bots and Scripts
 Since League of Legends was released in 2009, people have developed bots which are
 programs which use hand-crafted rules to play the game. The purpose of these bots
 are usually to level up League of Legends accounts from level 1 to level 30 (to allow
 a player to play in League of Legends Ranked Solo mode which is the competitive ranked
-mode of the game).
+mode of the game). Another use of these bots is for scripting which automatically
+performs mechanical actions for the player automatically which allows the player to
+perfectly react to other players using hand-crafted rules.
 
 One example of an open-source botting platform is LViewLoL which is an open-source
 scripting platform with additional information about the scripting platform provided
-on the Unknown Cheats forum which has been active since 2000.
+on the Unknown Cheats forum which has been active since 2000. LViewLoL uses a custom
+made C++ library which uses the ReadProcessMemory() system call on windows to hook
+the game *.exe while it is running, and read the game's memory from addresses which
+have been extracted using tools such as HexRays IDA Pro.
 
 ## Issues with Existing Solutions
 
@@ -44,3 +50,4 @@ on the Unknown Cheats forum which has been active since 2000.
 - [LeagueAI](https://github.com/Oleffa/LeagueAI)
 - [LViewLoL](https://github.com/orkido/LViewLoL)
 - [UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
+- [HexRays IDA Pro](https://hex-rays.com/ida-pro/)
