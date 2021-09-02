@@ -8,6 +8,49 @@ body {
     background-color: #fdfdfd;
 }
 
-.post-header {
-    
+.site-header {
+    border-top: 5px solid #333;
+    border-bottom: 1px solid #e8e8e8;
+    min-height: 56px;
+    background-color: white;
+  }
+  
+  .site-title,
+  .site-title:hover,
+  .site-title:visited {
+    display: block;
+    color: #333;
+    font-size: 26px;
+    letter-spacing: -1px;
+    float: left;
+    line-height: 56px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .site-nav {
+    float: right;
+    line-height: 56px;
+  }
+  
+  .site-nav .menu-icon { display: none; }
+  
+  .site-nav .page-link {
+    margin-left: 20px;
+    color: #727272;
+    letter-spacing: -.5px;
+  }
+
+@media screen and (max-width: 600px) {
+.site-nav .menu-icon {
+    display: block;
+    font-size: 24px;
+    color: #505050;
+    float: right;
+    width: 36px;
+    text-align: center;
+    line-height: 36px;
+}
+
+.site-nav .menu-icon svg { width: 18px; height: 16px; }
 }
