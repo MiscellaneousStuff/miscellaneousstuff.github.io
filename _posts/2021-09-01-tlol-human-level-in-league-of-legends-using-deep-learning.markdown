@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Initial Human level League of Legends Deep Learning Agent ideas"
+title:  "Initial Human level League of Legends Deep Learning Agent ideas (Part 1)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions,problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-01 14:00:00
 categories: [League of Legends]
@@ -18,7 +18,7 @@ leagueAiYoutubeId: iB4PoNJuXzc
 ### League of Legends: Wild Rift inbuilt AI
 The League of Legends mobile spin-off game, Wild Rift, is a game developed in Unity
 and released as a game on the iOS App Store and Google Play Store. Reverse engineering
-the game using IL2CPP which converts the Unity source code of the game into an intermediate representation along with the original meta-data allows the function labels, data types and parameters to be recovered.
+the game using Il2CppInspector which converts the Unity source code of the game into an intermediate representation along with the original meta-data allows the function labels, data types and parameters to be recovered.
 
 From this, we can determine how the app
 is made and even inject code using the metadata which associates function labels with
@@ -47,7 +47,9 @@ trivial task by any player which is at least within the top 50% of the playerbas
 
 
 ### LeagueAI
+<div style="text-align: center;">
 {% include youtubePlayer.html id=page.leagueAiYouTubeID %}
+</div>
 
 LeagueAI is a project created by a PhD student from Aalto University in Finland.
 The project uses YOLOv3 to perform object detection from the games RGB output in
@@ -141,14 +143,14 @@ a first blood on an enemy opponent while keeping it's distance. This represents 
 successful example of reinforcement learning applied to League of Legends. However, this
 method is limited as the number of samples of the environment which can be collected using
 this method is limited by two main factors:
-1. Number of Simulations of the environment
+1. **Number of Simulations of the environment**
    Currently, Riot Games (the developers of League of Legends) provide no API for scripts or
    bots (unlike the Dota Bot Scripting API from Valve or pysc2 module released by DeepMind
    in conjunction with Blizzard). This means that not only is it not easy to quickly start
    games at the velocity requried to get PPO to work, it's also not easy to access raw
    observational information from the game or input actions into the game without the risk
    of the associated League of Legends account being banned for scripting.
-2. Current Observation Methods
+2. **Current Observation Methods**
    Current observation methods used for League of Legends AI's rely on using real-time
    object recognition models such as YOLOv3 to detect relevant game objects. The limitation
    of this method for creating a human level League of Legends AI is that, firstly the 
@@ -165,7 +167,6 @@ with low friction.
 
 
 ## References
-
 - [Windows API: ReadProcessMemory()](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory)
 - [Paper: Original DQN Paper](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
 - [Deepmind: AlphaStar](https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii)
@@ -175,3 +176,4 @@ with low friction.
 - [Software: HexRays IDA Pro](https://hex-rays.com/ida-pro/)
 - [Paper: Deep Learning Bot for League of Legends](https://ojs.aaai.org/index.php/AIIDE/article/view/7449/7348)
 - [GitHub: YOLOv3](https://github.com/ultralytics/yolov3)
+- [GitHub: Il2CppInspector](https://github.com/djkaty/Il2CppInspector)
