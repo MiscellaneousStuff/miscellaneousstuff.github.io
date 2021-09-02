@@ -5,14 +5,13 @@ layout: default
 <div class="home">
     <h1>MiscellaneousStuff</h1>
     <hr />
-    <ul class="posts">
+    <div class="posts">
         {% for post in site.posts %}
-        <li>
-            <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
-            <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-            <br>
-            {{ post.excerpt }}
-        </li>
+        <a class="post" href="{{ post.url | prepend: site.baseurl }}">
+            <p class="post-date">{{ post.date | date: "%b %-d, %Y" }}</p>
+            <p class="post-title">{{ post.title }}</p>
+            <p class="post-excerpt">{{ post.excerpt }}</p>
+        </a>
         {% endfor %}
-    </ul>
+    </div>
 </div>
