@@ -14,6 +14,14 @@ leagueAiYoutubeId: iB4PoNJuXzc
 * TOC
 {:toc}
 
+## Introduction
+
+This post reviews existing League of Legends AI systems from different games
+which have been released by Riot Games themselves, to bots and scripts which
+have been ever present since the initial release of the game and finally to
+recent academic approaches which have used cutting-edge AI techniques to
+try and achieve human level in League of Legends.
+
 ## Existing Solutions
 
 

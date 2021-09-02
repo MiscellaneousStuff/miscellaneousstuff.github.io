@@ -14,6 +14,15 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning"]
 * TOC
 {:toc}
 
+## Introduction
+
+This post reviews existing approaches to creating game playing AIs which
+have evolved in complexity over time as the complexity of the games which
+have been tackled as increased. The approaches are than analysed and
+the key strengths and weaknesses as they apply to creating a human-level
+League of Legends AI are outlined with a summary of how previous approaches
+can inform the development of a League of Legends AI.
+
 ## Problem Analysis
 
 
@@ -197,6 +206,34 @@ which have achieved human, or even in some cases, super human performance.
   required to train the system to a superhuman level within a reasonable time frame. This
   would only require GPUs to be used as you'd only need to process the data within the replays
   which would dramatically reduce the cost of the system.
+
+3. **Training Data**
+  
+  Related to the prior point, a large amount of training data is required to train game
+  playing AI systems which are able to achieve human-level performance in games, especially
+  complex real-time strategy games such as Starcraft 2, Dota 2 or even League of Legends.
+  Acquiring training data is a difficult task which requires either, generating a large
+  amount of data by running many games in parallel which also requires a complicated
+  software engineering effort to co-ordinate the gathering of this data. Alternatively,
+  you can use a supervised learning approach, or offline reinforcement learning approach
+  which samples expert data and learns to play the game from this data. The benefits of
+  using expert data is that for many of these games, there are a large number of replays
+  of highly skilled human players available.
+
+  In summary, the most likely way of gathering the data which is required to create a
+  human-level League of Legends AI would be to use existing replays from Riot Games,
+  convert the replay information into a format which is suitable for a machine learning
+  model, and then use either supervised learning or an offline reinforcement learning
+  approach to train the agent on how to play the game.
+
+### Summary
+In summary, the best approach to creating a human-level League of Legends AI would most
+likely be to create a custom API which can process League of Legends replays and extract
+(state, action) pairs at each timestep. These extracted features would then be used to
+train a machine learning model using either supervised learning or an offline reinforcement
+learning approach (such as dual-clip PPO), on the top 10 to 20% of players with further
+refinement from the very best players winning game replays.
+
 
 ## References
 - [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
