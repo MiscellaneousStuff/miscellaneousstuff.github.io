@@ -8,6 +8,10 @@ categories: [League of Legends]
 leagueAiYoutubeId: iB4PoNJuXzc
 ---
 
+## Table of Contents
+
+* TOC
+{:toc}
 
 ## Existing Solutions
 
