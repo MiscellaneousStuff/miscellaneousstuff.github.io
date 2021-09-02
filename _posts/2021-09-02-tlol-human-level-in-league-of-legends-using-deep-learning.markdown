@@ -140,7 +140,7 @@ of CPUs was used to simulate multiple games simultaneously. The system trained f
 accumulating 180 years of game experience each day, before facing professional players.
 Eventually the system was able to beat the world champions in 2019.
 
-### Observations on Approaches
+## Observations on Previous Approaches
 Recent machine learning approaches for game playing AIs revolve around using reinforcement
 learning to run simulations or actual games in a massively distributed and parallel setup
 which allows gathering a large amount of data. This data is then supplied to a machine
@@ -155,78 +155,78 @@ use supervised learning to pre-train the machine learning models, as exploration
 some games would take too long to converge on basic concepts of the game, such as the
 case for AlphaStar.
 
-### Relevance to Human-level League of Legends AI
+## Relevance to Human-level League of Legends AI
 The previous approaches highlights several major points about current AI game playing systems
 which have achieved human, or even in some cases, super human performance.
 
-1. **Co-Operation with Game Developers**
+### Co-Operation with Game Developers
 
-  For complex modern games, it is unfeasible to create a simulator for each game which
-  AI researchers would like to tackle. This means that a main priority when deciding
-  which projects to undergo are either an existing API for the game, or the co-operation
-  and willingness of the game developers to create this for the researchers. In the case
-  of Dota 2, Valve already had created a Dota Bot Scripting API which was originally intended
-  to allow people to create better in-game bots. This also had the side-effect of making it
-  easier to create AI systems which can play the game. In the case of AlphaStar, Deepmind
-  entered an arragement with Blizzard (the developers of Starcraft 2) to create an interface
-  into the game using the Google Protobuf API which provided a remote procedure call (RPC)
-  interface which allowed the development ofthe PySC2 library.
+For complex modern games, it is unfeasible to create a simulator for each game which
+AI researchers would like to tackle. This means that a main priority when deciding
+which projects to undergo are either an existing API for the game, or the co-operation
+and willingness of the game developers to create this for the researchers. In the case
+of Dota 2, Valve already had created a Dota Bot Scripting API which was originally intended
+to allow people to create better in-game bots. This also had the side-effect of making it
+easier to create AI systems which can play the game. In the case of AlphaStar, Deepmind
+entered an arragement with Blizzard (the developers of Starcraft 2) to create an interface
+into the game using the Google Protobuf API which provided a remote procedure call (RPC)
+interface which allowed the development ofthe PySC2 library.
 
-  Therefore the options for creating a Human-level League of Legends AI would involve either,
-  contacting Riot Games and getting their co-operation for the task, or creating a custom API
-  around the game which fulfills the same objectives but would be limited as it would be impossible
-  to scale the system to the number of games required to train a reinforcement learning agent,
-  or to create a simulation of the game which would be an intractable problem.
+Therefore the options for creating a Human-level League of Legends AI would involve either,
+contacting Riot Games and getting their co-operation for the task, or creating a custom API
+around the game which fulfills the same objectives but would be limited as it would be impossible
+to scale the system to the number of games required to train a reinforcement learning agent,
+or to create a simulation of the game which would be an intractable problem.
 
-  In summary, the best solution to this approach would be to use the supervised learning
-  approach which has already been demonstrated to achieve impressive results in the AlphaStar
-  system. After training their initial model using purely supervised learning on 971,000 replays,
-  the system was able to perform as well as the top 16% of players.
+In summary, the best solution to this approach would be to use the supervised learning
+approach which has already been demonstrated to achieve impressive results in the AlphaStar
+system. After training their initial model using purely supervised learning on 971,000 replays,
+the system was able to perform as well as the top 16% of players.
 
-2. **Cost and Infrastructure**
+### Cost and Infrastructure
 
-  The estimated cost of training the OpenAI Five system (which is the most similar to this
-  project), was $14 million dollars, or around $25,000 dollars a day.
-  That is a substantial amount of money to throw at a research project.
-  A large bulk of the cost comes from the 128,000 CPUs which were used to simulate the game.
-  The reason so many CPUs were used to simulate games is because PPO is a model-free, online
-  reinforcement learning algorithm. The model-free approach means that, as the system doesn't
-  inherently have a model of the environment or any inherent hierarchical structure to it's
-  decision making, the only way the process can improve is by randomly varying it's behaviour
-  at each timestep during training. Because this process is relatively random and only very
-  gradually improves over-time, along with the massive state space and observation space at
-  each timestep, this makes training using model-free reinforcement learning approaches very
-  gradual.
+The estimated cost of training the OpenAI Five system (which is the most similar to this
+project), was $14 million dollars, or around $25,000 dollars a day.
+That is a substantial amount of money to throw at a research project.
+A large bulk of the cost comes from the 128,000 CPUs which were used to simulate the game.
+The reason so many CPUs were used to simulate games is because PPO is a model-free, online
+reinforcement learning algorithm. The model-free approach means that, as the system doesn't
+inherently have a model of the environment or any inherent hierarchical structure to it's
+decision making, the only way the process can improve is by randomly varying it's behaviour
+at each timestep during training. Because this process is relatively random and only very
+gradually improves over-time, along with the massive state space and observation space at
+each timestep, this makes training using model-free reinforcement learning approaches very
+gradual.
 
-  The summary to this point is that, using a supervised learning approach on high level
-  human data is a far cheaper option as it only involves recovering a large number of
-  human replays, storing those files, processing them, training on them and testing them on
-  the real game. In comparison, that requires far far less hardware as an estimated 90% of
-  the cost of the Open AI Five system comes from simulating the massive number of games
-  required to train the system to a superhuman level within a reasonable time frame. This
-  would only require GPUs to be used as you'd only need to process the data within the replays
-  which would dramatically reduce the cost of the system.
+The summary to this point is that, using a supervised learning approach on high level
+human data is a far cheaper option as it only involves recovering a large number of
+human replays, storing those files, processing them, training on them and testing them on
+the real game. In comparison, that requires far far less hardware as an estimated 90% of
+the cost of the Open AI Five system comes from simulating the massive number of games
+required to train the system to a superhuman level within a reasonable time frame. This
+would only require GPUs to be used as you'd only need to process the data within the replays
+which would dramatically reduce the cost of the system.
 
-3. **Training Data**
+### Training Data
   
-  Related to the prior point, a large amount of training data is required to train game
-  playing AI systems which are able to achieve human-level performance in games, especially
-  complex real-time strategy games such as Starcraft 2, Dota 2 or even League of Legends.
-  Acquiring training data is a difficult task which requires either, generating a large
-  amount of data by running many games in parallel which also requires a complicated
-  software engineering effort to co-ordinate the gathering of this data. Alternatively,
-  you can use a supervised learning approach, or offline reinforcement learning approach
-  which samples expert data and learns to play the game from this data. The benefits of
-  using expert data is that for many of these games, there are a large number of replays
-  of highly skilled human players available.
+Related to the prior point, a large amount of training data is required to train game
+playing AI systems which are able to achieve human-level performance in games, especially
+complex real-time strategy games such as Starcraft 2, Dota 2 or even League of Legends.
+Acquiring training data is a difficult task which requires either, generating a large
+amount of data by running many games in parallel which also requires a complicated
+software engineering effort to co-ordinate the gathering of this data. Alternatively,
+you can use a supervised learning approach, or offline reinforcement learning approach
+which samples expert data and learns to play the game from this data. The benefits of
+using expert data is that for many of these games, there are a large number of replays
+of highly skilled human players available.
 
-  In summary, the most likely way of gathering the data which is required to create a
-  human-level League of Legends AI would be to use existing replays from Riot Games,
-  convert the replay information into a format which is suitable for a machine learning
-  model, and then use either supervised learning or an offline reinforcement learning
-  approach to train the agent on how to play the game.
+In summary, the most likely way of gathering the data which is required to create a
+human-level League of Legends AI would be to use existing replays from Riot Games,
+convert the replay information into a format which is suitable for a machine learning
+model, and then use either supervised learning or an offline reinforcement learning
+approach to train the agent on how to play the game.
 
-### Summary
+## Summary
 In summary, the best approach to creating a human-level League of Legends AI would most
 likely be to create a custom API which can process League of Legends replays and extract
 (state, action) pairs at each timestep. These extracted features would then be used to
