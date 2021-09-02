@@ -49,6 +49,7 @@ which was created by Google Deepmind and went on to beat the world champion
 Lee Sedol in 2016. Prior to this accomplishment, the best computer Go engines
 were unable to take even a single game from a professional Go player due to
 the greater complexity of Go where the state space is estimated to be
+
 \$$ 10^170 $$
 
 
