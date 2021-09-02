@@ -2,15 +2,43 @@
 layout: post
 comments: true
 title:  "Initial Human level League of Legends Deep Learning Agent ideas"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions,initial ideas, problem analysis, data exploration, visualisation, intuition and possible solutions."
+excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions,problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-01 14:00:00
 categories: [League of Legends]
 leagueAiYoutubeId: iB4PoNJuXzc
 ---
 
-# TLoL: Human level in League of Legends using Deep Learning
+# TLoL: Human level in League of Legends using Deep Learning (Part 1 - Existing Solutions)
 
-## Existing Solutions
+### League of Legends: Wild Rift inbuilt AI
+The League of Legends mobile spin-off game, Wild Rift, is a game developed in Unity
+and released as a game on the iOS App Store and Google Play Store. Reverse engineering
+the game using IL2CPP which converts the Unity source code of the game into an intermediate representation along with the original meta-data allows the function labels ,data types and parameters to be recovered.
+
+from this, we can determine how the app
+is made and even inject code using the metadata which associates function labels with
+their addresses in the final game binaries (at least for Android). The benefits of this
+for creating a human level League of Legends AI is that it may be possible to reverse
+engineer how the AI, which is included with the game works and even setup a reinforcement
+learning environment using the mobile game.
+
+This may be possible as the practice tool
+mode of the mobile game is still functional even when the player is disconnected from
+the internet, and the source code is relatively easy to reverse engineer compared to
+the main desktop game.
+
+
+### League of Legends: Beginner and Intermediate bot
+League of Legends contains two main "co-op vs AI" game modes which stands for
+co-operative vs AI which pins 5 players against a team of five AI controlled players
+which the game server presumably implements (this may be implemented using lua based
+on reviewing the games files).
+
+For the purpose of creating a human level League of
+Legends AI, the built-in bots are only useful as a way of testing that any AI agent
+which has been trained can at least beat the built-in bots as this is considered a
+trivial task by any player which is at least within the top 50% of the playerbase
+(which would be roughly Silver I).
 
 ### LeagueAI
 {% include youtubePlayer.html id=page.leagueAiYouTubeID %}
@@ -58,10 +86,27 @@ amount of time regardless of the amount of memory requested.
 
 ## Issues with Existing Solutions
 The main issue with the existing solutions for creating a human level league of legends
-agent using deep learning.
+agent are both perceptual and behavioural with both issues outlined below:
+
+### Perceptual
+The LeagueAI system solves the perceptual issue by using a mixture of synthetic and
+real image data from within the game to generate a dataset to train YOLOv3, which is
+a real-time object recognition system, to locate gameobjects from the RGB rendering
+of the game. Real-time object recognition has been used for perception in game playing
+AIs across different approaches such as AlphaStar, the original DQN paper and subsequent
+attempts and other game playing AIs. The purpose of using image recognition techniques
+in these systems was to prove that it was possible to use image recognition, specifically
+CNN-based image recognition systems as the perceptual system within a larger game playing
+AI for reinforcement learning systems. However, there is a major downside to this in that
+this isn't as effective as using raw features from the game for perception and it has
+inherently less explainablility which means that it is harder to debug and diagnose issues,
+and to verify how this specific part of the system is improving.
 
 ## References
 
+- [Windows API - ReadProcessMemory()](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory)
+- [Original DQN Paper](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
+- [AlphaStar](https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii)
 - [LeagueAI](https://github.com/Oleffa/LeagueAI)
 - [LViewLoL](https://github.com/orkido/LViewLoL)
 - [UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
