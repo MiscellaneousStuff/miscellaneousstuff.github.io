@@ -81,6 +81,7 @@ body {
 }
 
 .post-excerpt {
+  margin-top: 0;
   color: #333;
   font-size: 1rem;
 }
