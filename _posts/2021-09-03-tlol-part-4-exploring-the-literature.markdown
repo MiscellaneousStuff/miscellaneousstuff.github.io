@@ -35,11 +35,13 @@ in China. The game is estimated to have 119 million monthly active players in
 
 Honor of Kings is relevant to this literature review as the majority of the research
 concerning MOBAs, aside from OpenAI Five, comes from Tencent's AI Lab.
-To summarise, Tencent have copied and improved upon the techniques which Open AI originally used in their Open AI Five
-system. However, they have also explored other techniques such as using purely supervised
+To summarise, Tencent have copied and improved upon the techniques which Open AI originally 
+used in their Open AI Five system.
+However, they have also explored other techniques such as using purely supervised
 learning approaches on human expert data, hierarchical learning approaches and others
 which are useful for building a human-level League of Legends AI.
 
+<!--
 ### Towards Playing Full MOBA Games with Deep Reinforcement Learning
 
 #### Relevance
@@ -63,23 +65,22 @@ be applied to training the human-level League AI. For instance, the paper sugges
 action masks over actions which can not be performed at a certain timestep to prevent
 exploration of actions which are not possible (invalid actions can still be selected in the
 OpenAI Five paper as far as I can tell. I think the way they avoid performing the action is
-by picking the second action which the policy network thinks is good).
+by picking the next available action which the policy network thinks is good).
 
 Another interesting idea the paper proposes is that the order in which certain concepts are
 presented to a deep learning agent affect training. The paper explains how disordered hero
 lineups affect performance. What this means, in the reinforcement learning context of the 
 paper, is that training using a large variety of situations causes the agent to forget
 strategies which it has learned and also slows convergence as the agent is being trained on
-and evaluated against a wider variety of situations. The paper rectifies this by breaking
-training into three distinct phases.
+and evaluated against a wider variety of situations.
 
-1.  **Accomplish easy tasks by training fixed lineups**
-
-    Divide the lineup of 40-heroes into 4 groups of 10 heroes. For each 10-hero grouping,
-    find lineups which have a 50%-win rate based on human playing statistics. 50% is chosen
-    as this indicates the matchups are even, so the drafts which are being played against
-    each other don't have an advantage over each other. This loosely relates to a concept in 
-    game theory known as the Nash Equilibrium
+The paper trains agents to perform easy tasks by using fixed lineups. This is done as follows.
+Divide the lineup of 40-heroes into 4 groups of 10 heroes. For each 10-hero grouping,
+find lineups which have a 50%-win rate based on human playing statistics. 50% is chosen
+as this indicates the matchups are even, so the drafts which are being played against
+each other don't have an advantage over each other. Having drafts with even win-rates
+are the most stable training regime for policy improvement.
+-->
 
 ### Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings
 
