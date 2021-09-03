@@ -67,6 +67,9 @@ body {
 
 .post_container {
   width: 33%;
+  align-self: stretch;
+  padding: 5rem;
+  box-sizing: border-box;
 }
 
 .post-snippet {
