@@ -472,7 +472,7 @@ inter-operation, or other considerations.):
 - [Windows: Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer)
 
 ### LeagueSandbox (League of Legends v4.20 Server Emulation)
-- [GitHub: LeaguePackets](https://github.com/LeaguePackets)
+- [GitHub: LeaguePackets](https://github.com/LeagueSandbox/LeaguePackets)
 - [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
 - [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
 
