@@ -288,6 +288,28 @@ the replay files alone would be 13MB * 100,000 ~= 1.3TB of storage. That
 leaves two important considerations going forward, download throughput
 and storage.
 
+Download throughput is the main issue as downloading just 100,000
+replays would take 100 hours with that throughput. One obvious way
+to alleviate this issue would be to distribute the downloading of
+replay files across multiple virtual machines which are logged into
+different accounts across different IP addresses.
+
+The other issue is the storage of all of these files. I personally
+don't have the storage space to store 1.3TB worth of replay files
+every patch, so let's look to the cloud. On the Google Cloud Platform (GCP),
+the cost of standard storage per GB per month is $0.02 (as of 03/09/2021),
+which means that storing just 100,000 replays would cost 1,300GB * $0.02
+which is $26 dollars a month. Standard storage would only be required when
+analysing replay files or their data processed form. When the system
+has matured and we only need to store the data longer term to be fed
+into a working MLOps training system, we can use nearline storage which
+costs half as much which is $13 dollars a month.
+
+Different storage providers may be a better choice depending on how
+the project goes, however, I would like to take advantage of Google
+BigQuery as it provides a very powerful tool to query TBs worth of
+data very quickly.
+
 ### Issues and Solutions Regarding ROFL Replays
 
 The key issue regarding rofl replays are that the encr
@@ -296,6 +318,9 @@ The key issue regarding rofl replays are that the encr
 
 
 ## References
+
+### Cloud Pricing
+- [Google Cloud Platform (GCP): Pricing](https://cloud.google.com/storage/pricing)
 
 ### LCU API
 - [GitHub: Rift Explorer](https://github.com/Pupix/rift-explorer)
