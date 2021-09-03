@@ -216,8 +216,49 @@ system in this way would be very time consuming and cumbersome.
 Fortunately when
 Riot Games updated the League of Legends client in 2017 with their updated
 League Client Update (LCU), the new client also included a new API to directly
-interface with the client. This is implemented as a localhost server which provides
-an API to execute actions on behalf of the user which is signed in.
+interface with the client. This allows us to automatically download a large
+number of replay files.
+
+<!--
+This is implemented as a localhost server which provides
+an API to execute actions on behalf of the user which is signed in. To download
+rofl files using this service, the user needs to be logged in (as replay file
+downloads need to be authenticated, more on that later). Then, they need to find
+the port which the LCU server is being hosted. This can be done using
+ProcessExplorer to find the command line arguments which the server was started
+with. An example of that is provided below:
+
+<img src="/assets/lol_client/process_explorer_lcu_port.png">
+
+In the above screenshot, you can see that the League of Legends client was
+started with port `58938` so any requests to the client need to be done
+on `http://127.0.0.1:58938` in this case.
+
+To find which API call needs to be made, an open-source project called
+Rift Explorer was made which allows users to explore the full LCU API.
+
+For now though, we only need one API call to the league client:
+
+`POST /lol-replays/v1/rofls/{gameId}/download`
+
+When combined with the url we found earlier, we get:
+
+`POST http://127.0.0.1:58938/lol-replays/v1/rofls/{gameId}/download`
+
+Which means if we execute that call using curl, Postman or any other
+method, it should automatically download a replay for us. The `gameId`
+parameter within the call is the gameId which we want to download. This
+can be retrieved from op.gg by going to the game which you want to download,
+and using `Inspect Element`, or the equivalent action in your browser, clicking
+on the element which contains the game, and locating the `data-game-id` data
+field.
+
+<img src="/assets/lol_client/process_explorer_lcu_port.png">
+
+So to download this game (patch 11.17 as of 03/09/2021), we would need to
+execute
+``````
+-->
 
 ### Issues and Solutions Regarding ROFL Replays
 
@@ -227,7 +268,9 @@ The key issue regarding rofl replays are that the encr
 
 
 ## References
-
+- [GitHub: Rift Explorer](https://github.com/Pupix/rift-explorer)
+- [LCU API: LCU API Listing](https://lcu.vivide.re/#operation--lol-replays-v1-rofls--gameId--download-post)
+- [Windows: Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer)
 - [GitHub: LeaguePackets](https://github.com/LeaguePackets)
 - [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
 - [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
