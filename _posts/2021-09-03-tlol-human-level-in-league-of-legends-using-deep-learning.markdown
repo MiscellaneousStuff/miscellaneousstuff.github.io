@@ -19,8 +19,8 @@ leagueAiYoutubeId: yVUKi63WfDA
 This post explores how to extract acquire data from League of Legends,
 the League of Legends rofl replay format, and how to extract granular
 information from a replay file using a method which allevates the
-encryption of the replay files in way which is robust from patch to
-patch as the game is updated once every two weeks.
+encryption of the replay files in a way which is robust from patch to
+patch, as the game is updated once every two weeks.
 
 ## Initial Ideas
 
@@ -351,6 +351,19 @@ an "enigma-like" effort where you would be fighting Riot Games encryption every 
 and any major change to their encryption scheme would greatly increase the amount of time
 required to adjust the system.
 
+<!--
+Talk about this in the part 4 post, the point which was going to be made here is how
+League replays are hosted on AWS storage, and the calls to download replays from there
+are likely authenticated using Riot Account details. Include the screenshot of the changing
+IP addresses and how just using an real account through the client on linux is easier.
+#### Problem: Riot Replay Download Authorization and Throttling
+
+
+
+#### Solution: The Cloud
+
+-->
+
 #### Problem: Lack of League of Legends API
 
 With this in mind, the method used to extract low-level, granular data ranging from
@@ -400,8 +413,43 @@ representation of the League replays which is appropriate for our machine learni
 This has the added benefit of already being written in Python, which means that the replay
 downloading system and the replay extractor system can both be written in the same language.
 
-## Summary
+Another benefit of this system is that, as the LViewLoL source code is freely available
+and mainly relies on the `ReadProcessMemory()` system call, it is easy to port to linux as
+the `ReadProcessMemory()` system call can easily be changed with the `process_vm_readv()`.
+This also has another unintended benefit, firstly it means that it is easy to port the LViewLoL
+system to linux which is convenient as we can then run the replay extraction process on linux,
+either locally or in the cloud. However, the `process_vm_readv()` system call is also faster
+than `ReadProcessMemory()` as it doesn't require a context switch as it was introduced to have
+virtually no overhead. This means that, not only can we use linux to extract information from
+rofl replays, it might also end up being faster than Windows!
 
+## Summary
+In summary, the best way of gathering data for this system will be to create an automated
+system which is able to cycle through League accounts and different IP addresses to alleviate
+Riot Games rofl download throttling. Then when this automated replay downloading system is
+implemented, we can use an existing scripting platform on the League Client itself, while
+running the replay at faster than real-time speed. This allows us to extract information at
+high spatial and temporal granularity which is required to train a deep learning agent, in
+a distributed fashion meaning we can gather a lot of data. This can all be implemented on
+Linux by taking advantage of Wine for running League on Linux and adjusting LViewLol to
+run on Linux.
+
+This leaves us with two main systems which need to be implemented (without consideration
+for "glue" systems such as servers to distribute requests to cloud instances, cloud
+inter-operation, or other considerations.):
+
+1. **Automated Replay Downloader**
+   This system would be responsible for dispatching replays matching certain criteria
+   to appropriate clients which would then download replays at a rate of 1,000 games an hour.
+   This system would also be responsible for storing the replays in an appropriate storage
+   location using cloud storage (due to the large number of replays, the amount of storage
+   required is in the TB range.)
+
+2. **Automated Replay Extractor**
+   This system would be responsible for running the replays using the League of Legends client
+   which corresponds to the replay file, and then running a modified version of the LViewLoL
+   scripting platform for linux at faster than real-time, and then extracting features from
+   the game engine to be used in a deep learning system.
 
 ## References
 
@@ -409,6 +457,8 @@ downloading system and the replay extractor system can both be written in the sa
 - [Scripting: LViewLoL](https://github.com/orkido/LViewLoL)
 - [Forum: UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
 - [Software: HexRays IDA Pro](https://hex-rays.com/ida-pro/)
+- [C++ Library: Boost](https://www.boost.org/)
+- [Linux API: process_vm_readv()](https://man7.org/linux/man-pages/man2/process_vm_readv.2.html)
 
 ### DevOps Automation
 - [GitHub: PyAutoGUI](https://github.com/asweigart/pyautogui)
@@ -416,12 +466,12 @@ downloading system and the replay extractor system can both be written in the sa
 ### Cloud Pricing
 - [Google Cloud Platform (GCP): Pricing](https://cloud.google.com/storage/pricing)
 
-### LCU API
+### LCU API (League Client Update API)
 - [GitHub: Rift Explorer](https://github.com/Pupix/rift-explorer)
 - [LCU API: LCU API Listing](https://lcu.vivide.re/#operation--lol-replays-v1-rofls--gameId--download-post)
 - [Windows: Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer)
 
-### LeagueSandbox
+### LeagueSandbox (League of Legends v4.20 Server Emulation)
 - [GitHub: LeaguePackets](https://github.com/LeaguePackets)
 - [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
 - [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
