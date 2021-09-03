@@ -275,7 +275,7 @@ of data. I used a 40MB/sec (or 350Mbit/s) connection so I certainly had
 more bandwidth than 13GB/hr. This means that Riot intentionally throttles
 the download of rofl files from their servers. More on this later on.
 
-<div style="text-align: center;">
+<div style="text-align: center; width: 100%; max-width: 640px;">
    <img src="/assets/lol_client/rofl_replay_throttle.png">
 </div>
 
