@@ -84,6 +84,47 @@ are the most stable training regime for policy improvement.
 
 ### Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings
 
+#### Overview
+
+This paper is by far the most relevant to this project. The key contribution
+of this paper is to use a supervised learning approach to classify observations
+based on what action an expert performed next in the same situation. The system
+which is introduced by the paper is known as JueWu-SL.
+
+The key principle behind the approach is that decision making within MOBA games
+can be split into two main parts at any timestep, 1) Where to go on the map for
+a single hero, this is known as macro, and 2) what to do where you the hero
+reaches the location, this is known as micro.
+
+There are multiple motivations for using a supervised learning approach to create
+a MOBA playing AI. For starters, a policy network can be pre-trained using a
+supervised learning approach which can then be used to train the agent further
+using reinforcement learning. This was crucial to the success of AlphaStar, whereby
+the authors said that using a purely RL approach would have taken the system too
+long to converge on the fundamentals of the game, such as how to utilise units
+to perform basic actions, basic macro and other fundamental skills which Starcraft
+players use to play the game. Further motivation comes from how a pure supervised
+learning approach <!-- Fill in with reference to Super Smash Bros SL system--> was
+able to produce a human level Super Smash Bro's AI system.
+
+The paper suggests modeling the problem of which action the agent should take next
+as a hierarchical multi-class classification problem. This is done by modelling
+each observation as a multi-view intent label to model the players macro strategy
+and hierarchical action labels are used for modeling micromanagement.
+
+<!-- put in example image here of the macro and micro hierarchical labelling-->
+
+#### Main Contributions
+
+The main contributions of the paper, and the reason why it's so useful to this
+project, are the following two reasons.
+
+1. Supervised learning method which can apply to any MOBA game which allows
+   efficient incorporation of expert knowledge. Scene-based sampling method
+   to divide whole MOBA gameplay into easily tuned game snippets.
+2. Supervised learning method performs comparatively against High King (roughly
+   Grandmaster or Challenger in League of Legends).
+
 - JueWu-SL
   - Replay Numbers (120,000 & 100 million scene/step samples -> 90/10 split, etc.)
   - Pure supervised learning approach
