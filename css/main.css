@@ -61,7 +61,7 @@ body {
 .post {
   margin-left: 1rem;
   margin-right: 1rem;
-  width: 33%;
+  width: 100%;
 }
 
 .post-date {
@@ -88,7 +88,7 @@ body {
 }
 
 @media screen and (max-width: 600px) {
-  .post {
+  .post_container {
     width: 100%;
   }
   .site-nav .menu-icon {

@@ -7,13 +7,15 @@ layout: default
     <hr />
     <div class="posts">
         {% for post in site.posts %}
-        <a href="{{ post.url | prepend: site.baseurl }}">
-            <div class="post">
-                <p class="post-date">{{ post.date | date: "%b %-d, %Y" }}</p>
-                <p class="post-title">{{ post.title }}</p>
-                <p class="post-excerpt">{{ post.excerpt }}</p>
-            </div>
-        </a>
+        <div class="post_container">
+            <a href="{{ post.url | prepend: site.baseurl }}">
+                <div class="post">
+                    <p class="post-date">{{ post.date | date: "%b %-d, %Y" }}</p>
+                    <p class="post-title">{{ post.title }}</p>
+                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                </div>
+            </a>
+        </div>
         {% endfor %}
     </div>
 </div>
