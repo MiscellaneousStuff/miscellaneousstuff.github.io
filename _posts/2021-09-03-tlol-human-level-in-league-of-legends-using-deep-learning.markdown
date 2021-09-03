@@ -270,12 +270,18 @@ The key issue regarding rofl replays are that the encr
 
 
 ## References
+
+### LCU API
 - [GitHub: Rift Explorer](https://github.com/Pupix/rift-explorer)
 - [LCU API: LCU API Listing](https://lcu.vivide.re/#operation--lol-replays-v1-rofls--gameId--download-post)
 - [Windows: Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer)
+
+### LeagueSandbox
 - [GitHub: LeaguePackets](https://github.com/LeaguePackets)
 - [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
 - [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
+
+### Papers
 - [GitHub: PyLoL](https://github.com/MiscellaneousStuff/pylol)
 - [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
 - [Paper: Learning Dexterous In-Hand Manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf)
