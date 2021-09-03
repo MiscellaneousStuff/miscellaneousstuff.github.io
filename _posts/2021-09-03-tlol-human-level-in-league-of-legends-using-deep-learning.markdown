@@ -97,7 +97,9 @@ one is to use human replay data. The main reasons are that the reason
 that previous game playing AI approaches have used massively
 scaled up, distributed and parallel simulations of the target games are
 that this projects were undertaken by large AI research organisations which
-had research goals in mind. For instance, the OpenAI Five system created by
+had research goals in mind.
+
+For instance, the OpenAI Five system created by
 OpenAI was created to prove that the Proximal Policy Optimization (PPO)
 algorithm could learn to play a popular, complicated esports game which
 would garner a lot of attention if they could achieve that goal, and
@@ -159,6 +161,8 @@ data point records, is too large. Each data point within the metadata is at most
 This means that we need to investigate how to extract data from the second part of the
 replay file.
 
+<img src="/assets/lol_client/rofl_stats_snippet.png">
+
 #### General Binary Format
 
 The second part of the replay file is split into keyframes and chunks. A keyframe contains
@@ -208,7 +212,6 @@ button. Downloading the number of replay files required to train a machine learn
 system in this way would be very time consuming and cumbersome.
 
 <img src="/assets/lol_client/rofl_download.png">
-Imagine having to click this 10,000s of times.
 
 Fortunately when
 Riot Games updated the League of Legends client in 2017 with their updated
