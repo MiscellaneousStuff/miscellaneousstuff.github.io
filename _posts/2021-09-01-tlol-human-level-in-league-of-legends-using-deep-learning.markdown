@@ -138,9 +138,11 @@ attempts and other game playing AIs.
 The purpose of using image recognition techniques
 in these systems was to prove that it was possible to use image recognition, specifically
 CNN-based image recognition systems as the perceptual system within a larger game playing
-AI for reinforcement learning systems. However, there is a major downside to this in that
+AI for reinforcement learning systems.
+
+However, there is a major downside to this in that
 this isn't as effective as using raw features from the game for perception and it has
-inherently less explainablility which means that it is harder to debug and diagnose issues,
+inherently less explainablility. This means that it is harder to debug and diagnose issues,
 and to verify how this specific part of the system is improving.
 
 
@@ -154,6 +156,7 @@ successful example of reinforcement learning applied to League of Legends. Howev
 method is limited as the number of samples of the environment which can be collected using
 this method is limited by two main factors:
 1. **Number of Simulations of the environment**
+
    Currently, Riot Games (the developers of League of Legends) provide no API for scripts or
    bots (unlike the Dota Bot Scripting API from Valve or pysc2 module released by DeepMind
    in conjunction with Blizzard). This means that not only is it not easy to quickly start
@@ -161,6 +164,7 @@ this method is limited by two main factors:
    observational information from the game or input actions into the game without the risk
    of the associated League of Legends account being banned for scripting.
 2. **Current Observation Methods**
+
    Current observation methods used for League of Legends AI's rely on using real-time
    object recognition models such as YOLOv3 to detect relevant game objects. The limitation
    of this method for creating a human level League of Legends AI is that, firstly the 

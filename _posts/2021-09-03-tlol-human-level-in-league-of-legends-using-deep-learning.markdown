@@ -51,6 +51,7 @@ There are two main ways of acquiring data for this task:
 #### Data Acquisition Methods
 
 1. **Simulate many games to generate data**
+
    This approach would require an API for League of Legends which would allow
    a developer to automatically provision games, the players within the game,
    customise variables within the game and to integrate that into a more general
@@ -63,6 +64,7 @@ There are two main ways of acquiring data for this task:
    their own software.
 
 2. **Use human replays**
+
    On the other hand, it is also possible to train an AI system using human
    replays. The human replays serve as expert examples of how to play the
    game.
@@ -198,7 +200,21 @@ implement.
 
 #### Downloading Replay Files
 
-Aside from processing the information stored within replay files, 
+Before processing any files, there must also be a system in place to automatically
+download a large number of replay files. The main way of downloading replay files
+is to sign-in to the game client, and manually locate files (which must be played
+on the same patch) within the target players match history, and click on the download
+button. Downloading the number of replay files required to train a machine learning
+system in this way would be very time consuming and cumbersome.
+
+<img src="/assets/lol_client/rofl_download.png">
+Imagine having to click this 10,000s of times.
+
+Fortunately when
+Riot Games updated the League of Legends client in 2017 with their updated
+League Client Update (LCU), the new client also included a new API to directly
+interface with the client. This is implemented as a localhost server which provides
+an API to execute actions on behalf of the user which is signed in.
 
 ### Issues and Solutions Regarding ROFL Replays
 
