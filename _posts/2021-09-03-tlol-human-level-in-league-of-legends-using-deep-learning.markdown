@@ -185,6 +185,25 @@ project. The LeagueSandbox project is an attempt to create an open-source, rever
 version of the League of Legends game server from patch 4.20, which was the last League of
 Legends version to use unencrypted packets.
 
+The main issue with the encryption scheme is that it changes every patch, for example,
+replays for client version 11.15 cannot be read using client version 11.16 because the
+encryption scheme changes between patches. Although it is possible to reverse-engineer
+the method used to encrypt the replays every patch, this would require performing this
+process every patch. The issue with this is that League of Legends is patched very
+frequently compared to most games. The average patch cycle for League of Legends is
+2 weeks. This means that whatever method was used to decrypt replay files for a single
+patch, would need to be adapted every two weeks and on top of that, if the encryption
+scheme was to change significantly between two patches, it may take even longer to
+implement.
+
+#### Downloaing Replay Files
+
+Aside from processing the information stored within replay files, 
+
+### Issues and Solutions Regarding ROFL Replays
+
+The key issue regarding rofl replays are that the encr
+
 ## Summary
 
 
