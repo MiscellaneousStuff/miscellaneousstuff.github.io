@@ -211,7 +211,9 @@ on the same patch) within the target players match history, and click on the dow
 button. Downloading the number of replay files required to train a machine learning
 system in this way would be very time consuming and cumbersome.
 
-<img src="/assets/lol_client/rofl_download.png">
+<div style="text-align: center;">
+   <img src="/assets/lol_client/rofl_download.png">
+</div>
 
 Fortunately when
 Riot Games updated the League of Legends client in 2017 with their updated
