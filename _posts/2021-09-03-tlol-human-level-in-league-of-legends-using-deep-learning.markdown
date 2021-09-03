@@ -16,12 +16,11 @@ leagueAiYoutubeId: yVUKi63WfDA
 
 ## Introduction
 
-This post explores how to extract information from League of Legends replay files,
-converting the extracted information into a format suitable for Jupyter Notebook,
-exploring the data within the replays, visualising the data and intuitions about
-the data. Recent approaches at creating human level MOBA deep learning agents
-are also briefly explored with the key ideas being related to creating a human-level
-League of Legends AI.
+This post explores how to extract acquire data from League of Legends,
+the League of Legends rofl replay format, and how to extract granular
+information from a replay file using a method which allevates the
+encryption of the replay files without violating Riot Games terms of
+service.
 
 ## Initial Ideas
 
