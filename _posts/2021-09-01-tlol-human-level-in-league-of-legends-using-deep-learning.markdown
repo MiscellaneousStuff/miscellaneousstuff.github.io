@@ -181,13 +181,20 @@ with low friction.
 
 
 ## References
-- [Windows API: ReadProcessMemory()](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory)
+
+### Game Playing AI's
 - [Paper: Original DQN Paper](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
 - [Deepmind: AlphaStar](https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii)
+
+### League of Legends AI Research Projects
+- [Paper: Deep Learning Bot for League of Legends](https://ojs.aaai.org/index.php/AIIDE/article/view/7449/7348)
 - [GitHub: LeagueAI](https://github.com/Oleffa/LeagueAI)
+
+### League of Legends Hacking and Scripting
 - [Scripting: LViewLoL](https://github.com/orkido/LViewLoL)
 - [Forum: UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
 - [Software: HexRays IDA Pro](https://hex-rays.com/ida-pro/)
-- [Paper: Deep Learning Bot for League of Legends](https://ojs.aaai.org/index.php/AIIDE/article/view/7449/7348)
-- [GitHub: YOLOv3](https://github.com/ultralytics/yolov3)
 - [GitHub: Il2CppInspector](https://github.com/djkaty/Il2CppInspector)
+
+### Real-Time Object Recognition
+- [GitHub: YOLOv3](https://github.com/ultralytics/yolov3)
