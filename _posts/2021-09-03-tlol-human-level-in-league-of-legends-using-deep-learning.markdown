@@ -110,7 +110,6 @@ of [robot hand manipulation](https://matthiasplappert.com/publications/2018_Open
 and even to my own work of training a basic League of Legends agent to
 [avoid another agent](https://github.com/MiscellaneousStuff/pylol).
 
-### LeagueAI
 <div style="text-align: center;">
 {% include youtubePlayer.html id=page.leagueAiYouTubeID %}
 </div>
@@ -125,11 +124,32 @@ So for these reasons, I have decided on using human replay data for the purposes
 of cost, the fact that human replay data alone is sufficient for the task,
 scale and infrastructure and simplicity.
 
+### League of Legends Replays
+
+League of Legends replays are stored as files with a ROFL (yes, really lol) file
+format extension. The files are prepended with the region the game was played 
+and the middle is the game id. A typical league of legends replay file looks
+something like `EUW1-5237530168.rofl`. The replay file is split into two main parts,
+with the first part containing metadata about the game in a JSON format, and the second
+and main part of the file are the actual low level contents of the game themselves,
+such as the position and stats of every game object at a point in time, the actions
+which players took at each timestep, and other low level details.
+
+This second part of the replay file is what is interesting from a machine learning
+perspective. Riot Games doesn't provide official documentation as to how this
+part of the file works, but unofficial attempts to understand the format overtime
+shed some light on the format. The following two sections are taken from unofficial
+sources from around the internet which have attempted to understand the ROFL file format.
+
+#### 
+
+
 ## Summary
 
 
 ## References
 
+- []()
 - [GitHub: PyLoL](https://github.com/MiscellaneousStuff/pylol)
 - [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
 - [Paper: Learning Dexterous In-Hand Manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf)
