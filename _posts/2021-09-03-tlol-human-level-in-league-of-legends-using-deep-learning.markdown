@@ -162,7 +162,10 @@ This means that we need to investigate how to extract data from the second part 
 replay file.
 
 <div style="text-align: center;">
-   <img src="/assets/lol_client/rofl_stats_snippet.png">
+   <img
+      src="/assets/lol_client/rofl_stats_snippet.png"
+      style="width: 100%; max-width: 640px;"
+   />
 </div>
 
 #### General Binary Format
@@ -214,7 +217,10 @@ button. Downloading the number of replay files required to train a machine learn
 system in this way would be very time consuming and cumbersome.
 
 <div style="text-align: center;">
-   <img src="/assets/lol_client/rofl_download.png">
+   <img
+      src="/assets/lol_client/rofl_download.png"
+      style="width: 100%; max-width: 640px;"
+   />
 </div>
 
 Fortunately when
