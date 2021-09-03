@@ -47,6 +47,8 @@ As highlighted in previous posts, training a deep learning based AI agent
 for League of Legends requires data, and potentially, quite a lot of data.
 There are two main ways of acquiring data for this task:
 
+#### Data Acquisition Methods
+
 1. **Simulate many games to generate data**
    This approach would require an API for League of Legends which would allow
    a developer to automatically provision games, the players within the game,
@@ -84,6 +86,30 @@ There are two main ways of acquiring data for this task:
    and then copy that. But it is also possible for the agents to learn how
    to perform better than the examples provided as they are learning
    trajectories of responses, rather than merely copying them.
+
+### Deciding on a Data Acquisition Method
+
+Out of the two data acquisition methods listed above, the most feasible
+one is to use human replay data. The main reasons are that the reason
+that previous game playing AI approaches have used massively
+scaled up, distributed and parallel simulations of the target games are
+that this projects were undertaken by large AI research organisations which
+had research goals in mind. For instance, the OpenAI Five system created by
+OpenAI was created to prove that the Proximal Policy Optimization (PPO)
+algorithm could learn to play a popular, complicated esports game which garner
+a lot of attention if they could achieve that goal, and also for many of the reasons
+mentioned within the ["MOBA: A New Arena for Game AI"](https://arxiv.org/pdf/1705.10443.pdf)
+paper.
+
+Deepmind also had similar reasons for using a similar system when creating AlphaStar,
+and also because, in theory and in practice, reinforcement learning systems can
+achieve superhuman performance as they learn for themselves how to play games.
+
+For the purpose of this project, I do not have the budget nor the 
+resources or the support of Riot Games to attempt such a massive undertaking.
+So for these reasons, I have decided on using human replay data for the purposes
+of cost, the fact that human replay data alone is sufficient for the task,
+scale and infrastructure and simplicity.
 
 ## Summary
 
