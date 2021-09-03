@@ -6,6 +6,7 @@ excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing s
 date:   2021-09-03 08:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]
+leagueAiYoutubeId: yVUKi63WfDA
 ---
 
 ## Table of Contents
@@ -96,10 +97,23 @@ scaled up, distributed and parallel simulations of the target games are
 that this projects were undertaken by large AI research organisations which
 had research goals in mind. For instance, the OpenAI Five system created by
 OpenAI was created to prove that the Proximal Policy Optimization (PPO)
-algorithm could learn to play a popular, complicated esports game which garner
-a lot of attention if they could achieve that goal, and also for many of the reasons
-mentioned within the ["MOBA: A New Arena for Game AI"](https://arxiv.org/pdf/1705.10443.pdf)
-paper.
+algorithm could learn to play a popular, complicated esports game which
+would garner a lot of attention if they could achieve that goal, and
+also for many of the reasons mentioned within
+the ["MOBA: A New Arena for Game AI"](https://arxiv.org/pdf/1705.10443.pdf)
+paper. OpenAI done this with the intention of applying the same algorithm
+to more complex and real-world focused tasks as well and they were successful.
+
+The PPO algorithm has been used everywhere from improving the dexterity
+of [robot hand manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf), to improving the locomotion of
+[quadrupedal robots](https://www.researchgate.net/publication/339471102_Guided_Constrained_Policy_Optimization_for_Dynamic_Quadrupedal_Robot_Locomotion)
+and even to my own work of training a basic League of Legends agent to
+[avoid another agent](https://github.com/MiscellaneousStuff/pylol).
+
+### LeagueAI
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.leagueAiYouTubeID %}
+</div>
 
 Deepmind also had similar reasons for using a similar system when creating AlphaStar,
 and also because, in theory and in practice, reinforcement learning systems can
@@ -116,4 +130,6 @@ scale and infrastructure and simplicity.
 
 ## References
 
+- [GitHub: PyLoL](https://github.com/MiscellaneousStuff/pylol)
 - [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
+- [Paper: Learning Dexterous In-Hand Manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf)
