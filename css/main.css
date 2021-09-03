@@ -51,6 +51,11 @@ body {
 
 
 /* site experimental */
+.container {
+  width: 100%;
+  max-width: 1120px;
+}
+
 .posts {
   display: flex;
   flex-direction: row;
