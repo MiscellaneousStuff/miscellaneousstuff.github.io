@@ -6,7 +6,7 @@ Analysis)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-02 14:00:00
 categories: [Project]
-tags: ["League of Legends", "Machine Learning", "Reinforcement Learning"]
+tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]
 ---
 
 ## Table of Contents
