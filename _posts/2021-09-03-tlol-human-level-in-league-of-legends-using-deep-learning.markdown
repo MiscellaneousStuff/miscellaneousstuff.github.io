@@ -264,6 +264,30 @@ execute
 ``````
 -->
 
+#### Replay File Calcuations
+
+From my own testing, there is a limit to how many games can be downloaded
+from one account at once. When I tried to download 1000s of games at once,
+I was throttled to around 1000 games an hour. The average rofl replay
+file within that dataset (which consisted of around 3,700 NA rofl replay files
+during patch 11.10), was 13MB. That means 1,000 replays take up around 13GB
+of data. I used a 40MB/sec (or 350Mbit/s) connection so I certainly had
+more bandwidth than 13GB/hr. This means that Riot intentionally throttles
+the download of rofl files from their servers. More on this later on.
+
+<div style="text-align: center;">
+   <img src="/assets/lol_client/rofl_replay_throttle.png.png">
+</div>
+
+The graph above shows how many replays were successfully downloaded over
+a 2 hour download stretch.
+
+With that in mind, if it takes 100,000s of
+replays to produce a competitive human level AI, the storage required for
+the replay files alone would be 13MB * 100,000 ~= 1.3TB of storage. That
+leaves two important considerations going forward, download throughput
+and storage.
+
 ### Issues and Solutions Regarding ROFL Replays
 
 The key issue regarding rofl replays are that the encr
