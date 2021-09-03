@@ -19,8 +19,8 @@ leagueAiYoutubeId: yVUKi63WfDA
 This post explores how to extract acquire data from League of Legends,
 the League of Legends rofl replay format, and how to extract granular
 information from a replay file using a method which allevates the
-encryption of the replay files without violating Riot Games terms of
-service.
+encryption of the replay files in way which is robust from patch to
+patch as the game is updated once every two weeks.
 
 ## Initial Ideas
 
@@ -334,9 +334,31 @@ provides a call which allows someone to automatially log in without
 using the League clients UI which allows the process to be automated
 without using something unreliable such as PyAutoGUI.
 
+From here, I server could be setup which receives requests to download
+replay files based on the region and game id of the replay file
+to download.
+
 ### Issues and Solutions Regarding ROFL Replays
 
-The key issue regarding rofl replays are that the encr
+At this stage, we have an outline of a system, albeit quite a complicated system,
+which is able to automatically download a large number of League rofl replays.
+However, how do we actually go about getting information which is granular enough
+to train a deep learning agent capable of playing the game competently? We've
+already explained why it's not possible to reverse-engineer the rofl file format
+as the encryption used to protect the data is changed every patch. This means that
+trying to use the packet data stored within the rofl files directly would result in
+an "enigma-like" effort where you would be fighting Riot Games encryption every patch,
+and any major change to their encryption scheme would greatly increase the amount of time
+required to adjust the system.
+
+With this in mind, the method used to extract low-level, granular data ranging from
+the position of objects, the actions taken by players, gold and xp earned per second and
+whatever other granular spatial and temporal data we could possible want.
+
+One interesting solution could be to re-purpose a tool which was originally designed
+for cheating to our use.
+
+1. **Robust to patch-to-patch changes**
 
 ## Summary
 
