@@ -18,10 +18,11 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 
 This post reviews existing approaches to creating game playing AIs which
 have evolved in complexity over time as the complexity of the games which
-have been tackled as increased. The approaches are than analysed and
-the key strengths and weaknesses as they apply to creating a human-level
-League of Legends AI are outlined with a summary of how previous approaches
-can inform the development of a League of Legends AI.
+have been tackled has increased. The approaches are than analysed and
+the key strengths and weaknesses, as they apply to creating a human-level
+League of Legends AI, are outlined. Then previous approaches are analysed,
+with regards to how they can inform the development of a League of
+Legends AI.
 
 ## Problem Analysis
 
@@ -64,7 +65,7 @@ AlphaGo used a deep reinforcement learning model to train the weights of a
 Monte Carlo tree search (MCTS). The deep learning model used 2 artificial
 neural networks, a policy network to predict the probabilities of potential
 moves by opponents, and a value network to predict the win chance of a given state.
-This model allowed teh agent to explore potential game states more efficiently than
+This model allowed the agent to explore potential game states more efficiently than
 a vanilla MCTS. The network was initialised using human professional go data and
 was then further refined by optimising the policy and value network by using
 a large distributed reinforcement learning approach.
@@ -236,14 +237,23 @@ refinement from the very best players winning game replays.
 
 
 ## References
-- [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
+
+### AI Algorithms
 - [Wikipedia: Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
-- [Wikipedia: Go Complexity](https://en.wikipedia.org/wiki/Machine_learning_in_video_games#Deep_learning_agents)
+- [Wikipedia: Monte Carlo tree search (MCTS)](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
+- [Paper: Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
+
+### Game Playing AI's
+- [Wikipedia: IBM Deep Blue](https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer))
 - [Wikipedia: AlphaGo](https://en.wikipedia.org/wiki/AlphaGo)
 - [Paper: AlphaStar](https://www.nature.com/articles/s41586-019-1724-z)
-- [GitHub: PySC2](https://github.com/deepmind/pysc2)
-- [Wikipedia: The International 2019 (Dota 2 World Championship)](https://en.wikipedia.org/wiki/The_International_2019)
-- [Wiki: Dota 2 Hero Count](https://dota.fandom.com/wiki/DOTA_2_Heroes#:~:text=DOTA%202%20currently%20features%20121,the%20original%20version%20of%20DotA.)
-- [Paper: Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
-- [Blog: Estimated OpenAI Five Training Costs](https://www.yuzeh.com/data/openai-five.html)
 - [Paper: Open AI Five Paper](https://cdn.openai.com/dota-2.pdf)
+
+### Dota 2 / OpenAI Five Training Details
+- [Wiki: Dota 2 Hero Count](https://dota.fandom.com/wiki/DOTA_2_Heroes#:~:text=DOTA%202%20currently%20features%20121,the%20original%20version%20of%20DotA.)
+- [Blog: Estimated OpenAI Five Training Costs](https://www.yuzeh.com/data/openai-five.html)
+- [Wikipedia: The International 2019 (Dota 2 World Championship)](https://en.wikipedia.org/wiki/The_International_2019)
+
+### Miscellaneous
+- [Wikipedia: Go Complexity](https://en.wikipedia.org/wiki/Machine_learning_in_video_games#Deep_learning_agents)
+- [GitHub: PySC2](https://github.com/deepmind/pysc2)

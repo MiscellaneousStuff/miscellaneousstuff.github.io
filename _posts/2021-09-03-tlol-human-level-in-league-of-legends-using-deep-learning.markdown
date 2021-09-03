@@ -196,7 +196,7 @@ patch, would need to be adapted every two weeks and on top of that, if the encry
 scheme was to change significantly between two patches, it may take even longer to
 implement.
 
-#### Downloaing Replay Files
+#### Downloading Replay Files
 
 Aside from processing the information stored within replay files, 
 
