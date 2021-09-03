@@ -351,19 +351,51 @@ an "enigma-like" effort where you would be fighting Riot Games encryption every 
 and any major change to their encryption scheme would greatly increase the amount of time
 required to adjust the system.
 
+#### Problem: Lack of League of Legends API
+
 With this in mind, the method used to extract low-level, granular data ranging from
 the position of objects, the actions taken by players, gold and xp earned per second and
 whatever other granular spatial and temporal data we could possible want.
 
 One interesting solution could be to re-purpose a tool which was originally designed
-for cheating to our use.
+for cheating to our use. The LViewLoL project which uses a C++ console application
+as a gateway between a live running League game and provides an API to take observations
+from a game as it's running and issue actions as the user to the game.
 
-1. **Robust to patch-to-patch changes**
+This also has the added benefit of allowing as to load a replay file, regardless of which
+patch it was played on as previous versions of clients can be saved and used to play old
+replays (i.e. replays which aren't on the current patch). We can then use LViewLoL for
+that patch version to process the replay files. LViewLol was briefly touched upon within
+[part 1](https://github.com/orkido/LViewLoL) of this series and will be explored further now.
+
+#### Solution: LViewLoL Scripting Platform
+
+LViewLoL works by using a system call in Windows called `ReadProcessMemory()` which
+allows an unprivileged program to read the memory of another running process. This allows
+the program to copy memory from specific addresses with minimal overhead. However, how
+does someone find the addresses of game objects within the League of Legends game engine?
+The League of Legends game engine is a proprietary game engine developed by Riot Games
+specifically for League of Legends.
+
+The answer is to use a tool such as IDA Pro, which is a
+popular tool within the cybersecurity and wider hacking and computer science community. The
+purpose of the program is to statically or dynamically analyse Windows (and now other
+platforms and architectures) binaries. This allows hackers to locate the memory addresses
+of objects of interest.
+
+The address offsets for League of Legends are calculated based on the base address of the
+program (i.e. the virtual memory base location the program expects to be loaded to) and then
+adding the address offsets to the base address to find the data structures used by the game.
 
 ## Summary
 
 
 ## References
+
+### League of Legends Hacking and Scripting
+- [Scripting: LViewLoL](https://github.com/orkido/LViewLoL)
+- [Forum: UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
+- [Software: HexRays IDA Pro](https://hex-rays.com/ida-pro/)
 
 ### DevOps Automation
 - [GitHub: PyAutoGUI](https://github.com/asweigart/pyautogui)
@@ -381,7 +413,9 @@ for cheating to our use.
 - [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
 - [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
 
-### Papers
+### Miscellaneous
 - [GitHub: PyLoL](https://github.com/MiscellaneousStuff/pylol)
+
+### Papers
 - [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
 - [Paper: Learning Dexterous In-Hand Manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf)

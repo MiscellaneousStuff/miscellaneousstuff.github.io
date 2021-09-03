@@ -76,7 +76,7 @@ reinforcement learning and wasn't pre-trained human knowledge and achieved super
 results to the original AlphaGo system.
 
 This marked a significant shift from the previous approach as artificial neural networks
-were know being used to approximate the next action to take instead of the more traditional
+were now being used to approximate the next action to take instead of the more traditional
 approach used by IBM Deep Blue.
 
 #### AlphaStar
