@@ -58,7 +58,11 @@ body {
   box-sizing: border-box;
 }
 
-.post {
+.post_container {
+  width: 33%;
+}
+
+.post-snippet {
   margin-left: 1rem;
   margin-right: 1rem;
   width: 100%;
