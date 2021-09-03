@@ -24,7 +24,7 @@ League of Legends AI.
 
 ## Initial Ideas
 
-### League of Legends Replays
+### Acquiring Data
 
 The previous posts highlighted the main difficulties with creating human level game
 playing AIs. The central issue with all of these systems was having enough high
@@ -34,13 +34,60 @@ of this series for better context going forward if you are not already familiar
 with the [history of League of Legends AI systems](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-human-level-in-league-of-legends-using-deep-learning.html) or [game playing AI systems](https://miscellaneousstuff.github.io/project/2021/09/02/tlol-human-level-in-league-of-legends-using-deep-learning.html).
 
 For instance, recent AI systems which were built to
-play board games could directly simulate the games as the rules governing board
+play board games, could directly simulate the games as the rules governing board
 games such as Chess and Go are very simple to implement on CPUs and those board
 games only contain a limited number of overall moves per game. An average Chess
-game only contains 40 moves per game whereas an average game of Go contains 
+game only contains 40 moves per game whereas an average game of Go contains roughly
+200 moves per game. On the other hand, MOBAs such as Dota 2, or League of Legends,
+require a player to make 1000s of decisions over the course of a game. For a more
+thorough examination of why MOBAs are a complicated problem for AI, refer to
+["MOBA: A New Arena for Game AI"](https://arxiv.org/pdf/1705.10443.pdf).
+
+As highlighted in previous posts, training a deep learning based AI agent
+for League of Legends requires data, and potentially, quite a lot of data.
+There are two main ways of acquiring data for this task:
+
+1. **Simulate many games to generate data**
+   This approach would require an API for League of Legends which would allow
+   a developer to automatically provision games, the players within the game,
+   customise variables within the game and to integrate that into a more general
+   machine learning framework. Not only would this require the support of Riot
+   Games, as such an API doesn't currently exist (as of 03/09/2021), it would
+   also be a large and complicated undergoing even if the API did exist. This
+   is highlighted as a relevant issue by OpenAI within their blog posts, where
+   they mention that a major issue, especially early on for their efforts, was
+   managing the integration of the Dota Bot Scripting API in conjunction with
+   their own software.
+
+2. **Use human replays**
+   On the other hand, it is also possible to train an AI system using human
+   replays. The human replays serve as expert examples of how to play the
+   game.
+   
+   A machine learning agent would then be trained to either, learn
+   how human experts responded in similar situations and training the bot
+   to copy the responses. This would be done using a supervised learning
+   approach where the agent is provided an equivalent observation which
+   humans were provided in-game, and is then trained to predict what action
+   the human would have taken in the same situation.
+
+   An alternative approach would be to use an offline reinforcement learning
+   approach whereby an agent would also be provided with an in-game observation,
+   the same as above. However, the agent would also be provided with a reward
+   so the agent is provided with trajectories (state, action, reward) or
+   (s, a, r) tuples (where the state is the observation). This constrasts
+   with the supervised learning approach where the agent is only provided
+   with the observation and the action and is only trained to repeat the 
+   action. The benefit of using offline reinforcement learning, or in this 
+   case, offline inverse reinforcement learning (offline IRL), is that the
+   agent can learn to infer what was good about what the human experts did,
+   and then copy that. But it is also possible for the agents to learn how
+   to perform better than the examples provided as they are learning
+   trajectories of responses, rather than merely copying them.
 
 ## Summary
 
 
 ## References
 
+- [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
