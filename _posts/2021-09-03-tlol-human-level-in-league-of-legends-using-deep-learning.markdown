@@ -161,7 +161,9 @@ data point records, is too large. Each data point within the metadata is at most
 This means that we need to investigate how to extract data from the second part of the
 replay file.
 
-<img src="/assets/lol_client/rofl_stats_snippet.png">
+<div style="text-align: center;">
+   <img src="/assets/lol_client/rofl_stats_snippet.png">
+</div>
 
 #### General Binary Format
 
