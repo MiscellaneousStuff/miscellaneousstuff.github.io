@@ -141,15 +141,58 @@ part of the file works, but unofficial attempts to understand the format overtim
 shed some light on the format. The following two sections are taken from unofficial
 sources from around the internet which have attempted to understand the ROFL file format.
 
-#### 
+#### Replay Metadata
 
+The first relevant part of the replay file is a large JSON structure which contains metadata
+about the replay. It contains many high level aggregated features such as damage dealt per
+champion, champions and player ids within the game, number of objectives taken, gold acquired
+over time, xp (experience) acquired over time and many other aggregated statistics.
+
+Although each replay file contains a lot of high level, and potentially quite useful 
+information, the data isn't granular or appropriate for creating an AI system to learn from.
+The problem with the data is that the temporal resolution, in other words the amount of each
+data point records, is too large. Each data point within the metadata is at most, every
+60 seconds. This isn't sufficient to learn from for an AI agent.
+
+This means that we need to investigate how to extract data from the second part of the
+replay file.
+
+#### General Binary Format
+
+The second part of the replay file is split into keyframes and chunks. A keyframe contains
+a set of packets which will recreate a League of Legends fame state at the time specified
+within the keyframe. A chunk contains the server to client (S2C) packets of the game
+during the timespan of a single chunk. Each keyframe and chunk is a sequence of blocks with
+each block starting with a marker byte which determines its structure. A block encapsulates
+a game packet.
+
+The most important issue about this section of the data, is that it uses a custom encryption
+scheme which is embedded inside of the League of Legends client. From patch 4.20 onwards,
+Riot Games started encrypting their game packets to prevent tampering and cheating. As a
+consequence of this, this means the game packets stored inside of rofl replay files are
+also encrypted. The encryption scheme used to encrypt the game packets is stored locally
+within the game *.exe client itself. This can be seen because it's possible to view 
+League of Legends replays within the client when offline, presumably this is to simplify
+the replay system and because it reduces the traffic and processing power which Riot Games
+needs to dedicate to this service to only providing the replay files.
+
+However, if someone was to create a method of decrypting rofl replay files, it would make
+it very easy to process these replay files as the raw packet data would be available for
+analysis. For the most comprehensive attempt to date for understanding the League of Legends
+packet files, refer to the [LeaguePackets](https://github.com/LeagueSandbox/LeaguePackets)
+project which is a part of the larger [LeagueSandbox](https://github.com/LeagueSandbox)
+project. The LeagueSandbox project is an attempt to create an open-source, reverse-engineered
+version of the League of Legends game server from patch 4.20, which was the last League of
+Legends version to use unencrypted packets.
 
 ## Summary
 
 
 ## References
 
-- []()
+- [GitHub: LeaguePackets](https://github.com/LeaguePackets)
+- [GitHub: LeagueSandbox](https://github.com/LeagueSandbox)
+- [GitHub: League Spec (League of Legends ROFL File Format Information)](https://github.com/loldevs/leaguespec/wiki/General-Binary-Format)
 - [GitHub: PyLoL](https://github.com/MiscellaneousStuff/pylol)
 - [Paper: MOBA: A New Arena for Game AI](https://arxiv.org/pdf/1705.10443.pdf)
 - [Paper: Learning Dexterous In-Hand Manipulation](https://matthiasplappert.com/publications/2018_OpenAI_Dexterous-Manipulation.pdf)
