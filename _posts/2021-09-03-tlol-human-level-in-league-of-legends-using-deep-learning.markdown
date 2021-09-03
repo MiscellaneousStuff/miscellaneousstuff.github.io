@@ -387,6 +387,19 @@ The address offsets for League of Legends are calculated based on the base addre
 program (i.e. the virtual memory base location the program expects to be loaded to) and then
 adding the address offsets to the base address to find the data structures used by the game.
 
+These game objects are then processed by the C++ console application by reading them as the
+game is running, combining them with static data provided freely by Riot Games to find information
+such as champion attack ranges, game object ids and names and other data required to properly
+interpret and integrate the raw information from the game engine. The program then provides this
+information using the C++ boost library's python interface as an interface for any loaded
+python scripts.
+
+Our replay extracting system can take advantage of the LViewLoL python integration by directly
+taking advantage of the observations which are provided by the system to directly build a
+representation of the League replays which is appropriate for our machine learning system.
+This has the added benefit of already being written in Python, which means that the replay
+downloading system and the replay extractor system can both be written in the same language.
+
 ## Summary
 
 
