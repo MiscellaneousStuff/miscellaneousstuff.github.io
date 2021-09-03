@@ -275,8 +275,11 @@ of data. I used a 40MB/sec (or 350Mbit/s) connection so I certainly had
 more bandwidth than 13GB/hr. This means that Riot intentionally throttles
 the download of rofl files from their servers. More on this later on.
 
-<div style="text-align: center; width: 100%; max-width: 640px;">
-   <img src="/assets/lol_client/rofl_replay_throttle.png">
+<div style="text-align: center;">
+   <img
+      src="/assets/lol_client/rofl_replay_throttle.png"
+      style="width: 100%; max-width: 640px;"
+   />
 </div>
 
 The graph above shows how many replays were successfully downloaded over
@@ -310,6 +313,22 @@ the project goes, however, I would like to take advantage of Google
 BigQuery as it provides a very powerful tool to query TBs worth of
 data very quickly.
 
+
+#### Replay Downloading Automation
+
+Using the cloud also makes it easier to provision multiple public
+IP addresses quickly and automatically rather than manually setting
+up a manual system of different IP addresses.
+
+To create the automatic replay downloader, it would require setting
+up virtual machines running linux (I ain't paying for Windows VM, lol).
+On those linux VMs, you would need to install Wine and League of Legends
+and automatically log into the VMs with a level 1 account specifically
+created to download replay files. Fortunately, the LCU API also
+provides a call which allows someone to automatially log in without
+using the League clients UI which allows the process to be automated
+without using something unreliable such as PyAutoGUI.
+
 ### Issues and Solutions Regarding ROFL Replays
 
 The key issue regarding rofl replays are that the encr
@@ -318,6 +337,9 @@ The key issue regarding rofl replays are that the encr
 
 
 ## References
+
+### DevOps Automation
+- [GitHub: PyAutoGUI](https://github.com/asweigart/pyautogui)
 
 ### Cloud Pricing
 - [Google Cloud Platform (GCP): Pricing](https://cloud.google.com/storage/pricing)
