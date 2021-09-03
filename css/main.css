@@ -47,24 +47,21 @@ body {
   letter-spacing: -.5px;
 }
 
-@media screen and (max-width: 600px) {
-.site-nav .menu-icon {
-    display: block;
-    font-size: 24px;
-    color: #505050;
-    float: right;
-    width: 36px;
-    text-align: center;
-    line-height: 36px;
-}
-
 .site-nav .menu-icon svg { width: 18px; height: 16px; }
-}
+
 
 /* site experimental */
-.post {
+.posts {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.post {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  width: 33%;
 }
 
 .post-date {
@@ -88,4 +85,19 @@ body {
 
 .wrap {
   padding: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  .post {
+    width: 100%;
+  }
+  .site-nav .menu-icon {
+    display: block;
+    font-size: 24px;
+    color: #505050;
+    float: right;
+    width: 36px;
+    text-align: center;
+    line-height: 36px;
+  }
 }
