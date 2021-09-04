@@ -242,6 +242,39 @@ Examples include:
    game time, turret difference, epic monsters killed (League equivalent of baron and
    dragon) and others.
 
+### Data Preprocessing
+
+One major contribution of the paper is how it divides events which happen within expert
+replays into scenes. The paper also uses a host of other techniques to get the most out
+of expert replays, and fortunately for us, these techniques are generic across MOBA games,
+and RTS games in general.
+
+#### Scene Identification
+
+Scene identification classifies a scene based on the most prominent actions which a player
+was performing within a certain timeframe. Unfortunately, the paper is vague on how this
+process is actually performed. However, the paper describes the method is enough detail
+to be re-implemented, if we adapt it for League of Legends. The main scenes which the paper
+identifies as being relevant, to Honor of Kings at least, are listed below:
+
+- **Push-turret:** Attack enemy turret
+- **Combat:** Find an enemy hero and prepare to fight them
+- **Lane-farm:** Kill minions to get gold and experience
+- **Jungle-farm:** Kill jungle camps to gain gold and experience
+- **Return:** Go back before dying / to defend the base
+- **Navigation:** Go to another region for macro-strategy intents
+
+
+#### Data Tuning Under Each Scene
+
+Depending on the scene, certain types of action intents should occur more (e.g. during
+Navigation, moving action intent should be the occur the most, whereas when attacking
+lane farm, attacking action intent should occur more).
+
+Certain situations involve more than one scene. For example push-turret can be combat
+and push-turret scenes combined. Priority under that situation is the order of scenes
+under the scene identification section above.
+
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
