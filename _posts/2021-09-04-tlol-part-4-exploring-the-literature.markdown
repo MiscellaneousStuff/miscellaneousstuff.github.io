@@ -359,17 +359,20 @@ accelerating so they are covering more distance per timestep.
 
 #### Attack Sample Normalization
 
-One interesting issue the authors of the paper encountered was to do with attack sample,
-or more specifically, `Combat` scene sampling. One important decision agents need to make
-when they're in game is which targets to select during `Combat` and `Push-Turret` scenes.
-In the raw dataset, examples of target selextion for attacking are imbalanced between
+One interesting issue the authors of the paper encountered was to do with `Combat` scene 
+sampling. One important decision agents need to make
+when they're in game, is which targets to select during `Combat` and `Push-Turret` scenes.
+In the raw dataset, examples of target selection for attacking are imbalanced between
 low-damage high-health (LDHH) heroes and high-damage low-health (HDLH) heroes. There are
-far more examples of attacking an LDHH hero than attacking a HDLH hero due to their
-different HP properties. Without downsampling, the model learns to prefer attacking LDHH
-heroes. However, the priority target in that situation is normally the HDLH hero, which
+far more examples of attacking a LDHH hero than attacking a HDLH hero due to players
+having relatively high HP in most situations. Without downsampling, the model learns to 
+prefer attacking LDHH
+heroes. However, the priority target in `Combat` scenes is normally the HDLH hero, which
 is the key to winning that local teamfight. The paper rectifies this issue by proposing a
 hero-attack sampling method, termed attack sample normalization, which samples the same
-number of examples for one whole attack process for all heroes.
+number of examples for one whole attack process for all heroes (i.e. same number of
+examples of LDHH and HDLH attack priorities so the agents are provided with a balanced
+number of both situations rather than heavily learning to do one over another).
 
 ### Training
 
