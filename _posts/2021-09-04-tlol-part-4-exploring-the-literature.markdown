@@ -207,6 +207,19 @@ seris of attacks happen. For instance, if the next global intent region is at
 position 1 x 1, that would be equal to Y * N + X := 1 * 24 + 1 = 26 so the label
 would be 26 out of 576.
 
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/11.10-global_regions (scatter).png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+The image above shows an example of a League of Legends game represented as a scatter
+plot. Each point on the map represents a location where a player has been at some
+point in the game (with the plots being color coded for 1 of the 10 champions
+in the game). The cells represent a 32 x 32 grid which compromise the global
+intent labels, of which there are 1,024.
+
 The next level of intent labels are local intent labels. The local intent label
 is short term planning in local combat (e.g., hiding in a bush, retreating to a turret,
 waiting for target heroes before attacking a target).
