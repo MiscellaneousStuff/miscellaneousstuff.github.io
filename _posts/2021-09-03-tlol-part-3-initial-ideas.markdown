@@ -355,13 +355,17 @@ then stores the replay in cloud storage.
 At this stage, we have an outline of a system, albeit quite a complicated system,
 which is able to automatically download a large number of League rofl replays.
 However, how do we actually go about getting information which is granular enough
-to train a deep learning agent capable of playing the game competently? We've
+to train a deep learning agent capable of playing League of Legends to a human-level?
+
+We've
 already explained why it's not possible to reverse-engineer the rofl file format
 as the encryption used to protect the data is changed every patch. This means that
 trying to use the packet data stored within the rofl files directly would result in
 an "enigma-like" effort where you would be fighting Riot Games encryption every patch,
 and any major change to their encryption scheme would greatly increase the amount of time
 required to adjust the system.
+
+The specific issues relating to this are illustrated below, with possible solutions:
 
 <!--
 Talk about this in the part 4 post, the point which was going to be made here is how
@@ -380,17 +384,16 @@ IP addresses and how just using an real account through the client on linux is e
 
 With this in mind, the method used to extract low-level, granular data ranging from
 the position of objects, the actions taken by players, gold and xp earned per second and
-whatever other granular spatial and temporal data we could possible want.
+whatever other granular spatial and temporal data we could possibly want needs to be
+accessible to create this system.
 
 One interesting solution could be to re-purpose a tool which was originally designed
-for cheating to our use. The LViewLoL project which uses a C++ console application
-as a gateway between a live running League game and provides an API to take observations
+for cheating, to our use. The LViewLoL project which uses a C++ console application
+to provide access to a live running League game and provides an API to take observations
 from a game as it's running and issue actions as the user to the game.
 
-This also has the added benefit of allowing as to load a replay file, regardless of which
-patch it was played on as previous versions of clients can be saved and used to play old
-replays (i.e. replays which aren't on the current patch). We can then use LViewLoL for
-that patch version to process the replay files. LViewLol was briefly touched upon within
+This also has the added benefit of allowing as to load a replay file along with a version of 
+LViewLoL compiled for that League patch version to process the replay file. LViewLol was briefly touched upon within
 [part 1](https://github.com/orkido/LViewLoL) of this series and will be explored further now.
 
 #### Solution: LViewLoL Scripting Platform
