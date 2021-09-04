@@ -302,10 +302,10 @@ training between scenes.
 #### Move Sample Enhancement
 
 Movement samples are taken by taking the different between a current and future frame,
-i.e., after N frames, depending on whether the hero is in combat. In a Combat scene,
+i.e., after N frames, depending on whether the hero is in combat. In a `Combat` scene,
 N is set as a fine-grained step as every move is important during a fight. In other scenes,
 it can be a coarse-grained step, since the player usually executes meaningless moves.
-In Honor of Kings, N = 5 (0.33 seconds) during Combat, and N = 15 (1 second) for non-combat
+In Honor of Kings, N = 5 (0.33 seconds) during `Combat`, and N = 15 (1 second) for non-combat
 scenes. To put this into concrete terms, the below image shows the movement vectors within
 League of Legends at the start of the game when players are leaving the their spawn location.
 
@@ -321,6 +321,23 @@ zoomed into the red side spawn location. As you can see from the image above, th
 have a high magnitude as players are given the "home-base" buff at the start of the game
 which is a temporary increase in movement speed at the start of the game which allows
 players move to their respective locations to get the game started quickly.
+
+#### Attack Sample Normalization
+
+One interesting issue the authors of the paper encountered was to do with attack sample,
+or more specifically, `Combat` scene sampling. One important decision agents need to make
+when they're in game is which targets to select during `Combat` and `Push-Turret` scenes.
+In the raw dataset, examples of target selextion for attacking are imbalanced between
+low-damage high-health (LDHH) heroes and high-damage low-health (HDLH) heroes. There are
+far more examples of attacking an LDHH hero than attacking a HDLH hero due to their
+different HP properties. Without downsampling, the model learns to prefer attacking LDHH
+heroes. However, the priority target in that situation is normally the HDLH hero, which
+is the key to winning that local teamfight. The paper rectifies this issue by proposing a
+hero-attack sampling method, termed attack sample normalization, which samples the same
+number of examples for one whole attack process for all heroes.
+
+<!-- Fill this in with a visual example of LDHH and HDLH. Refer to OpenAI blog and their
+target selection interactive figure -->
 
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
