@@ -42,7 +42,6 @@ extracting information from the game engine while the replay is playing.
 The basis of this idea is that the replay system allows us to playback replays
 at faster than real-time speed.
 
-
 Also the scripting engine, in this case the LViewLoL project,
 is regularly updated to work with current versions of the game as it only works
 with the unencrypted data stored in memory while a League of Legends process is
@@ -82,6 +81,13 @@ stage are the following:
     For a comprehensive list of what information is available at each timestep,
     refer to [their GitHub page](https://github.com/orkido/LViewLoL/blob/dd699d52be34c36ecf65117a1c27463e91d60334/LView/PyStructs.h) which lists all data structures available to
     a python script.
+
+For the initial system, I will be developing the system using Windows as the
+LViewLoL program is designed to be compiled using Visual Studio.
+
+I have already developed a small port of the
+LViewLoL system which works with Linux and League of Legends working in Linux under Wine
+and it shows promising performance with the [process_vm_readv()](https://man7.org/linux/man-pages/man2/process_vm_readv.2.html) system call suggested in [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html).
 
 ### Method
 
