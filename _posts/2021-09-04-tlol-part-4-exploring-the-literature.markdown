@@ -138,7 +138,31 @@ The paper uses two main types of features throughout the system. The first type
 of feature which the paper uses is a vector feature. Vector features are used to
 store the game states such as number of kills, creep score, XP, and other scalar
 features at each timestep. The other type of feature which is used are image-like
-features which are used for representing map like images.
+features which are used for representing map like images. The map like images
+are 2d images from the game such as the minimap and other spatial features.
+
+The paper also uses labels in different ways. The first type of label are "intent
+labels" which are used to infer what human expert players were attempting to do
+within the replay files. These intent labels are multi-viewed, as in they are
+separated hierarchically, and there are separate intent labels for global and local
+intents.
+
+The next type of label are action labels which are arranged in a hierarchical
+multiclass structure which contains two parts.
+
+1. **Action to take at a high level**
+
+   This is the overall action to take at a high level. Examples would include,
+   movement action, attack action, spell action, and other general high level
+   actions. This is the level 1 prediction.
+
+2. **Discretized action parameters**
+
+   The next level is the level 2 prediction which are the parameters for the
+   level 1 action prediction. This changes dependent on the level 1 action
+   prediction. For example, if the level 1 prediction is movement, then the
+   level 2 prediction are the x and y offset parameters. If the action was
+   an autoattack instead, then the parameter would be the unit to attack.
 
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
