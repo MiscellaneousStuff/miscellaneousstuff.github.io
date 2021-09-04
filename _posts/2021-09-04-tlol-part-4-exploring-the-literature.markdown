@@ -17,11 +17,12 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 
 This post reviews successful MOBA playing AI agents within the literature, what they done
 well, what could have done better and then concludes with what can be used in creating
-a human-level League of Legends AI. Reviewing current literature is useful as it allows
+a human-level League of Legends AI.
+
+Reviewing current literature is useful as it allows
 us to utilise a variety of methods, with detailed explanations of each method, for
 creating MOBA playing AI systems. This post won't explore the OpenAI Five (Dota 2),
-AlphaStar
-(Starcraft 2), MuZero (Deepmind general game playing AI) or other related papers.
+AlphaStar (Starcraft 2), MuZero (Deepmind general game playing AI) or other related papers.
 That will be explored in more detail later on if it's relevant to the project later.
 
 ## Exploring the Literature
@@ -393,6 +394,29 @@ to an Nvidia GTX 1080 Ti), are used to train a hero for around 36 hours of wall 
 time. The Adam optimiser is used to train the network with an initial learning rate set
 to 0.0001 (10e-5) and the batch size is set to 256.
 
+For the purpose of building the human-level League AI, this shows that the hardware
+requirements of using a purely supervised learning approach is far more viable than
+using a comparable distributed, online reinforcement learning approach similar to
+the one used by AlphaStar or OpenAI Five which used 100,000s of CPUs and 100s of GPUs
+for months at a time. In the case of OpenAI Five, the training cost per day was estimated
+to be $25,000 dollars a day which is a very large amount of money. However, what this
+paper has showed is that it is not necessary to spend this amount of money on training
+an agent if your goal is only to achieve human level performance. The final performance
+of the JueWu-SL system was that is managed to beat the Honor of Kings equivalent of
+Challenger level players using a purely supervised learning approach.
+
+### Summary
+
+This shows that intelligently choosing your dataset can massively improve the efficiency
+of your learning process. Compare this to the bootstrap training used by AlphaStar, which
+requried 971,000 replays to achieve a top 16% performance in Starcraft 2. Whereas this
+system used 120,000 replays per hero and achieved superhuman performance. Although
+Honor of Kings and Starcraft 2 are not directly comparable, this is relevant to this
+project as Honor of Kings and League of Legends are highly comparable games. This would
+suggest, at least in theory, that training a League of Legends agent to a human level
+would only require 100,000s of replays to achieve a super human level performance, and that,
+if the goal is only to achieve human-level performance, it may take far less games than that.
+
 <!-- Fill this in with a visual example of LDHH and HDLH. Refer to OpenAI blog and their
 target selection interactive figure -->
 
@@ -402,7 +426,7 @@ target selection interactive figure -->
 
 ## Summary
 
-- Summarise post
+
 
 ## References
 
