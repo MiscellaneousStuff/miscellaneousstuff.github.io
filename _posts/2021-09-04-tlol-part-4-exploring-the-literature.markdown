@@ -298,6 +298,30 @@ An important thing to note here is that, scenes are only segmented during traini
 during inference, the only thing the model is provided with is an observation at timestep
 t with the same information a human would be provided with. There is no difference in
 training between scenes.
+
+#### Move Sample Enhancement
+
+Movement samples are taken by taking the different between a current and future frame,
+i.e., after N frames, depending on whether the hero is in combat. In a Combat scene,
+N is set as a fine-grained step as every move is important during a fight. In other scenes,
+it can be a coarse-grained step, since the player usually executes meaningless moves.
+In Honor of Kings, N = 5 (0.33 seconds) during Combat, and N = 15 (1 second) for non-combat
+scenes. To put this into concrete terms, the below image shows the movement vectors within
+League of Legends at the start of the game when players are leaving the their spawn location.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/11.10-local_intent_region (quiver) (red-side-spawn).png.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+The image above shows the movement vectors from the start of a League of Legends game,
+zoomed into the red side spawn location. As you can see from the image above, the vectors
+have a high magnitude as players are given the "home-base" buff at the start of the game
+which is a temporary increase in movement speed at the start of the game which allows
+players move to their respective locations to get the game started quickly.
+
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
