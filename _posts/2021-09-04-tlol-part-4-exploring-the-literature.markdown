@@ -41,6 +41,9 @@ However, they have also explored other techniques such as using purely supervise
 learning approaches on human expert data, hierarchical learning approaches and others
 which are useful for building a human-level League of Legends AI.
 
+The rest of this article will cover key papers which have covered creating human level
+MOBA playing AI systems.
+
 <!--
 ### Towards Playing Full MOBA Games with Deep Reinforcement Learning
 
@@ -82,9 +85,9 @@ each other don't have an advantage over each other. Having drafts with even win-
 are the most stable training regime for policy improvement.
 -->
 
-### Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings
+## Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings
 
-#### Overview
+### Overview
 
 This paper is by far the most relevant to this project. The key contribution
 of this paper is to use a supervised learning approach to classify observations
@@ -114,7 +117,7 @@ and hierarchical action labels are used for modeling micromanagement.
 
 <!-- put in example image here of the macro and micro hierarchical labelling-->
 
-#### Main Contributions
+### Main Contributions
 
 The main contributions of the paper, and the reason why it's so useful to this
 project, are the following two reasons.
@@ -132,7 +135,7 @@ project, are the following two reasons.
   - This paper gives context for the approach taken for this project
     (or at least the initial approach, we'll see...)
 
-#### Method
+### Method
 
 The paper uses two main types of features throughout the system. The first type
 of feature which the paper uses is a vector feature. Vector features are used to
