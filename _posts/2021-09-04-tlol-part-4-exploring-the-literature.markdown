@@ -128,14 +128,18 @@ project, are the following two reasons.
 2. Supervised learning method performs comparatively against High King (roughly
    Grandmaster or Challenger in League of Legends).
 
+<!--
 - JueWu-SL
   - Replay Numbers (120,000 & 100 million scene/step samples -> 90/10 split, etc.)
   - Pure supervised learning approach
   - Achieved super human performance in Honor of Kings (albeit, simpler than LoL)
   - This paper gives context for the approach taken for this project
     (or at least the initial approach, we'll see...)
+-->
 
 ### Method
+
+#### Overview
 
 The paper uses two main types of features throughout the system. The first type
 of feature which the paper uses is a vector feature. Vector features are used to
@@ -170,6 +174,26 @@ multiclass structure which contains two parts.
 The action labels are the main outputs for the model and the intent labels
 are used as an auxiliary task during training to improve the model performance.
 The intent label is not used as an output during inference.
+
+#### Multiview Intents for Macro-strategy
+
+The paper describes ground-truth regions which are regions where players
+conduct their next attack.
+
+However, one issue is that the occasional attacking behaviour in a given
+spot might not be the goal of hte player, such as encoutering an enemy
+while moving somewhere.
+
+Therefore, only regions with continuous attacking behaviours are considered
+and so multi-view intent labels, including global intent and local intent,
+are used to model macro-strategy.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/juewu_sl/multiview_intent_label_design.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
 
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
