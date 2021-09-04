@@ -174,7 +174,7 @@ file.
 #### General Binary Format
 
 The second part of the replay file is split into keyframes and chunks. A keyframe contains
-a set of packets which will recreate a League of Legends fame state at the time specified
+a set of packets which will recreate a League of Legends game state at the time specified
 within the keyframe. A chunk contains the server to client (S2C) packets of the game
 during the timespan of a single chunk. Each keyframe and chunk is a sequence of blocks with
 each block starting with a marker byte which determines its structure. A block encapsulates
@@ -188,7 +188,8 @@ also encrypted. The encryption scheme used to encrypt the game packets is stored
 within the game *.exe client itself. This can be seen because it's possible to view 
 League of Legends replays within the client when offline, presumably this is to simplify
 the replay system and because it reduces the traffic and processing power which Riot Games
-needs to dedicate to this service to only providing the replay files.
+needs to dedicate to this service as they only need to providea service to download the 
+replay files.
 
 However, if someone was to create a method of decrypting rofl replay files, it would make
 it very easy to process these replay files as the raw packet data would be available for
@@ -217,7 +218,10 @@ download a large number of replay files. The main way of downloading replay file
 is to sign-in to the game client, and manually locate files (which must be played
 on the same patch) within the target players match history, and click on the download
 button. Downloading the number of replay files required to train a machine learning
-system in this way would be very time consuming and cumbersome.
+system in this way would be very time consuming and cumbersome. Also, the League
+client only displays the last 20 matches a player played in their match history.
+This means even if a player has played more than 20 games during that patch
+we would not be able to download all of their replay files for that patch.
 
 <div style="text-align: center;">
    <img
@@ -230,7 +234,7 @@ Fortunately when
 Riot Games updated the League of Legends client in 2017 with their updated
 League Client Update (LCU), the new client also included a new API to directly
 interface with the client. This allows us to automatically download a large
-number of replay files.
+number of replay files and bypass the 20 game match history limit.
 
 <!--
 This is implemented as a localhost server which provides
