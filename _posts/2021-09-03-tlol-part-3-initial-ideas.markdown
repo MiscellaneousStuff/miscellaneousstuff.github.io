@@ -16,9 +16,9 @@ leagueAiYoutubeId: yVUKi63WfDA
 
 ## Introduction
 
-This post explores how to extract acquire data from League of Legends,
+This post explores how to acquire replay data in League of Legends,
 the League of Legends rofl replay format, and how to extract granular
-information from a replay file using a method which allevates the
+information from a replay file using a method which alleviates the
 encryption of the replay files in a way which is robust from patch to
 patch, as the game is updated once every two weeks.
 
@@ -26,7 +26,7 @@ patch, as the game is updated once every two weeks.
 
 ### Acquiring Data
 
-The previous posts highlighted the main difficulties with creating human level game
+The previous posts highlighted the main difficulties with creating human-level game
 playing AIs. The central issue with all of these systems was having enough high
 quality data to learn from. It is highly recommended to read [part 1](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-human-level-in-league-of-legends-using-deep-learning.html)
 and [part 2](https://miscellaneousstuff.github.io/project/2021/09/02/tlol-human-level-in-league-of-legends-using-deep-learning.html)
@@ -78,12 +78,12 @@ There are two main ways of acquiring data for this task:
    An alternative approach would be to use an offline reinforcement learning
    approach whereby an agent would also be provided with an in-game observation,
    the same as above. However, the agent would also be provided with a reward
-   so the agent is provided with trajectories (state, action, reward) or
+   so the agent is provided with trajectories (state, action, reward), or
    (s, a, r) tuples (where the state is the observation). This constrasts
    with the supervised learning approach where the agent is only provided
-   with the observation and the action and is only trained to repeat the 
+   with the observation and the action, and is only trained to repeat the 
    action. The benefit of using offline reinforcement learning, or in this 
-   case, offline inverse reinforcement learning (offline IRL), is that the
+   case offline inverse reinforcement learning (offline IRL), is that the
    agent can learn to infer what was good about what the human experts did,
    and then copy that. But it is also possible for the agents to learn how
    to perform better than the examples provided as they are learning
@@ -95,7 +95,7 @@ Out of the two data acquisition methods listed above, the most feasible
 one is to use human replay data. The main reasons are that the reason
 that previous game playing AI approaches have used massively
 scaled up, distributed and parallel simulations of the target games are
-that this projects were undertaken by large AI research organisations which
+that these projects were undertaken by large AI research organisations which
 had research goals in mind.
 
 For instance, the OpenAI Five system created by
@@ -124,15 +124,16 @@ achieve superhuman performance as they learn for themselves how to play games.
 For the purpose of this project, I do not have the budget nor the 
 resources or the support of Riot Games to attempt such a massive undertaking.
 So for these reasons, I have decided on using human replay data for the purposes
-of cost, the fact that human replay data alone is sufficient for the task,
-scale and infrastructure and simplicity.
+of cost, the fact that human replay data alone is likely sufficient for the task,
+the scale required to implement a massive reinforcement learning pipeline and
+simplicity.
 
 ### League of Legends Replays
 
 League of Legends replays are stored as files with a ROFL (yes, really lol) file
 format extension. The files are prepended with the region the game was played 
 and the middle is the game id. A typical league of legends replay file looks
-something like `EUW1-5237530168.rofl`. The replay file is split into two main parts,
+something like `EUW1-5237530168.rofl`. The replay file is split into two main important parts,
 with the first part containing metadata about the game in a JSON format, and the second
 and main part of the file are the actual low level contents of the game themselves,
 such as the position and stats of every game object at a point in time, the actions
@@ -142,20 +143,20 @@ This second part of the replay file is what is interesting from a machine learni
 perspective. Riot Games doesn't provide official documentation as to how this
 part of the file works, but unofficial attempts to understand the format overtime
 shed some light on the format. The following two sections are taken from unofficial
-sources from around the internet which have attempted to understand the ROFL file format.
+sources from around the internet, which have attempted to decipher the ROFL file format.
 
 #### Replay Metadata
 
 The first relevant part of the replay file is a large JSON structure which contains metadata
 about the replay. It contains many high level aggregated features such as damage dealt per
-champion, champions and player ids within the game, number of objectives taken, gold acquired
+champion, champions and player IDs within the game, number of objectives taken, gold acquired
 over time, xp (experience) acquired over time and many other aggregated statistics.
 
 Although each replay file contains a lot of high level, and potentially quite useful 
-information, the data isn't granular or appropriate for creating an AI system to learn from.
-The problem with the data is that the temporal resolution, in other words the amount of each
-data point records, is too large. Each data point within the metadata is at most, every
-60 seconds. This isn't sufficient to learn from for an AI agent.
+information, the data isn't granular enough for a game playing AI system to learn from.
+The problem with the data is that the temporal resolution is too low. Each data point within 
+the metadata is recorded at most, every 60 seconds. This isn't high resolution enough for
+an agent to learn how to make decisions in real-time.
 
 This means that we need to investigate how to extract data from the second part of the
 replay file.
@@ -166,6 +167,9 @@ replay file.
       style="width: 100%; max-width: 640px;"
    />
 </div>
+
+The image above is an example of the data contained within the metadata of a rofl replay
+file.
 
 #### General Binary Format
 
