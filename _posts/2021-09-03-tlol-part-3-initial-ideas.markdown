@@ -284,7 +284,7 @@ from one account at once. When I tried to download 1000s of games at once,
 I was throttled to around 1000 games an hour. The average rofl replay
 file within that dataset (which consisted of around 3,700 NA rofl replay files
 during patch 11.10), was 13MB. That means 1,000 replays take up around 13GB
-of data. I used a 40MB/sec (or 350Mbit/s) connection so I certainly had
+of data. I used a 40MB/sec (or 350Mbit/s) download connection so I certainly had
 more bandwidth than 13GB/hr. This means that Riot intentionally throttles
 the download of rofl files from their servers. More on this later on.
 
@@ -305,10 +305,11 @@ leaves two important considerations going forward, download throughput
 and storage.
 
 Download throughput is the main issue as downloading just 100,000
-replays would take 100 hours with that throughput. One obvious way
+replays would take 1,000 hours, or ~42 days, with that throughput. One obvious way
 to alleviate this issue would be to distribute the downloading of
 replay files across multiple virtual machines which are logged into
-different accounts across different IP addresses.
+different accounts across different IP addresses. This could be relatively
+easily implemented using cloud services.
 
 The other issue is the storage of all of these files. I personally
 don't have the storage space to store 1.3TB worth of replay files
@@ -317,9 +318,9 @@ the cost of standard storage per GB per month is $0.02 (as of 03/09/2021),
 which means that storing just 100,000 replays would cost 1,300GB * $0.02
 which is $26 dollars a month. Standard storage would only be required when
 analysing replay files or their data processed form. When the system
-has matured and we only need to store the data longer term to be fed
-into a working MLOps training system, we can use nearline storage which
-costs half as much which is $13 dollars a month.
+has matured and we only need to access the data a few times a month
+we can use nearline storage which costs half as much which is $13
+dollars a month.
 
 Different storage providers may be a better choice depending on how
 the project goes, however, I would like to take advantage of Google
