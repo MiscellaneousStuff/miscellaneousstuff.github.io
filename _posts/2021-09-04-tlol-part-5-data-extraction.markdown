@@ -62,7 +62,7 @@ only need to use Python for our entire system and we can use existing data scien
 tools either, as we are extracting information from the game, or afterwards if
 we `pickle` the data we're extracting.
 
-As summarised at the end of [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html), the two main components we need to build at this
+As summarised at the end of [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html), the two main components we need to consider at this
 stage are the following:
 
 1. **Automated Replay Downloader**
@@ -80,8 +80,8 @@ stage are the following:
     game is running which is convenient for us. Then, when the replay starts,
     the python script would be provided with observations as the game is running.
     For a comprehensive list of what information is available at each timestep,
-    refer to [their GitHub page](https://github.com/orkido/LViewLoL/blob/dd699d52be34c36ecf65117a1c27463e91d60334/LView/PyStructs.h) which lists all data structures available to
-    a python script.
+    refer to [their GitHub page](https://github.com/orkido/LViewLoL/blob/dd699d52be34c36ecf65117a1c27463e91d60334/LView/PyStructs.h) (as of 04/09/2021)
+    which lists all data structures available to a python script.
 
 For the initial system, I will be developing the system using Windows as the
 LViewLoL program is designed to be compiled using Visual Studio.
@@ -90,11 +90,13 @@ I have already developed a small port of the
 LViewLoL system which works with Linux and League of Legends working in Linux under Wine
 and it shows promising performance with the [process_vm_readv()](https://man7.org/linux/man-pages/man2/process_vm_readv.2.html) system call suggested in [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html).
 
+Just for the initial system, I will not be implementing the `Automated Replay Downloader`
+in this post as it is quite involved and doesn't really help us build an understanding
+of replay files which is crucial for part 6. In part 7 we will go over how to build
+the `Automated Replay Downloader` in full and in a way which fulfills all of the complex
+requirements which are needed to build it. Refer to [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html) for more details.
+
 ### Method
-
-#### Automated Replay Downloader
-
-
 
 #### Automated Replay Extractor
 
@@ -108,7 +110,8 @@ and it shows promising performance with the [process_vm_readv()](https://man7.or
 
 ### Actual Replay Files Used
 
-Be warned, the full unextracted size of these files is around 1GB.
+Be warned, the full unextracted size of these files is around 1GB because of the
+very inefficient JSON encoding I used for each observation.
 - [Patch 11.9 EUW Challenger](https://drive.google.com/file/d/1fMBlnPcbKWhiQG1tTU4c5h4JEQ6wobmk/view?usp=sharing)
 - [Patch 11.10 EUW Challenger](https://drive.google.com/file/d/1wIwthLt7vIjibR1VBJTWZ2Zkst9wsSv0/view?usp=sharing)
 
