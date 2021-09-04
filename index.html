@@ -14,7 +14,7 @@ layout: default
                         <p class="post-date">{{ post.date | date: "%b %-d, %Y" }}</p>
                         <p class="post-title">{{ post.title }}</p>
                         {% for tag in post.tags %}
-                            <span>{{ tag }}</span>
+                            <span class="post-tag">{{ tag }}</span>
                         {% endfor %}
                         <p class="post-excerpt">{{ post.excerpt }}</p>
                     </div>

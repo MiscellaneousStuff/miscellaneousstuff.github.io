@@ -70,6 +70,14 @@ body {
   justify-content: center;
 }
 
+.post-tag {
+  font-size: 0.8rem;
+  color: white;
+  background: lightblue;
+  border-radius: 1rem;
+  padding: 0.2rem;
+}
+
 .post_container {
   width: 33%;
   align-self: stretch;
