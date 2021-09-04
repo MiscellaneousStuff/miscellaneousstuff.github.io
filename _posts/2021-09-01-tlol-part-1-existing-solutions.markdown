@@ -159,36 +159,46 @@ same reason this project will not use it as well.
 
 ### Behavioural
 Aside from the Deep Learning Bot for League of Legends, all of the existing systems use
-rule based behaviour to control bots. As for the Deep Learning Bot paper, the best
+rule based behaviour to their respective bots. As for the Deep Learning Bot paper, the best
 performing method within the paper uses a combination of PPO (Proximal Policy Optimization)
 and an LSTM network for the policy model to control the bot and the bot is able to achieve
 a first blood on an enemy opponent while keeping it's distance. This represents the first
 successful example of reinforcement learning applied to League of Legends. However, this
 method is limited as the number of samples of the environment which can be collected using
 this method is limited by two main factors:
+
 1. **Number of Simulations of the environment**
 
    Currently, Riot Games (the developers of League of Legends) provide no API for scripts or
-   bots (unlike the Dota Bot Scripting API from Valve or pysc2 module released by DeepMind
+   bots (unlike the Dota Bot Scripting API from Valve or PySC2 module released by Deepmind
    in conjunction with Blizzard). This means that not only is it not easy to quickly start
    games at the velocity requried to get PPO to work, it's also not easy to access raw
    observational information from the game or input actions into the game without the risk
-   of the associated League of Legends account being banned for scripting.
+   of the associated League of Legends account being banned for scripting. This is a problem
+   for this project if we want to train our system using reinforcement learning because
+   current reinforcement learning algorithsm (particularly online reinforcement algorithms)
+   are relatively sample inefficient and require a lot of experience before they start
+   converging towards human-level performance. [AlphaStar](https://www.nature.com/articles/s41586-019-1724-z)], [Open AI Five](https://cdn.openai.com/dota-2.pdf) and other systems
+   are good evidence for this.
+
 2. **Current Observation Methods**
 
-   Current observation methods used for League of Legends AI's rely on using real-time
+   Current observation (i.e. perception) methods used for League of Legends AI's rely on using real-time
    object recognition models such as YOLOv3 to detect relevant game objects. The limitation
    of this method for creating a human level League of Legends AI is that, firstly the 
    method is limited based on the performance of the object recognition systems accuracy
-   and secondly it is limited based on the fps of the system. This limits it's applicability
+   (how reliably it detects game objects) and secondly it is limited based on the fps (how quickly it can detect objects) of the system. This limits it's applicability
    as a powerful GPU would be required to run the object recognition system in real time and
    and to simulatenously run the agent model.
 
 
 ## Summary
 In summary, the primary issue is the lack of API support for creating an machine learning agent from Riot Games. Specifically, there is no API for conveniently capturing
-observations from the game engine, inputting commands, running many games at large scale
-with low friction.
+observations from the game engine, inputting actions into the game and running many games at large scale
+with low friction. This is a problem because the main method used to achieve human-level
+performance in RTS-style games is reinforcement learning. However we will see later in
+the series that it is possible to use other AI training methods to reduce the amount
+of data required to train a human-level League of Legends AI.
 
 
 ## References
