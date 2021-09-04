@@ -378,6 +378,21 @@ extracted for one hero in their experiments.
 Each dataset per hero is randomly split into two subsets: 1) a training set of around 90
 million samples, 2) test set of about 10 million samples.
 
+#### Model Setup
+
+The model uses vector features which contain 2,334 elements (2,180 for ten heroes,
+154 for the players hero). For the local view (refer to the earlier section on local
+intent), the edge length is set to 30,000, 1000 edge length for a hero and a 31x31 grid
+(of 1000,1000 sized local regions).
+The global map is split into 24x24 grids (with an edge length of 113,000 which is the
+length of hte map). The global image-like feature is of shape (56, 24, 24) which results
+in 56 channels.
+
+One model is trained for each hero. For each hero, 16 Nvidia P40s (roughly equivalent
+to an Nvidia GTX 1080 Ti), are used to train a hero for around 36 hours of wall clock
+time. The Adam optimiser is used to train the network with an initial learning rate set
+to 0.0001 (10e-5) and the batch size is set to 256.
+
 <!-- Fill this in with a visual example of LDHH and HDLH. Refer to OpenAI blog and their
 target selection interactive figure -->
 
