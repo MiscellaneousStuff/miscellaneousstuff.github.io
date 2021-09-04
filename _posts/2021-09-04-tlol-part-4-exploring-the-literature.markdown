@@ -336,6 +336,24 @@ is the key to winning that local teamfight. The paper rectifies this issue by pr
 hero-attack sampling method, termed attack sample normalization, which samples the same
 number of examples for one whole attack process for all heroes.
 
+### Training
+
+#### Dataset
+
+The dataset for the system comes from the top 1% of players in Honor of Kings. In
+League of Legends, this would be equivalent to around Diamond III or above (as of
+04/09/2021 in EUW). Each sample from the dataset contains features, labels, label
+weights, frame numbers and so on. The overall performance score of each player after
+the game and and a real-time score of each player during the game based on the player's
+performance is stored. An interesting thing to note here, the paper doesn't describe
+how this process is performed. This is a trend I have noticed in machine learning papers
+in general, but especially from some Chinese research papers where they can be suprisingly
+lacking in detail for crucial details like this. The method used to determine how a player
+is performing in the game may have an important impact on training the system, especially
+for a supervised learning system.
+
+
+
 <!-- Fill this in with a visual example of LDHH and HDLH. Refer to OpenAI blog and their
 target selection interactive figure -->
 
