@@ -472,6 +472,8 @@ concerning the implementation of a lot of the details of these systems.
 
 ## References
 
+<!-- go through everything above, because a lot of things need to be referenced -->
+
 <!--
 ### Game Theory
 - [Wikipedia: Nash Equilibrium](https://en.wikipedia.org/wiki/Nash_equilibrium)
