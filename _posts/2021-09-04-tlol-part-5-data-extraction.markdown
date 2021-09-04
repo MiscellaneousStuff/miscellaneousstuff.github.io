@@ -68,7 +68,8 @@ stage are the following:
 1. **Automated Replay Downloader**
 
     This component is responsible for downloading replays which match a certain
-    criteria.
+    criteria using the League of Legends client through the LCU API which
+    is explained in further detail in [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html).
 
 2. **Automated Replay Extractor**
 
@@ -103,3 +104,4 @@ and it shows promising performance with the [process_vm_readv()](https://man7.or
 - [Scripting: LViewLoL](https://github.com/orkido/LViewLoL)
 - [Forum: UnknownCheats League of Legends](https://www.unknowncheats.me/forum/league-of-legends/)
 - [Software: HexRays IDA Pro](https://hex-rays.com/ida-pro/)
+- [Linux API: process_vm_readv()](https://man7.org/linux/man-pages/man2/process_vm_readv.2.html)
