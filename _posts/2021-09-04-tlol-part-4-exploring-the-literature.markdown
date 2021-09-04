@@ -19,7 +19,8 @@ This post reviews successful MOBA playing AI agents within the literature, what 
 well, what could have done better and then concludes with what can be used in creating
 a human-level League of Legends AI. Reviewing current literature is useful as it allows
 us to utilise a variety of methods, with detailed explanations of each method, for
-creating MOBA playing AI systems. This post won't the OpenAI Five (Dota 2), AlphaStar
+creating MOBA playing AI systems. This post won't explore the OpenAI Five (Dota 2),
+AlphaStar
 (Starcraft 2), MuZero (Deepmind general game playing AI) or other related papers.
 That will be explored in more detail later on if it's relevant to the project later.
 
@@ -352,7 +353,30 @@ lacking in detail for crucial details like this. The method used to determine ho
 is performing in the game may have an important impact on training the system, especially
 for a supervised learning system.
 
+Then, a large number of the retrieved games are filtered where games which are poorly
+performed by players are filtered from the dataset. This is based on the performance score
+calculated in the previous step, where individual performances which are below the top 10%
+of performances are disregarded. These samples are for an individual hero as the models
+are trained to play individual heroes.
 
+Afterwards, the data is preprocessed, shuffled and stored in the HDF5 format, which is
+a common format for storing large files for big data problems.
+
+In the context of our
+human-level League of Legends AI system and the JueWu-SL system, both of these would
+be considered Big Data applications as we're dealing with terabytes of data which means
+we also have to do with storing, processing, querying and training machine learning models
+using this large amount of data.
+Consider that ImageNet, which consists of 14,197,122 images requires roughly 150GB to store,
+which puts into perspective how large game playing AI datasets are. In comparison, our
+system, if it uses on the order of 100,000s of replays, will require terabytes of storage.
+
+After pre-processing the replays, the paper describes how only around 1 out of 20 frames
+are kept from the original dataset. Around 100 million samples from 120,000 games are
+extracted for one hero in their experiments.
+
+Each dataset per hero is randomly split into two subsets: 1) a training set of around 90
+million samples, 2) test set of about 10 million samples.
 
 <!-- Fill this in with a visual example of LDHH and HDLH. Refer to OpenAI blog and their
 target selection interactive figure -->
@@ -374,6 +398,10 @@ target selection interactive figure -->
 
 ### Honor of Kings
 - [Statista: Active Users](https://www.statista.com/statistics/1004699/china-number-of-monthly-active-users-of-tencent-mobile-game-honour-of-kings/#:~:text=Premium%20statistics-,Number%20of%20monthly%20active%20users%20of,Honor%20of%20Kings%202018%2D2019&text=This%20statistic%20shows%20the%20number,dropped%20to%20around%20119%20million)
+
+
+### ImageNet
+- [Devopedia: ImageNet Stats](https://devopedia.org/imagenet)
 
 ### Papers
 
