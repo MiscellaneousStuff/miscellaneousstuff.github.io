@@ -104,8 +104,8 @@ Intelligence" in Chinese and SL refers to supervised learning).
 
 The key principle behind the approach is that decision making within MOBA games
 can be split into two main parts at any timestep, 1) Where to go on the map for
-a single hero, this is known as macro, and 2) what to do where you the hero
-reaches the location, this is known as micro.
+a single hero, this is known as **macro**, and 2) what to do when your hero
+reaches the location, this is known as **micro**.
 
 There are multiple motivations for using a supervised learning approach to create
 a MOBA playing AI. For starters, a policy network can be pre-trained using a
@@ -113,15 +113,15 @@ supervised learning approach which can then be used to train the agent further
 using reinforcement learning. This was crucial to the success of AlphaStar, whereby
 the authors said that using a purely RL approach would have taken the system too
 long to converge on the fundamentals of the game, such as how to utilise units
-to perform basic actions, basic macro and other fundamental skills which Starcraft
-players use to play the game. Further motivation comes from how a pure supervised
+to perform basic actions, basic macro and other fundamental skills.
+Further motivation comes from how a pure supervised
 learning approach <!-- Fill in with reference to Super Smash Bros SL system--> was
 able to produce a human level Super Smash Bro's AI system.
 
 The paper suggests modeling the problem of which action the agent should take next
 as a hierarchical multi-class classification problem. This is done by modelling
 each observation as a multi-view intent label to model the players macro strategy
-and hierarchical action labels are used for modeling micromanagement.
+and hierarchical action labels for modeling micromanagement.
 
 <!-- put in example image here of the macro and micro hierarchical labelling-->
 
