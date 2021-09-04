@@ -20,7 +20,7 @@ This post reviews existing League of Legends AI systems from different games
 which have been released by Riot Games themselves, to bots and scripts which
 have been ever present since the initial release of the game and finally to
 recent academic approaches which have used cutting-edge AI techniques to
-try and achieve human level in League of Legends.
+create AI systems which can play League of Legends.
 
 ## Existing Solutions
 
@@ -28,50 +28,61 @@ try and achieve human level in League of Legends.
 ### League of Legends: Wild Rift inbuilt AI
 The League of Legends mobile spin-off game, Wild Rift, is a game developed in Unity
 and released as a game on the iOS App Store and Google Play Store. Reverse engineering
-the game using Il2CppInspector which converts the Unity source code of the game into an intermediate representation along with the original meta-data allows the function labels, data types and parameters to be recovered.
+the game using [Il2CppInspector](https://github.com/djkaty/Il2CppInspector), which converts the Unity source code of the game into an intermediate representation along with the original meta-data, allows the function labels, data types and parameters to be recovered.
 
 From this, we can determine how the app
 is made and even inject code using the metadata which associates function labels with
 their addresses in the final game binaries (at least for Android). The benefits of this
 for creating a human level League of Legends AI is that it may be possible to reverse
-engineer how the AI, which is included with the game works and even setup a reinforcement
+engineer how the AI, which is included with the game, works and even setup a reinforcement
 learning environment using the mobile game.
 
 This may be possible as the practice tool
 mode of the mobile game is still functional even when the player is disconnected from
-the internet, and the source code is relatively easy to reverse engineer compared to
+the internet. Also the source code is relatively easy to reverse engineer compared to
 the main desktop game.
 
+<div style="text-align: center;">
+   <img
+      src="/assets/wild_rift/wild_rift_replay_source.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+Example source code for the replay system of Wild Rift. Could potentially be used
+to extract information from Wild Rift replays in a future project.
 
 ### League of Legends: Beginner and Intermediate bot
 League of Legends contains two main "co-op vs AI" game modes which stands for
 co-operative vs AI which pins 5 players against a team of five AI controlled players
-which the game server presumably implements (this may be implemented using lua based
+which the game server implements (this may be implemented using Lua based
 on reviewing the games files).
 
 For the purpose of creating a human level League of
 Legends AI, the built-in bots are only useful as a way of testing that any AI agent
-which has been trained can at least beat the built-in bots as this is considered a
-trivial task by any player which is at least within the top 50% of the playerbase
-(which would be roughly Silver I).
+which has been trained can at least beat the built-in bots, as this is considered a
+trivial task for any player which is at least within the top 50% of the playerbase
+(which would be Silver I or above).
 
 
 ### LeagueAI
+
 <div style="text-align: center;">
 {% include youtubePlayer.html id=page.leagueAiYouTubeID %}
 </div>
 
 LeagueAI is a project created by a PhD student from Aalto University in Finland.
 The project uses YOLOv3 to perform object detection from the games RGB output in
-real time for perception by generating a synthetic dataset of game objects of interest
+real time by generating a synthetic dataset of game objects of interest
 including the following:
 - Vayne (a champion within the game)
 - Minions (important NPC characters within the game)
 - etc.
+and then training the system on the synthetic data.
 
 The agent then uses the real-time object recognition model to determine which game
-objects are within it's view and uses a simple neural network to determine which actions
-to perform.
+objects are within it's view, where they are and uses a simple neural network to determine 
+which actions to perform.
 
 
 ### Deep Learning Bot for League of Legends
@@ -84,67 +95,67 @@ The paper describes two main ways of training the agent.
 The first method uses an LSTM model to clone the behaviour of human players whereas
 the second method uses a combination of PPO for training and an LSTM network for the
 policy network (PPO-LSTM).
-Both methods could achieve the set objective which was to achieve first blood, whereas
-in the case of the PPO+LSTM network, an additional reward of keeping a certain distance
-away from enemy objects was also included. The resultant behaviour of the PPO-LSTM network
+Both methods could achieve the set objective which was to achieve first blood against
+an in-built bot. However for the PPO+LSTM network, an additional reward of keeping a
+certain distance away from enemy objects was also included to enable the agent to learn
+the kiting mechanic (attacking an enemy unit and immediately retreating to make
+retaliation more difficult). The resulting behaviour of the PPO-LSTM network
 was superior to the purely behavioural cloning approach as the PPO-LSTM agent's behaviour
-was smoother and the purely LSTM network exhibited strange patterns such as randomly clicking back and forth in the presence of enemies as the agent had not sufficiently mastered the in-game mechanic of kiting (attacking an enemy and immediately moving away
-to make it harder for the enemy to respond after being attacked.)
-
+was smoother than the purely LSTM network.
+Also the LSTM-only network exhibited strange patterns such as randomly clicking back and 
+forth in the presence of enemies as the agent had not sufficiently mastered kiting from
+the human demonstrations.
 
 ### Bots and Scripts
 Since League of Legends was released in 2009, people have developed bots which are
 programs which use hand-crafted rules to play the game. The purpose of these bots
 are usually to level up League of Legends accounts from level 1 to level 30 (to allow
-a player to play in League of Legends Ranked Solo mode which is the competitive ranked
+a player to play in League of Legends Ranked Solo/Duo mode which is the competitive ranked
 mode of the game). Another use of these bots is for scripting which automatically
-performs mechanical actions for the player automatically which allows the player to
-perfectly react to other players using hand-crafted rules. These bots typically
-use either open or closed source scripting platforms.
+performs mechanical actions for the player based on handcrafted rules. These bots typically
+use open or closed source scripting platforms.
 
-One example of an open-source scripting platform is LViewLoL which is an open-source
+One example of an open-source scripting platform is [LViewLoL](https://github.com/orkido/LViewLoL) which is an open-source
 scripting platform which provides an interface to a running League of Legends game
 process running on Windows. The interface runs as a compiled C++ console application
 which runs while the game process is running and provides an interface for Python
 scripts to receive observations from the game and perform actions as the user within
-the game. The scripting interface allows a python script access to observations which
-the user is not able to see on the screen such as the positions of all gameobjects
-on the map (not sure if that includes objects outside of the fog of war at this point
-thought :/).
+the game.
 
-The C++ console application uses a system call called `ReadProcessMemory()` which
+The scripting interface allows a python script access to observations which
+the user is not able to see on the screen such as the positions of all game objects
+on the map.
+
+The C++ console application uses a system call called [ReadProcessMemory()](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory) which
 allows a non-priviliged process to access the virtual memory space of another running
 program to read it's memory. The system call relies on multiple context switches, i.e.
 it needs to switch from user space to kernel space back to user space to transfer the
-memory from the target processes memory space to the requesting process. Because of this
-context switching, this limits the amount of times this process can be called, which can
-be alivated by requesting larger blocks of memory as the call takes roughly the same
-amount of time regardless of the amount of memory requested.
-
+memory from the target processes memory space to the requesting process.
 
 ## Issues with Existing Solutions
 The main issue with the existing solutions for creating a human level league of legends
 agent are both perceptual and behavioural with both issues outlined below:
 
-
 ### Perceptual
 The LeagueAI system solves the perceptual issue by using a mixture of synthetic and
 real image data from within the game to generate a dataset to train YOLOv3, which is
-a real-time object recognition system, to locate gameobjects from the RGB rendering
+a real-time object recognition system, to locate game objects from the RGB output
 of the game. Real-time object recognition has been used for perception in game playing
-AIs across different approaches such as AlphaStar, the original DQN paper and subsequent
-attempts and other game playing AIs.
+AIs across different approaches such as [AlphaStar](https://www.nature.com/articles/s41586-019-1724-z), the original DQN paper and other game playing AIs.
 
 The purpose of using image recognition techniques
 in these systems was to prove that it was possible to use image recognition, specifically
 CNN-based image recognition systems as the perceptual system within a larger game playing
-AI for reinforcement learning systems.
+AI for reinforcement learning systems which allows the systems to be fully trained end-to-end.
 
 However, there is a major downside to this in that
-this isn't as effective as using raw features from the game for perception and it has
-inherently less explainablility. This means that it is harder to debug and diagnose issues,
-and to verify how this specific part of the system is improving.
-
+this isn't as effective as using raw features from the game for perception as the system
+must learn to how to recognise objects within the game, and then based on it's representation
+of the game, which decisions to make. This adds additional complexity to the task which
+is unnecessary if the goal is purely to make a system which can play the game as well as
+possible. It also increases the compute cost of the system. This is the main reason
+that [Open AI Five](https://cdn.openai.com/dota-2.pdf) uses raw features instead of image recognition for perception and is the
+same reason this project will not use it as well.
 
 ### Behavioural
 Aside from the Deep Learning Bot for League of Legends, all of the existing systems use
