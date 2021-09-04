@@ -275,6 +275,29 @@ Certain situations involve more than one scene. For example push-turret can be c
 and push-turret scenes combined. Priority under that situation is the order of scenes
 under the scene identification section above.
 
+#### Data Tuning Across Scenes
+
+After segmenting individual frames into scenes, the data is imbalanced across scenes
+as certain scenes occur more often than others. This is because things like turret
+pushing occur less than combat.
+
+Distributions of scenes are different in terms of roles of the hero. For example, the
+support role is going to use movement to detection opponents and support teammates, therefore,
+most of its game scenes will fall under Navigation (and this is what the authors of
+the paper found during exploration). However, the performance of all scenes are equally
+important as everything that happens in a game is important to winning the game overall.
+To remedy this, the paper uniformly balances scene data by downsampling to enable the
+AI to be adequately trained in every scene. What downsampling means in this context is that,
+some scenes for certain champions may be trained on more than what would be for other 
+champions. For instance, you may train agents trained to play a support champion with
+more navigation scenes. However, if you was training an agent to play a carry role champion
+(e.g. attack damage carry), then you would try it on disproportionately more combat scenes.
+The downsampling ratio is tuned hero-by-hero.
+
+An important thing to note here is that, scenes are only segmented during training,
+during inference, the only thing the model is provided with is an observation at timestep
+t with the same information a human would be provided with. There is no difference in
+training between scenes.
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
