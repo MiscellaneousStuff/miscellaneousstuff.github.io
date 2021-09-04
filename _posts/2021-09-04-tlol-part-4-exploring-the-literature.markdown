@@ -5,7 +5,7 @@ title:  "TLoL: Human level in League of Legends using Deep Learning (Part 4 - Ex
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-04 10:00:00
 categories: [Project]
-tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]
+tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Literature Review"]
 ---
 
 ## Table of Contents
@@ -405,6 +405,9 @@ an agent if your goal is only to achieve human level performance. The final perf
 of the JueWu-SL system was that is managed to beat the Honor of Kings equivalent of
 Challenger level players using a purely supervised learning approach.
 
+For our system, instead of using 16 Nvidia P40s, we can use Google TPUs which have
+a high performance to cost ratio compared to other solutions.
+
 ### Summary
 
 This shows that intelligently choosing your dataset can massively improve the efficiency
@@ -426,7 +429,46 @@ target selection interactive figure -->
 
 ## Summary
 
+In summary, what we've found from the literature is that it's possible to achieve,
+not only human-level performance in MOBAs, but superhuman level performance if you
+carefully calibrate your dataset, model and have enough data (on the order of 100,000s
+of replays). We've also seen that a more modest, 16 Nvidia P40
+GPUs can successfully train a
+single superhuman level MOBA playing AI system, within 36 hours.
 
+However, it is
+important to take results from the literature with a grain of salt as researchers,
+especially within the reinforcement learning community, can often find it difficult
+to reproduce results from papers due to the previously mentioned issue of the lack
+of detail in many machine learning papers.
+
+That being said, if the results are truly reproducible, then the equivalent of 16
+Nvidia P40 GPUs would be a Google TPUv2 which is a third generation ASIC device
+offered by Google on their Google Cloud Platform (GCP). The peak processing power of a 
+TPUv2 is 180 TFlops (teraflops/second).
+
+Fortunately for the supervised learning
+approach to creating a MOBA playing AI, it is possible to have a purely batched
+approach to learning. That means it is possible to take advantage of cheaper,
+interruptible hardware on the cloud which is around 20% of the full price
+of hardware renting. For instance, on GCP, renting a TPUv2 per hour costs
+$1.35 dollars per hour. So if we assume that training our system will take a similar amount
+of time (bearing in mind this is for training on 120,000 replays which for us will
+be just over 1TB of replay data which is massive), will cost $1.35 * 36 = $48.6
+for a full training run and assuming no issues crop up during training.
+
+However, there are solutions around even this issue. For instance, Kaggle offers
+a third generation TPU, or Google TPUv3, which has a mindblogging peak
+performance of 420 TFlops, for free for 9 hours. Considering that the TPUv3
+has ~2.3x higher performance, it might be reasonable to assume that a full
+training run can be reduced from 36 hours to 16 hours. However at this stage,
+this is full speculation, and as with many aspects of machine learning, these
+numbers could be completely out of scope.
+
+The summary of this post is that, there is a lot to be optimistic about, but
+we should be cautiously optimistic as a lot of assumptions made here are currently
+without foundation but come from papers released with a relatively low amount of detail
+concerning the implementation of a lot of the details of these systems.
 
 ## References
 
