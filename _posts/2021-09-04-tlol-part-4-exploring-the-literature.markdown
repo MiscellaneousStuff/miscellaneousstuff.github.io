@@ -151,16 +151,19 @@ project, are the following two reasons:
 
 The paper uses two main types of features throughout the system. The first type
 of feature which the paper uses is a vector feature. Vector features are used to
-store the game states such as number of kills, creep score, XP, and other scalar
+store game state features such as number of kills, creep score, XP, and other scalar
 features at each timestep. The other type of feature which is used are image-like
 features which are used for representing map like images. The map like images
-are 2d images from the game such as the minimap and other spatial features.
+are 2D images from the game such as the minimap, nearby skillshots,
+and other spatial features.
 
-The paper also uses labels in different ways. The first type of label are "intent
+The paper also uses labels in different ways.
+
+The first type of label are "intent
 labels" which are used to infer what human expert players were attempting to do
-within the replay files. These intent labels are multi-viewed, as in they are
-separated hierarchically, and there are separate intent labels for global and local
-intents.
+within the replay files. These intent labels are multi-viewed and
+there are separate intent labels for global and local intents. These labels are
+only used as an auxiliary signal during training to improve performance.
 
 The next type of label are action labels which are arranged in a hierarchical
 multiclass structure which contains two parts.
@@ -177,11 +180,10 @@ multiclass structure which contains two parts.
    level 1 action prediction. This changes dependent on the level 1 action
    prediction. For example, if the level 1 prediction is movement, then the
    level 2 prediction are the x and y offset parameters. If the action was
-   an autoattack instead, then the parameter would be the unit to attack.
+   an auto-attack instead, then the parameter would be the unit to attack.
 
-The action labels are the main outputs for the model and the intent labels
-are used as an auxiliary task during training to improve the model performance.
-The intent label is not used as an output during inference.
+The action labels are the main outputs for the model and the intent label
+is not used as an output during inference.
 
 #### Multiview Intents for Macro-strategy
 
