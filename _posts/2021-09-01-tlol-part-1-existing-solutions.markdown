@@ -44,7 +44,7 @@ the main desktop game.
 
 <div style="text-align: center;">
    <img
-      src="/assets/wild_rift/wild_rift_replay_source.png"
+      src="/assets/wild_rift/wild_rift_replay_source.PNG"
       style="width: 100%; max-width: 640px;"
    />
 </div>
