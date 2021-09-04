@@ -398,43 +398,44 @@ LViewLoL compiled for that League patch version to process the replay file. LVie
 
 #### Solution: LViewLoL Scripting Platform
 
-LViewLoL works by using a system call in Windows called `ReadProcessMemory()` which
+LViewLoL works by using a system call in Windows called [ReadProcessMemory()](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory) which
 allows an unprivileged program to read the memory of another running process. This allows
 the program to copy memory from specific addresses with minimal overhead. However, how
 does someone find the addresses of game objects within the League of Legends game engine?
 The League of Legends game engine is a proprietary game engine developed by Riot Games
-specifically for League of Legends.
+specifically for League of Legends so it's not like trying to access memory locations within
+well known game engines such as Unreal Engine or Unity.
 
 The answer is to use a tool such as IDA Pro, which is a
 popular tool within the cybersecurity and wider hacking and computer science community. The
-purpose of the program is to statically or dynamically analyse Windows (and now other
-platforms and architectures) binaries. This allows hackers to locate the memory addresses
-of objects of interest.
+purpose of the program is to statically or dynamically analyse program binaries. This allows 
+hackers to locate the memory addresses of objects of interest by statically or dynamically
+reverse-engineering the functionality of programs.
 
-The address offsets for League of Legends are calculated based on the base address of the
+The address offsets for League of Legends data structures are calculated based on the base address of the
 program (i.e. the virtual memory base location the program expects to be loaded to) and then
 adding the address offsets to the base address to find the data structures used by the game.
 
 These game objects are then processed by the C++ console application by reading them as the
 game is running, combining them with static data provided freely by Riot Games to find information
-such as champion attack ranges, game object ids and names and other data required to properly
+such as champion attack ranges, game object IDs and names, and other data required to properly
 interpret and integrate the raw information from the game engine. The program then provides this
-information using the C++ boost library's python interface as an interface for any loaded
-python scripts.
+information using the [C++ boost](https://www.boost.org/) library's python interface as an interface for any loaded
+python scripts, which allows a custom script to be attached which can save observations of
+game replays as the replays are being played back.
 
 Our replay extracting system can take advantage of the LViewLoL python integration by directly
-taking advantage of the observations which are provided by the system to directly build a
-representation of the League replays which is appropriate for our machine learning system.
+taking advantage of the observations which are provided by the system to build a
+representation of a League replay which is compatible with our machine learning system.
 This has the added benefit of already being written in Python, which means that the replay
-downloading system and the replay extractor system can both be written in the same language.
+downloading system and the replay extractor system can both be written in Python.
 
 Another benefit of this system is that, as the LViewLoL source code is freely available
 and mainly relies on the `ReadProcessMemory()` system call, it is easy to port to linux as
-the `ReadProcessMemory()` system call can easily be changed with the `process_vm_readv()`.
+the `ReadProcessMemory()` system call can easily be changed with the [process_vm_readv()](https://man7.org/linux/man-pages/man2/process_vm_readv.2.html).
 This also has another unintended benefit, firstly it means that it is easy to port the LViewLoL
-system to linux which is convenient as we can then run the replay extraction process on linux,
-either locally or in the cloud. However, the `process_vm_readv()` system call is also faster
-than `ReadProcessMemory()` as it doesn't require a context switch as it was introduced to have
+system to linux, which is convenient as we can then run the replay extraction process on linux locally or in the cloud. However, the `process_vm_readv()` system call is also faster
+than `ReadProcessMemory()` as it doesn't require a context switch, as it was introduced to have
 virtually no overhead. This means that, not only can we use linux to extract information from
 rofl replays, it might also end up being faster than Windows!
 
@@ -444,27 +445,27 @@ system which is able to cycle through League accounts and different IP addresses
 Riot Games rofl download throttling. Then when this automated replay downloading system is
 implemented, we can use an existing scripting platform on the League Client itself, while
 running the replay at faster than real-time speed. This allows us to extract information at
-high spatial and temporal granularity which is required to train a deep learning agent, in
-a distributed fashion meaning we can gather a lot of data. This can all be implemented on
+high spatial and temporal granularity, which is required to train a deep learning agent.
+This can be done in a distributed fashion, meaning we can gather a lot of data in parallel. This can also all be implemented on
 Linux by taking advantage of Wine for running League on Linux and adjusting LViewLol to
 run on Linux.
 
 This leaves us with two main systems which need to be implemented (without consideration
 for "glue" systems such as servers to distribute requests to cloud instances, cloud
-inter-operation, or other considerations.):
+inter-operation, or other considerations):
 
 1. **Automated Replay Downloader**
    This system would be responsible for dispatching replays matching certain criteria
-   to appropriate clients which would then download replays at a rate of 1,000 games an hour.
+   to appropriate services which would then download replays at a rate of 1,000 games an hour.
    This system would also be responsible for storing the replays in an appropriate storage
    location using cloud storage (due to the large number of replays, the amount of storage
-   required is in the TB range.)
+   required is in the TB range).
 
 2. **Automated Replay Extractor**
-   This system would be responsible for running the replays using the League of Legends client
+   This system would be responsible for replaying the replays using the League of Legends 
+   client
    which corresponds to the replay file, and then running a modified version of the LViewLoL
-   scripting platform for linux at faster than real-time, and then extracting features from
-   the game engine to be used in a deep learning system.
+   scripting platform for linux at faster than real-time. Then the features can be extracted from the game engine, to be used in a deep learning system.
 
 ## References
 
