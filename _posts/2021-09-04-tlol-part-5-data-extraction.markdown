@@ -92,6 +92,12 @@ and it shows promising performance with the [process_vm_readv()](https://man7.or
 
 ### Method
 
+#### Automated Replay Downloader
+
+
+
+#### Automated Replay Extractor
+
 
 
 ## Summary
@@ -99,6 +105,12 @@ and it shows promising performance with the [process_vm_readv()](https://man7.or
 
 
 ## References
+
+### Actual Replay Files Used
+
+Be warned, the full unextracted size of these files is around 1GB.
+- [Patch 11.9 EUW Challenger](https://drive.google.com/file/d/1fMBlnPcbKWhiQG1tTU4c5h4JEQ6wobmk/view?usp=sharing)
+- [Patch 11.10 EUW Challenger](https://drive.google.com/file/d/1wIwthLt7vIjibR1VBJTWZ2Zkst9wsSv0/view?usp=sharing)
 
 ### League of Legends Hacking and Scripting
 - [Scripting: LViewLoL](https://github.com/orkido/LViewLoL)
