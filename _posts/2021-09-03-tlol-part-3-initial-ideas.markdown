@@ -339,13 +339,16 @@ up virtual machines running linux (I ain't paying for Windows VM, lol).
 On those linux VMs, you would need to install Wine and League of Legends
 and automatically log into the VMs with a level 1 account specifically
 created to download replay files. Fortunately, the LCU API also
-provides a call which allows someone to automatially log in without
-using the League clients UI which allows the process to be automated
-without using something unreliable such as PyAutoGUI.
+provides a call which allows someone to automatically log in without
+using the League client's UI. This allows the process to be automated
+without using something potentially unreliable such as
+[PyAutoGUI](https://github.com/asweigart/pyautogui).
 
-From here, I server could be setup which receives requests to download
-replay files based on the region and game id of the replay file
-to download.
+From here, a service could be setup which receives requests to download
+replay files based on the region and game ID of the replay file
+to download and dispatches the downloading of the file to a virtual machine
+or cloud function which handles the actual downloading of the replay file and
+then stores the replay in cloud storage.
 
 ### Issues and Solutions Regarding ROFL Replays
 
