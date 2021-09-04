@@ -383,14 +383,16 @@ League of Legends, this would be equivalent to around Diamond III or above (as o
 04/09/2021 in EUW). Each sample from the dataset contains features, labels, label
 weights, frame numbers and so on. The overall performance score of each player after
 the game and and a real-time score of each player during the game based on the player's
-performance is stored. An interesting thing to note here, the paper doesn't describe
+performance is stored.
+
+An interesting thing to note here, the paper doesn't describe
 how this process is performed. This is a trend I have noticed in machine learning papers
 in general, but especially from some Chinese research papers where they can be suprisingly
 lacking in detail for crucial details like this. The method used to determine how a player
 is performing in the game may have an important impact on training the system, especially
 for a supervised learning system.
 
-Then, a large number of the retrieved games are filtered where games which are poorly
+Regardless, a large number of the retrieved games are filtered where games which are poorly
 performed by players are filtered from the dataset. This is based on the performance score
 calculated in the previous step, where individual performances which are below the top 10%
 of performances are disregarded. These samples are for an individual hero as the models
@@ -399,6 +401,8 @@ are trained to play individual heroes.
 Afterwards, the data is preprocessed, shuffled and stored in the HDF5 format, which is
 a common format for storing large files for big data problems.
 
+<!--
+Commenting this section out for now as it's irrelevant, might add back later
 In the context of our
 human-level League of Legends AI system and the JueWu-SL system, both of these would
 be considered Big Data applications as we're dealing with terabytes of data which means
@@ -407,6 +411,7 @@ using this large amount of data.
 Consider that ImageNet, which consists of 14,197,122 images requires roughly 150GB to store,
 which puts into perspective how large game playing AI datasets are. In comparison, our
 system, if it uses on the order of 100,000s of replays, will require terabytes of storage.
+-->
 
 After pre-processing the replays, the paper describes how only around 1 out of 20 frames
 are kept from the original dataset. Around 100 million samples from 120,000 games are
