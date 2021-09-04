@@ -311,7 +311,7 @@ League of Legends at the start of the game when players are leaving the their sp
 
 <div style="text-align: center;">
    <img
-      src="/assets/tlol_visualisations/11.10-local_intent_region (quiver) (red-side-spawn).png.png"
+      src="/assets/tlol_visualisations/11.10-local_intent_region (quiver) (red-side-spawn).png"
       style="width: 100%; max-width: 640px;"
    />
 </div>
