@@ -213,6 +213,35 @@ M x M regions (for Honor of Kings, M = 12), where each local region edge is roug
 the size of the edge of a heroes length (e.g. if the edge of a heroes collision box
 is 100 units, then a local regions size would be 100x100).
 
+<div style="text-align: center;">
+   <img
+      src="/assets/juewu_sl/global_and_local_intent_breakdown.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+Example of global intent label and micro-decision making.
+
+#### Multimodal Features
+
+The JueWu-SL model uses multimodal features throughout the model. As described before,
+it uses vector features and image features.
+The models vector features are made of observable hero attributes and information relating
+to the state of the game.
+Examples include:
+
+- **Hero attributes**
+
+   Examples of hero attributes include: current HP, previous HP (HP in the last timestep),
+   ability cooldowns, damage attributes, armor, magic resistance, level, experience, current
+   position on the map, position in the last time step and others.
+
+- **Game states**
+
+   Examples here include: team kill difference, gold difference, experience difference,
+   game time, turret difference, epic monsters killed (League equivalent of baron and
+   dragon) and others.
+
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
