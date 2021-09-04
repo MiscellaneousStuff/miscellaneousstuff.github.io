@@ -70,12 +70,19 @@ body {
   justify-content: center;
 }
 
+.post-tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .post-tag {
   font-size: 0.8rem;
   color: white;
-  background: lightblue;
+  background: rgb(20, 25, 100);
   border-radius: 1rem;
   padding: 0.2rem;
+  font-weight: 500;
 }
 
 .post_container {
