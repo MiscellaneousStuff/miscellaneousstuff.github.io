@@ -427,11 +427,11 @@ The model uses vector features which contain 2,334 elements (2,180 for ten heroe
 intent), the edge length is set to 30,000, 1000 edge length for a hero and a 31x31 grid
 (of 1000,1000 sized local regions).
 The global map is split into 24x24 grids (with an edge length of 113,000 which is the
-length of hte map). The global image-like feature is of shape (56, 24, 24) which results
+length of the map). The global image-like feature is of shape (56, 24, 24) which results
 in 56 channels.
 
 One model is trained for each hero. For each hero, 16 Nvidia P40s (roughly equivalent
-to an Nvidia GTX 1080 Ti), are used to train a hero for around 36 hours of wall clock
+to an Nvidia GTX 1080 Ti in TFLOPS performance), are used to train a hero for around 36 hours of wall clock
 time. The Adam optimiser is used to train the network with an initial learning rate set
 to 0.0001 (10e-5) and the batch size is set to 256.
 
@@ -442,8 +442,9 @@ the one used by AlphaStar or OpenAI Five which used 100,000s of CPUs and 100s of
 for months at a time. In the case of OpenAI Five, the training cost per day was estimated
 to be $25,000 dollars a day which is a very large amount of money. However, what this
 paper has showed is that it is not necessary to spend this amount of money on training
-an agent if your goal is only to achieve human level performance. The final performance
-of the JueWu-SL system was that is managed to beat the Honor of Kings equivalent of
+an agent if your goal is only to achieve human level or super human level performance
+if you use expert data. The final
+JueWu-SL system managed to beat the Honor of Kings equivalent of
 Challenger level players using a purely supervised learning approach.
 
 For our system, instead of using 16 Nvidia P40s, we can use Google TPUs which have
@@ -484,18 +485,19 @@ to reproduce results from papers due to the previously mentioned issue of the la
 of detail in many machine learning papers.
 
 That being said, if the results are truly reproducible, then the equivalent of 16
-Nvidia P40 GPUs would be a Google TPUv2 which is a third generation ASIC device
+Nvidia P40 GPUs would be a Google TPUv2 which is a second generation TPU ASIC device
 offered by Google on their Google Cloud Platform (GCP). The peak processing power of a 
-TPUv2 is 180 TFlops (teraflops/second).
+TPUv2 is 180 TFlops (teraflops/second) which is theoretically more powerful than 16
+Nvidia P40 GPUs.
 
 Fortunately for the supervised learning
 approach to creating a MOBA playing AI, it is possible to have a purely batched
 approach to learning. That means it is possible to take advantage of cheaper,
 interruptible hardware on the cloud which is around 20% of the full price
-of hardware renting. For instance, on GCP, renting a TPUv2 per hour costs
-$1.35 dollars per hour. So if we assume that training our system will take a similar amount
+of hardware renting. For instance, on GCP, renting a TPUv2 (preemptible) per hour costs
+$1.35 dollars per hour (as of 04/09/2021). So if we assume that training our system will take a similar amount
 of time (bearing in mind this is for training on 120,000 replays which for us will
-be just over 1TB of replay data which is massive), will cost $1.35 * 36 = $48.6
+be just over 1TB of replay data which is massive), it will cost $1.35 * 36 = $48.6
 for a full training run and assuming no issues crop up during training.
 
 However, there are solutions around even this issue. For instance, Kaggle offers
@@ -508,7 +510,7 @@ numbers could be completely out of scope.
 
 The summary of this post is that, there is a lot to be optimistic about, but
 we should be cautiously optimistic as a lot of assumptions made here are currently
-without foundation but come from papers released with a relatively low amount of detail
+untested for this project and  come from papers released with a relatively low amount of detail
 concerning the implementation of a lot of the details of these systems.
 
 ## References
