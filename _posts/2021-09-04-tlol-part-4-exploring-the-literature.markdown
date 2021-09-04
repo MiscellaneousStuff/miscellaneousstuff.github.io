@@ -164,6 +164,10 @@ multiclass structure which contains two parts.
    level 2 prediction are the x and y offset parameters. If the action was
    an autoattack instead, then the parameter would be the unit to attack.
 
+The action labels are the main outputs for the model and the intent labels
+are used as an auxiliary task during training to improve the model performance.
+The intent label is not used as an output during inference.
+
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
