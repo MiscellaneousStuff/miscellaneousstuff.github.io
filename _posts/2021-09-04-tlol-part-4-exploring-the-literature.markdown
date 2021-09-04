@@ -23,7 +23,7 @@ Reviewing current literature is useful as it allows
 us to utilise a variety of methods, with detailed explanations of each method, for
 creating MOBA playing AI systems. This post won't explore the OpenAI Five (Dota 2),
 AlphaStar (Starcraft 2), MuZero (Deepmind general game playing AI) or other related papers.
-That will be explored in more detail later on if it's relevant to the project later.
+That will be explored in more detail later on if it's relevant to the project.
 
 ## Exploring the Literature
 
@@ -44,7 +44,12 @@ learning approaches on human expert data, hierarchical learning approaches and o
 which are useful for building a human-level League of Legends AI.
 
 The rest of this article will cover key papers which have covered creating human level
-MOBA playing AI systems.
+MOBA playing AI systems for Honor of Kings.
+
+<!--
+### Similarity Between Honor of Kings and League of Legends
+Could add a section relating Honor of Kings to League of Legends later...
+-->
 
 <!--
 ### Towards Playing Full MOBA Games with Deep Reinforcement Learning
@@ -94,7 +99,8 @@ are the most stable training regime for policy improvement.
 This paper is by far the most relevant to this project. The key contribution
 of this paper is to use a supervised learning approach to classify observations
 based on what action an expert performed next in the same situation. The system
-which is introduced by the paper is known as JueWu-SL.
+which is introduced by the paper is known as JueWu-SL (which means "Insight and
+Intelligence" in Chinese and SL refers to supervised learning).
 
 The key principle behind the approach is that decision making within MOBA games
 can be split into two main parts at any timestep, 1) Where to go on the map for
