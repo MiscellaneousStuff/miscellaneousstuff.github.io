@@ -191,12 +191,18 @@ The paper describes ground-truth regions which are regions where players
 conduct their next attack.
 
 However, one issue is that the occasional attacking behaviour in a given
-spot might not be the goal of hte player, such as encoutering an enemy
+spot might not be the goal of the player, such as encountering an enemy
 while moving somewhere.
 
 Therefore, only regions with continuous attacking behaviours are considered
-and so multi-view intent labels, including global intent and local intent,
-are used to model macro-strategy.
+as being distinct enough to categorise a scene.
+Multi-view intent labels, including global intent and local intent,
+are used to model macro-strategy and are trained as an auxiliary task during
+training. The signal derived from this part of the network is still used during
+inference, but it isn't an output of the model. However, as the projection
+from this part of the system can still be maintained during inference, it
+could be a useful way of determining what the model is "thinking" when
+it is playing against other bots or human players.
 
 <div style="text-align: center;">
    <img
@@ -206,11 +212,12 @@ are used to model macro-strategy.
 </div>
 
 The first level of intent labels are global intent labels. The global intent
-labels encode the global intent which is the next target or region where players
+labels encode the global intent, which is the next target or region where players
 may attack creeps to gain gold, attack turrets for experience and others.
-The global intent label is defined by dividing map into course-grained N x N
-regions (for Honor of Kings, N = 24 so 576 intent classes defined for game).
-Therefore, the global intent label is the numbered regin on the map where the next
+
+The global intent label is defined by dividing the map into course-grained N x N
+regions (for Honor of Kings, N = 24 so 576 intent classes are defined).
+Therefore, the global intent label is the numbered region on the map where the next
 seris of attacks happen. For instance, if the next global intent region is at
 position 1 x 1, that would be equal to Y * N + X := 1 * 24 + 1 = 26 so the label
 would be 26 out of 576.
@@ -229,7 +236,8 @@ in the game). The cells represent a 32 x 32 grid which compromise the global
 intent labels, of which there are 1,024.
 
 The next level of intent labels are local intent labels. The local intent label
-is short term planning in local combat (e.g., hiding in a bush, retreating to a turret,
+is short term planning in local combat and other scenes
+(e.g., hiding in a bush, retreating to a turret,
 waiting for target heroes before attacking a target).
 A local intent region is defined by dividing a local map region into fine-grained
 M x M regions (for Honor of Kings, M = 12), where each local region edge is roughly
@@ -276,12 +284,12 @@ and RTS games in general.
 
 Scene identification classifies a scene based on the most prominent actions which a player
 was performing within a certain timeframe. Unfortunately, the paper is vague on how this
-process is actually performed. However, the paper describes the method is enough detail
-to be re-implemented, if we adapt it for League of Legends. The main scenes which the paper
+process is actually performed but can be inferred with enough effort.
+The main scenes which the paper
 identifies as being relevant, to Honor of Kings at least, are listed below:
 
 - **Push-turret:** Attack enemy turret
-- **Combat:** Find an enemy hero and prepare to fight them
+- **Combat:** Find an enemy hero and fight them or prepare to fight them
 - **Lane-farm:** Kill minions to get gold and experience
 - **Jungle-farm:** Kill jungle camps to gain gold and experience
 - **Return:** Go back before dying / to defend the base
@@ -291,35 +299,35 @@ identifies as being relevant, to Honor of Kings at least, are listed below:
 #### Data Tuning Under Each Scene
 
 Depending on the scene, certain types of action intents should occur more (e.g. during
-Navigation, moving action intent should be the occur the most, whereas when attacking
+Navigation, moving action intent should occur the most, whereas when attacking
 lane farm, attacking action intent should occur more).
 
-Certain situations involve more than one scene. For example push-turret can be combat
-and push-turret scenes combined. Priority under that situation is the order of scenes
+Certain situations involve more than one scene. For example `Push-turret` can be `Combat`
+and `Push-turret` scenes combined. Priority under that situation is the order of scenes
 under the scene identification section above.
 
 #### Data Tuning Across Scenes
 
 After segmenting individual frames into scenes, the data is imbalanced across scenes
-as certain scenes occur more often than others. This is because things like turret
-pushing occur less than combat.
+as certain scenes occur more often than others. This is because things like `Push-turret` 
+occur less than `Combat`.
 
-Distributions of scenes are different in terms of roles of the hero. For example, the
-support role is going to use movement to detection opponents and support teammates, therefore,
-most of its game scenes will fall under Navigation (and this is what the authors of
+Distributions of scenes are different in terms of hero roles. For example, the
+support role is going to use movement mostly to detect opponents and support teammates, therefore,
+most of its game scenes will fall under `Navigation` (and this is what the authors of
 the paper found during exploration). However, the performance of all scenes are equally
 important as everything that happens in a game is important to winning the game overall.
 To remedy this, the paper uniformly balances scene data by downsampling to enable the
 AI to be adequately trained in every scene. What downsampling means in this context is that,
 some scenes for certain champions may be trained on more than what would be for other 
 champions. For instance, you may train agents trained to play a support champion with
-more navigation scenes. However, if you was training an agent to play a carry role champion
-(e.g. attack damage carry), then you would try it on disproportionately more combat scenes.
+more `Navigation` scenes. However, if you was training an agent to play a carry role champion
+(e.g. attack damage carry), then you would try it on disproportionately more `Combat` scenes.
 The downsampling ratio is tuned hero-by-hero.
 
-An important thing to note here is that, scenes are only segmented during training,
-during inference, the only thing the model is provided with is an observation at timestep
-t with the same information a human would be provided with. There is no difference in
+An important thing to note here is that, scenes are only segmented during training.
+During inference, the only thing the model is provided with is an observation at timestep
+`t` with the same information a human would be provided with. There is no difference in
 training between scenes.
 
 #### Move Sample Enhancement
@@ -342,8 +350,12 @@ League of Legends at the start of the game when players are leaving the their sp
 The image above shows the movement vectors from the start of a League of Legends game,
 zoomed into the red side spawn location. As you can see from the image above, the vectors
 have a high magnitude as players are given the "home-base" buff at the start of the game
-which is a temporary increase in movement speed at the start of the game which allows
-players move to their respective locations to get the game started quickly.
+which is a temporary increase in movement speed at the start of the game. This allows
+players to move to their respective locations faster to get the game started quickly.
+Each arrow (or movement vector) is the difference in position for a single champion
+every 1/8 of a second (the recordings are taken 8 times a second). That is why you
+can see the arrows growing larger, as the champions are running out of base, they are
+accelerating so they are covering more distance per timestep.
 
 #### Attack Sample Normalization
 
