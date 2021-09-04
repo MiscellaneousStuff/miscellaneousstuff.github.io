@@ -195,6 +195,24 @@ are used to model macro-strategy.
    />
 </div>
 
+The first level of intent labels are global intent labels. The global intent
+labels encode the global intent which is the next target or region where players
+may attack creeps to gain gold, attack turrets for experience and others.
+The global intent label is defined by dividing map into course-grained N x N
+regions (for Honor of Kings, N = 24 so 576 intent classes defined for game).
+Therefore, the global intent label is the numbered regin on the map where the next
+seris of attacks happen. For instance, if the next global intent region is at
+position 1 x 1, that would be equal to Y * N + X := 1 * 24 + 1 = 26 so the label
+would be 26 out of 576.
+
+The next level of intent labels are local intent labels. The local intent label
+is short term planning in local combat (e.g., hiding in a bush, retreating to a turret,
+waiting for target heroes before attacking a target).
+A local intent region is defined by dividing a local map region into fine-grained
+M x M regions (for Honor of Kings, M = 12), where each local region edge is roughly
+the size of the edge of a heroes length (e.g. if the edge of a heroes collision box
+is 100 units, then a local regions size would be 100x100).
+
 <!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
 -->
