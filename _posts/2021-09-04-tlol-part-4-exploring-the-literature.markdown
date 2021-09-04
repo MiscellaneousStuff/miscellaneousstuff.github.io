@@ -128,12 +128,12 @@ and hierarchical action labels for modeling micromanagement.
 ### Main Contributions
 
 The main contributions of the paper, and the reason why it's so useful to this
-project, are the following two reasons.
+project, are the following two reasons:
 
 1. Supervised learning method which can apply to any MOBA game which allows
    efficient incorporation of expert knowledge. Scene-based sampling method
    to divide whole MOBA gameplay into easily tuned game snippets.
-2. Supervised learning method performs comparatively against High King (roughly
+2. Supervised learning method performs comparatively against High King players (roughly
    Grandmaster or Challenger in League of Legends).
 
 <!--
