@@ -3,7 +3,7 @@ layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 4 - Exploring the Literature)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
-date:   2021-09-03 17:30:00
+date:   2021-09-04 10:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]
 ---
@@ -132,7 +132,17 @@ project, are the following two reasons.
   - This paper gives context for the approach taken for this project
     (or at least the initial approach, we'll see...)
 
+#### Method
+
+The paper uses two main types of features throughout the system. The first type
+of feature which the paper uses is a vector feature. Vector features are used to
+store the game states such as number of kills, creep score, XP, and other scalar
+features at each timestep. The other type of feature which is used are image-like
+features which are used for representing map like images.
+
+<!--
 ### Hierarchical Reinforcement Learning for Multi-agent MOBA Game
+-->
 
 ## Summary
 
@@ -140,8 +150,10 @@ project, are the following two reasons.
 
 ## References
 
+<!--
 ### Game Theory
 - [Wikipedia: Nash Equilibrium](https://en.wikipedia.org/wiki/Nash_equilibrium)
+-->
 
 ### Honor of Kings
 - [Statista: Active Users](https://www.statista.com/statistics/1004699/china-number-of-monthly-active-users-of-tencent-mobile-game-honour-of-kings/#:~:text=Premium%20statistics-,Number%20of%20monthly%20active%20users%20of,Honor%20of%20Kings%202018%2D2019&text=This%20statistic%20shows%20the%20number,dropped%20to%20around%20119%20million)
@@ -152,8 +164,10 @@ project, are the following two reasons.
 - [Hierarchical Reinforcement Learning for Multi-agent MOBA Game](https://arxiv.org/pdf/1901.08004.pdf)
 - [Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9248616)
 
+<!--
 - JueWu-SL
 - OpenAI Five
 - PyLoL (act spec, obs spec)
 - GCP (Pre-Emptible)
 - etc.
+-->
