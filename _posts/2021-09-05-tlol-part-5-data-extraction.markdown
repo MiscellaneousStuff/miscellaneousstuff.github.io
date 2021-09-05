@@ -10,9 +10,16 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 
 ## Table of Contents
 
+* TOC
+{:toc}
+
 ## Introduction
 
-In [part 3]()
+In [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html), we explored the best way to gather data to train our League of Legends playing AI
+system where we found that using expert replay data was the most viable and efficient. From
+this, we explored the software components which would be required to gather this data
+and extract what we need from these replays. To gather the data, we would need to determine
+which replays would be suitable and how to automatically download them.
 
 <!--
 Components
