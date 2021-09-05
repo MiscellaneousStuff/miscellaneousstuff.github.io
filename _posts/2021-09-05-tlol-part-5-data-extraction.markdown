@@ -15,11 +15,52 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 
 ## Introduction
 
-In [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html), we explored the best way to gather data to train our League of Legends playing AI
-system where we found that using expert replay data was the most viable and efficient. From
+In [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html), we explored the best way to gather data to 
+train our human-level League of Legends playing AI where we found that using 
+expert replay data was the most viable and efficient. From
 this, we explored the software components which would be required to gather this data
-and extract what we need from these replays. To gather the data, we would need to determine
-which replays would be suitable and how to automatically download them.
+and extract what we need from these replay files. To gather the data, we would need to determine
+which replays would be suitable and how to automatically download them in bulk.
+
+Furthermore, when we have finally downloaded our replay files, we would need to 
+the extract information within them which we can use to train our League 
+playing AI. The
+issue with the rofl file format which stores League of Legends replays is
+that Riot encrypts the game packet data inside of the replay files which we 
+need to access. Further details about this can be found in [part 3](https://miscellaneousstuff.github.io/project/2021/09/03/tlol-part-3-initial-ideas.html) 
+of this series.
+There are two ways we can circumvent this issue:
+
+1. **Reverse Engineer the Encryption Method**
+
+  During each League of Legends patch release, the method to decrypt
+  rofl replays is embedded within the client itself, which means it would be
+  possible for a motivated individual to reverse engineer this encryption method
+  using a suitable tool such as [IDA Pro](https://hex-rays.com/ida-pro/). IDA 
+  Pro would enable you to perform
+  dynamic analysis of the code within the client, to determine how the game
+  packets are decrypted. However, the
+  issue with this method is that the encryption scheme changes every patch,
+  which is every two weeks. This means that you would encounter an 
+  "enigma-like" effort where you are trying to beat Riot's encryption every
+  two weeks, and this is assuming that they only slightly change the encryption
+  scheme. If they significantly changed the encryption scheme between two 
+  patches, it could be much harder to reverse engineer. The other major issue
+  with this method is that it is expressly [forbidden by Riot Games](https://riot-api-libraries.readthedocs.io/en/latest/specifics.html#replay-files) to reverse
+  engineer the rofl file format.
+
+2. **Automate the League Replay System**
+
+  An alternative to directly decrypting the replay files is to use the League
+  client to play the replay files using the replay system within the client.
+  Then, we can programatically load rofl replay files into the client, allow
+  the client to decrypt as per usual, and then using scripting frameworks,
+  we can interpret the memory of the League of Legends process while running the
+  replay system at faster than real-time speeds. This allows us a fully flexible
+  method of extracting information from replays as scripting frameworks need
+  only determine the address offsets of game objects in memory rather than
+  the far more complex task of reverse engineering a proprietary encryption
+  format every two weeks.
 
 <!--
 Components
