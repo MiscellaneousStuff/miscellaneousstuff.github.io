@@ -97,6 +97,12 @@ training an
 agent on these files. This would leave us with two options:
 
 <!-- Insert image of league of legends game objects here -->
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/game_objects_per_category.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
 
 Decrypting these files before
 processing them, which could take a very large amount of storage or, we
