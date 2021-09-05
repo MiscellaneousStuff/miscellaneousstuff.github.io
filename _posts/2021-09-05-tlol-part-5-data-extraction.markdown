@@ -69,7 +69,7 @@ There are two ways we can circumvent this issue:
 Before I attempted to extract information from replay files, I needed to
 know how many observations I was likely to need to gain useful information
 from the files. The issue with the current API provided by Riot is that
-the information is only accurate down to 60 seconds, which makes it useless
+the information is only provided at a maximum resolution of 60 seconds, which makes it useless
 from a game playing AI perspective. However, this doesn't tell us what
 resolution of data is required to create the League AI. So, where can we
 find out this information? Early on, I decided to look towards the OpenAI
@@ -77,7 +77,7 @@ Five paper for inspiration.
 
 [The OpenAI Five blog post](https://openai.com/blog/openai-five/) lists how many observations per second of gameplay
 they record for the different versions of their system. In their initial
-1v1 bot in 2017, they recorded 10 observatoins per second. However for
+1v1 bot in 2017, they recorded 10 observations per second. However for
 their 5v5 bot, they record 7.5 observations per second. Seeing as Dota 2
 and League of Legends are relatively similar games in terms of the 
 granularity of the micro decision making (i.e. both games require a
@@ -85,13 +85,14 @@ similar number of micro decisions per minute, compared to Starcraft 2
 where there can be far more micro decisions per minute due to the larger
 number of units). This became the basis for a further experiment I 
 conducted where I implemented a reinforcement learning framework called
-[LoLRLE](https://github.com/MiscellaneousStuff/pylol) and tested
+[LoLRLE](https://github.com/MiscellaneousStuff/pylol) to experiment with reinforcement learning in League of Legends and tested
 different observations per second and their effect on training. From
 the results, I found that 8 observations per second was adequate to train
-a bot to learn basic behaviours such as learning to avoid another bot.
+a bot to learn basic behaviours such as learning to avoid another bot. 
+There's no particular reason why this wouldn't extrapolate to more complex
+decision making.
 
-
-### Overview
+### Approach
 
 My initial attempt at creating this system involved a rofl replay
 from patch 11.9 and patch 11.10. Each time, I downloaded a random Challenger
@@ -168,6 +169,59 @@ objects which don't fall into another category. This includes objects
 such as wards, which grant vision in the fog-of-war, traps and other
 champion specific items (e.g. Thresh lantern, Caitlyn traps, Zoe bubble,
 Ivern's ultimate ability Daisy, etc).
+
+### Implementing Ideas from Research
+
+#### Global Intent Regions
+
+In [part 4](https://miscellaneousstuff.github.io/project/2021/09/04/tlol-part-4-exploring-the-literature.html), we explored the current
+literature (as of 05/09/2021) which have achieved human or superhuman
+performance in MOBA games. One of those papers was ["Supervised Learning Achieves Human-Level Performance in MOBA Games: A Case Study of Honor of Kings"](https://ieeexplore.ieee.org/document/9248616/) which details
+a system called "JueWu-SL" which achieved superhuman performance against
+human players in a MOBA called [Honor of Kings](https://en.wikipedia.org/wiki/Honor_of_Kings). One of the central ideas proposed by the paper was
+to frame MOBA games as a hierarchical multi-class classification problem.
+
+One of the multi-class classification tasks was to predict the global
+intent of a player. What this meant in essence was to segment the map
+into regions, referred to as global intent regions, and determine which region
+the player wanted, or "intended", to perform an action in next. As segmenting the map
+into regions was relatively easy, I decided to implement this idea in
+League of Legends, which produced some interesting results.
+
+Firstly, I plotted every single champions position at every timestep
+during a game.
+
+<!-- Insert image of league of legends game objects here -->
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/11.9-global_regions (scatter).png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+Each one of the grids on the image is a global intent region. The scatter
+points in the graph are color-coded, with 10 colors for each of the 10
+champions in the game. What is interesting about this image is that you
+can actually make out the League of Legends map shape purely from plotting
+the location of players for the duration of a game alone. But there is also
+another clear pattern emerging, activity is heavily clustered in the top,
+middle and bottom lanes (top-left, middle-middle and bottom-right, 
+respectively).
+
+I realised at this point it would be possible to plot the activity within
+each global intent region using a heatmap as the scatter graph is just
+spatial representation of every single location any player visited during
+the entire duration of the game.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/11.10-global_intent_region-heatmap.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+This leaves us with this interesting heatmap, where the lighter the block,
+the more frequently a global intent region was visited during that game.
 
 ## Method
 
