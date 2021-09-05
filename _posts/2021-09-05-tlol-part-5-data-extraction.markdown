@@ -83,7 +83,7 @@ and League of Legends are relatively similar games in terms of the
 granularity of the micro decision making (i.e. both games require a
 similar number of micro decisions per minute, compared to Starcraft 2
 where there can be far more micro decisions per minute due to the larger
-number of units). This became the basis for a further experiment I 
+number of controllable units). This became the basis for a further experiment I 
 conducted where I implemented a reinforcement learning framework called
 [LoLRLE](https://github.com/MiscellaneousStuff/pylol) to experiment with reinforcement learning in League of Legends and tested
 different observations per second and their effect on training. From
@@ -98,8 +98,7 @@ My initial attempt at creating this system involved a rofl replay
 from patch 11.9 and patch 11.10. Each time, I downloaded a random Challenger
 ranked match and then loaded the replay using the League client. Then I ran the LViewLoL software
 which was loaded with my Python script to extract an observation every 1/8th
-of a second. My reasons for choosing 1/8th of a second will be explained further
-below. Then, I encoded the game objects and global data within each observation
+of a second. Then, I encoded the game objects and global data within each observation
 as a serialized JSON object which I then wrote to a larger JSON file encoding.
 However, there is one major flaw with choosing JSON here. The average League
 of Legends game is just under 30 minutes long and I was recording an observation
