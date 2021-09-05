@@ -207,9 +207,13 @@ middle and bottom lanes (top-left, middle-middle and bottom-right,
 respectively).
 
 I realised at this point it would be possible to plot the activity within
-each global intent region using a heatmap as the scatter graph is just
+each global intent region using a heatmap as the scatter graph is just a 
 spatial representation of every single location any player visited during
-the entire duration of the game.
+the entire duration of the game. The JueWu-SL paper suggested splitting the
+Honor of Kings map into N x N regions where N = 24. However, from my
+experience of creating the [LoLRLE](https://github.com/MiscellaneousStuff/pylol) platform, I knew that the League of Legends map had dimensions of
+16,000 by 16,000 so changing N to 32 seemed like a good idea as it made
+the dimensions of each global region an even 500x500.
 
 <div style="text-align: center;">
    <img
@@ -220,6 +224,19 @@ the entire duration of the game.
 
 This leaves us with this interesting heatmap, where the lighter the block,
 the more frequently a global intent region was visited during that game.
+As we expect, the top, middle and bottom lanes experienced a lot of activity.
+The blue side and red side spawn locations also experienced a lot of activity
+(bottom-left and top-right, respectively). The reason the red-side spawn
+experienced more activity was because the red-side lost the game.
+
+One can
+reason that if a team is losing, there will be more activity on their side
+of the map because the opposing team will be taking their territory. Also,
+if players are dying more frequently because they're losing, and also due to
+lower death timers earlier in the game, activity in the losing teams spawn
+location will be higher as they are present within that region more often.
+
+
 
 ## Method
 
