@@ -62,11 +62,52 @@ There are two ways we can circumvent this issue:
   the far more complex task of reverse engineering a proprietary encryption
   format every two weeks.
 
-<!--
-Components
-- Automated Replay Downloader
-- Automated Replay Extractor
--->
+## Initial Attempt
+
+### Overview
+
+My initial attempt at creating this system involved a rofl replay
+from patch 11.9 and patch 11.10. Each time, I downloaded a random Challenger
+ranked match and then loaded the replay using the League client. Then I ran the LViewLoL software
+which was loaded with my Python script to extract an observation every 1/8th
+of a second. My reasons for choosing 1/8th of a second will be explained further
+below. Then, I encoded the game objects and global data within each observation
+as a serialized JSON object which I then wrote to a larger JSON file encoding.
+However, there is one major flaw with choosing JSON here. The average League
+of Legends game is just under 30 minutes long and I was recording an observation
+every 1/8th of a second. The following calculation gives a rough estimate
+of the number of observations per game.
+
+```python
+obs_per_sec  = 8  # Observations per second
+secs_per_min = 60 # Seconds per minute
+avg_mins     = 30 # Average game length in minutes
+total_obs    = obs_per_sec * secs_per_min * \
+               avg_mins # Total observations per game
+total_obs    := 14400
+```
+On average, I found there were up to 160 game objects present within the
+game at any time. This means that in total, an extracted replay would be
+comprised of `14,400 * 160 := 2,304,000` objects in total. Saving this
+in an unefficient format like JSON resulted in each uncompressed replay
+file taking around 1GB storage, which compared to the original 13MB average
+for a replay file, is gigantic. This is an issue when trying to process
+replay files in bulk, such as when performing data analysis, let alone when 
+training an
+agent on these files. This would leave us with two options:
+
+<!-- Insert image of league of legends game objects here -->
+
+Decrypting these files before
+processing them, which could take a very large amount of storage or, we
+could alternatively setup a complex process which decompresses these
+files ahead of time and then deletes files which have already been processed.
+However, that is unnecessarily complicated when we could just encode
+the extracted replay files in a more efficient format.
+
+## Method
+
+
 
 ## Data Extraction
 
