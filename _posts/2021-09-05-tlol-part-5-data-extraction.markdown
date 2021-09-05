@@ -109,8 +109,7 @@ of the number of observations per game.
 obs_per_sec  = 8  # Observations per second
 secs_per_min = 60 # Seconds per minute
 avg_mins     = 30 # Average game length in minutes
-total_obs    = obs_per_sec * secs_per_min * \
-               avg_mins # Total observations per game
+total_obs    = obs_per_sec * secs_per_min * avg_mins
 total_obs    := 14400
 ```
 
