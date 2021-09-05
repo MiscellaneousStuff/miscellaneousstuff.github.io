@@ -72,28 +72,23 @@ from the files. The issue with the current API provided by Riot is that
 the information is only accurate down to 60 seconds, which makes it useless
 from a game playing AI perspective. However, this doesn't tell us what
 resolution of data is required to create the League AI. So, where can we
-find out this information? From the literature, I found two main numbers
-for this:
+find out this information? Early on, I decided to look towards the OpenAI
+Five paper for inspiration.
 
-1. **OpenAI Five**
-
-  [The OpenAI Five blog post](https://openai.com/blog/openai-five/) lists how many observations per second of gameplay
-  they record for the different versions of their system. In their initial
-  1v1 bot in 2017, they recorded 10 observatoins per second. However for
-  their 5v5 bot, they record 7.5 observations per second. Seeing as Dota 2
-  and League of Legends are relatively similar games in terms of the 
-  granularity of the micro decision making (i.e. both games require a
-  similar number of micro decisions per minute, compared to Starcraft 2
-  where there can be far more micro decisions per minute due to the larger
-  number of units). This became the basis for a further experiment I 
-  conducted where I implemented a reinforcement learning framework called
-  [LoLRLE](https://github.com/MiscellaneousStuff/pylol) and tested
-  different observations per second and their effect on training. From
-  the results, I found that 8 observations per second was adequate to train
-  a bot to learn basic behaviours such as learning to avoid another bot.
-
-2. **JueWu-SL**
-  
+[The OpenAI Five blog post](https://openai.com/blog/openai-five/) lists how many observations per second of gameplay
+they record for the different versions of their system. In their initial
+1v1 bot in 2017, they recorded 10 observatoins per second. However for
+their 5v5 bot, they record 7.5 observations per second. Seeing as Dota 2
+and League of Legends are relatively similar games in terms of the 
+granularity of the micro decision making (i.e. both games require a
+similar number of micro decisions per minute, compared to Starcraft 2
+where there can be far more micro decisions per minute due to the larger
+number of units). This became the basis for a further experiment I 
+conducted where I implemented a reinforcement learning framework called
+[LoLRLE](https://github.com/MiscellaneousStuff/pylol) and tested
+different observations per second and their effect on training. From
+the results, I found that 8 observations per second was adequate to train
+a bot to learn basic behaviours such as learning to avoid another bot.
 
 
 ### Overview
