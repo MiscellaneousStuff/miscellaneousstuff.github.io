@@ -96,6 +96,17 @@ replay files in bulk, such as when performing data analysis, let alone when
 training an
 agent on these files. This would leave us with two options:
 
+Decrypting these files before
+processing them, which could take a very large amount of storage or, we
+could alternatively setup a complex process which decompresses these
+files ahead of time and then deletes files which have already been processed.
+However, that is unnecessarily complicated when we could just encode
+the extracted replay files in a more efficient format.
+
+Below is an image counting the number of game objects within a challenger
+level replay. The X axis is the in-game time in minutes and the Y axis
+is the number of that category of objects at any one timestep.
+
 <!-- Insert image of league of legends game objects here -->
 <div style="text-align: center;">
    <img
@@ -114,22 +125,19 @@ every 30 seconds. An interesting thing to note here is that the number
 of minions also goes down at a consistent rate, this may just be because
 the recording is of a challenger level game so the players are efficiently
 balancing fighting and farming. Maybe this pattern wouldn't be so clear
-in a lower rated game. Another interesting pattern in the graph is
+in a lower rated game.
+
+Another interesting pattern in the graph is
 the top-right image which shows how many turrets are present within the game.
 It seems strange that the number of towers would increase. One possible explanation is that the replay extraction process 
 included bugs which caused a turret to not be found during one observation,
-but was found during another. The `Others` section of the graph includes
+but was found during another.
+
+The `Others` section of the graph includes
 objects which don't fall into another category. This includes objects
 such as wards, which grant vision in the fog-of-war, traps and other
 champion specific items (e.g. Thresh lantern, Caitlyn traps, Zoe bubble,
 Ivern's ultimate ability Daisy, etc).
-
-Decrypting these files before
-processing them, which could take a very large amount of storage or, we
-could alternatively setup a complex process which decompresses these
-files ahead of time and then deletes files which have already been processed.
-However, that is unnecessarily complicated when we could just encode
-the extracted replay files in a more efficient format.
 
 ## Method
 
