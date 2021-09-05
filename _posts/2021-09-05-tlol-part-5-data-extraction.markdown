@@ -237,6 +237,14 @@ Components
 
 ## References
 
+### Initial Extracted Replay Files
+
+These JSON files are the data source for the data visualisations
+in the initial attempt section.
+
+- [Patch 11.9](https://drive.google.com/file/d/1fMBlnPcbKWhiQG1tTU4c5h4JEQ6wobmk/view?usp=sharing)
+- [Patch 11.10](https://drive.google.com/file/d/1wIwthLt7vIjibR1VBJTWZ2Zkst9wsSv0/view?usp=sharing)
+
 <!--
 Resources
 - Extracted Replay Files
