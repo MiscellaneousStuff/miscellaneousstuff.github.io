@@ -249,6 +249,32 @@ the following image:
    />
 </div>
 
+The above image gives us some useful information. Firstly, can reduce the
+dimensionality of the global intent regions by 2 along the Y and X axis.
+This may seem trivial at first, but it greatly reduces the number of
+classes which our model would have to predict. Currently, we have set our
+N value to 32. The following calculations show how even a small reduction
+in N can greatly reduce the number of classes our system needs to predict.
+
+```
+N = 32
+N * N = 32 * 32 = 1,024
+
+N = 32 - 2 = 30
+N * N = 30 * 30 = 900
+```
+We could take this a step further and make the region which each global
+intent region covers slightly larger to reduce the overall number of
+global intent regions down by 2 again, which leaves us with:
+
+```
+N = 30 - 2 = 28
+N * N = 28 * 28 = 784
+```
+
+So by reducing the dimensionality of each axis by 4, we reduce the number
+of classes we need to predict over from 1,024 to 784.
+
 ## Method
 
 
