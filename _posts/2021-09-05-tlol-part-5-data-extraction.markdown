@@ -236,7 +236,18 @@ if players are dying more frequently because they're losing, and also due to
 lower death timers earlier in the game, activity in the losing teams spawn
 location will be higher as they are present within that region more often.
 
+As we can see clearly from the heatmap, some global regions
+have a disproportionate amount of activity compared to other regions. One
+way we can view the activity within all of the heatmaps at once in a more
+normalised view, is to apply `log10()` to each value. This leaves us with
+the following image:
 
+<div style="text-align: center;">
+   <img
+      src="/assets/tlol_visualisations/11.10-global_intent_region-heatmap (log10, normalized).png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
 
 ## Method
 
