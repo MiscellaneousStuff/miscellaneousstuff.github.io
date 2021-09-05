@@ -104,6 +104,27 @@ agent on these files. This would leave us with two options:
    />
 </div>
 
+The image above shows how many game objects are present within a
+League of Legends game per each observation (roughly 1/8th of a
+second). Here we can see in the bottom right that the total number
+of game objects per observation maxes out at about 160 objects which
+is a large number of objects. We can see here that the number of
+minions follows a clear cycle, which makes sense as minions spawn once
+every 30 seconds. An interesting thing to note here is that the number
+of minions also goes down at a consistent rate, this may just be because
+the recording is of a challenger level game so the players are efficiently
+balancing fighting and farming. Maybe this pattern wouldn't be so clear
+in a lower rated game. Another interesting pattern in the graph is
+the top-right image which shows how many turrets are present within the game.
+It seems strange that the number of towers would increase, however,
+there may be two reasons for this. One possible explanation is that the replay extraction process 
+included bugs which caused a turret to not be found during one observation,
+but was found during another. The `Others` section of the graph includes
+objects which don't fall into another category. This includes objects
+such as wards, which grant vision in the fog-of-war, traps and other
+champion specific items (e.g. Thresh lantern, Caitlyn traps, Zoe bubble,
+Ivern's ultimate ability Daisy, etc).
+
 Decrypting these files before
 processing them, which could take a very large amount of storage or, we
 could alternatively setup a complex process which decompresses these
