@@ -43,6 +43,17 @@ Previous Attempts
   - Generate the schema for the SQLite database before extracting the
     database. This coincides with general MLOps issues to do with data
     schema. This will take a bit of massaging to get right.
+- Replay Downloader (NA-10K run)
+  - What went well?
+    - System worked as intended
+    - We found the bottleneck to downloading data
+    - We found that download requests will need to be authenticated
+      and it likely takes a lot of effort to circumvent that. This
+      point relates to the AWS S3 storage calls which store League
+      Replays and how it is difficult to download data from the
+      stores directly as the IP addresses change between each download
+      request. This might also relate to the stop-start behaviour found
+      when bulk downloading replays, hard to tell.
 -->
 
 <!--
@@ -81,6 +92,14 @@ Observation Specification
 Summarise methodological decisions from previous section:
 - SQLite
 - Decide on schema before bulk data extraction from rofl replay files
+-->
+
+<!--
+Replay Downloader
+-->
+
+<!--
+Replay Extractor
 -->
 
 ## Summary
