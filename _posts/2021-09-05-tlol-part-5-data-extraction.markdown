@@ -64,6 +64,21 @@ There are two ways we can circumvent this issue:
 
 ## Initial Attempt
 
+### Observation Rate
+
+Before I attempted to extract information from replay files, I needed to
+know how many observations I was likely to need to gain useful information
+from the files. The issue with the current API provided by Riot is that
+the information is only accurate down to 60 seconds, which makes it useless
+from a game playing AI perspective. However, this doesn't tell us what
+resolution of data is required to create the League AI. So, where can we
+find out this information? From the literature, I found two main numbers
+for this:
+
+1. **OpenAI Five**
+
+2. **JueWu-SL**
+
 ### Overview
 
 My initial attempt at creating this system involved a rofl replay
@@ -86,6 +101,9 @@ total_obs    = obs_per_sec * secs_per_min * \
                avg_mins # Total observations per game
 total_obs    := 14400
 ```
+
+### Game Object Analysis
+
 On average, I found there were up to 160 game objects present within the
 game at any time. This means that in total, an extracted replay would be
 comprised of `14,400 * 160 := 2,304,000` objects in total. Saving this
