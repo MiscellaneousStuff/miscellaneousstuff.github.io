@@ -28,8 +28,8 @@ patch, as the game is updated once every two weeks.
 
 The previous posts highlighted the main difficulties with creating human-level game
 playing AIs. The central issue with all of these systems was having enough high
-quality data to learn from. It is highly recommended to read [part 1](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-human-level-in-league-of-legends-using-deep-learning.html)
-and [part 2](https://miscellaneousstuff.github.io/project/2021/09/02/tlol-human-level-in-league-of-legends-using-deep-learning.html)
+quality data to learn from. It is highly recommended to read [part 1](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-part-1-existing-solutions.html)
+and [part 2](https://miscellaneousstuff.github.io/project/2021/09/02/tlol-part-2-problem-analysis.html)
 of this series for better context going forward if you are not already familiar
 with the [history of League of Legends AI systems](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-human-level-in-league-of-legends-using-deep-learning.html) or [game playing AI systems](https://miscellaneousstuff.github.io/project/2021/09/02/tlol-human-level-in-league-of-legends-using-deep-learning.html).
 

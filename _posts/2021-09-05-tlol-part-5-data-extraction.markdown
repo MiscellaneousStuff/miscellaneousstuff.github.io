@@ -3,7 +3,7 @@ layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 5 - Data Extraction)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
-date:   2021-09-05 23:00:00
+date:   2021-09-05 23:30:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Extraction"]
 ---
@@ -11,6 +11,8 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 ## Table of Contents
 
 ## Introduction
+
+In [part 3]()
 
 <!--
 Components
