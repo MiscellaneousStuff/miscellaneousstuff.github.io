@@ -244,7 +244,7 @@ the following image:
 
 <div style="text-align: center;">
    <img
-      src="/assets/tlol_visualisations/11.10-global_intent_region-heatmap (log10, normalized).png"
+      src="/assets/tlol_visualisations/11.10-global_intent_region-heatmap (log10,normalised).png"
       style="width: 100%; max-width: 640px;"
    />
 </div>
