@@ -116,8 +116,7 @@ the recording is of a challenger level game so the players are efficiently
 balancing fighting and farming. Maybe this pattern wouldn't be so clear
 in a lower rated game. Another interesting pattern in the graph is
 the top-right image which shows how many turrets are present within the game.
-It seems strange that the number of towers would increase, however,
-there may be two reasons for this. One possible explanation is that the replay extraction process 
+It seems strange that the number of towers would increase. One possible explanation is that the replay extraction process 
 included bugs which caused a turret to not be found during one observation,
 but was found during another. The `Others` section of the graph includes
 objects which don't fall into another category. This includes objects
