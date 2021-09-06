@@ -1,11 +1,11 @@
 ---
 layout: post
 comments: true
-title:  "TLoL: Human level in League of Legends using Deep Learning (Part 5 - Data Extraction)"
+title:  "TLoL: Human level in League of Legends using Deep Learning (Part 5 - Initial Data Extraction and Analysis)"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
 date:   2021-09-05 23:30:00
 categories: [Project]
-tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Extraction"]
+tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Extraction", "Data Analysis"]
 ---
 
 ## Table of Contents
@@ -62,7 +62,7 @@ There are two ways we can circumvent this issue:
   the far more complex task of reverse engineering a proprietary encryption
   format every two weeks.
 
-## Initial Attempt
+## Initial Data Extraction
 
 ### Observation Rate
 
@@ -275,6 +275,12 @@ N * N = 28 * 28 = 784
 So by reducing the dimensionality of each axis by 4, we reduce the number
 of classes we need to predict over from 1,024 to 784.
 
+#### Local Intent Regions
+
+<!--
+Fill this section in with initial local region analysis
+-->
+
 ## Method
 
 
@@ -372,6 +378,14 @@ Components
 -->
 
 ## References
+
+### Jupter Notebook
+
+This notebook uses the extracted replay files from below. To use this notebook, download the notebook
+and either replay file, and when prompted in the initial cell, enter the filename of the extracted
+replay file JSON you would like to analyse.
+
+- [Jupyter Notebook](https://github.com/MiscellaneousStuff/tlol/blob/main/tlol-replay_analysis.ipynb)
 
 ### Initial Extracted Replay Files
 
