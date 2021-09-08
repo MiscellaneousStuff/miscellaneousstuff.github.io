@@ -41,6 +41,16 @@ following:
     using replays from the Europe West (EUW) region which is widely considered to be the best 
     region outside of the best region in China and the Korean (KR) region.
 
+- **100,000,000 Samples**
+
+    The paper also describes how the final dataset is comprised of 100 million data samples.
+    The paper doesn't clearly indicate what a sample is, this could either be a frame
+    (a single observation of the game at a single point in time), or this could refer to
+    scenes. Scenes are collections of observations which relate to a single instance of
+    something happening in the game. For instance, the `Combat` scene refers to players
+    fighting against each other, the `Navigation` scene refers to players moving from
+    one global intent region to another. For further details, refer to [part 4](https://miscellaneousstuff.github.io/project/2021/09/04/tlol-part-4-exploring-the-literature.html).
+
 ### Method
 
 ## References
