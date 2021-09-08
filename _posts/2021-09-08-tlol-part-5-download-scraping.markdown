@@ -237,6 +237,188 @@ request data simultaneously, while waiting 0.5 seconds between requests on each 
 to prevent us being blocked by the API. This is also out of respect, as we don't want
 to flood the traffic of the website.
 
+Using the summoner names retrieved from the above code, we can then use another function
+to get the matches for each summoner which were played on the current patch and where the
+player played the champion which we want replays (in this case Ezreal).
+
+The following code allows us to to this:
+
+```python
+import concurrent.futures
+import request
+import time
+
+CONNECTIONS = 10
+
+champ_ids = {}
+
+with open(fname) as f:
+    content = f.read()
+    lines = content.split("\n")
+    for l in lines:
+        ln = l.split(":")
+        champ = ln[1].strip()
+        champ_id = int(ln[0])
+        champ_ids[champ] = champ_id
+
+def handle_req(url, body):
+    req = requests.request(
+        'POST',
+        url,
+        data=json.dumps(body),
+        headers={
+            "Content-Type": "application/json"
+        }
+    )
+    time.sleep(0.5)
+    return req
+
+def get_matches(self, summoner_names, champs, target_patch, outfile="", win_only=False):
+    matches_url = "https://u.gg/api"
+    match_ids = set()
+    matches_req_body = lambda summoner_name: {
+        "operationName": "FetchMatchSummaries",
+        "query": "query FetchMatchSummaries($championId: [Int], $page: Int, $queueType: [Int], $regionId: String!, $role: [Int], $seasonId: Int!, $summonerName: String!) {\n  fetchPlayerMatchSummaries(\n    championId: $championId\n    page: $page\n    queueType: $queueType\n    regionId: $regionId\n    role: $role\n    seasonId: $seasonId\n    summonerName: $summonerName\n  ) {\n    finishedMatchSummaries\n    totalNumMatches\n    matchSummaries {\n      assists\n      championId\n      cs\n      damage\n      deaths\n      gold\n      items\n      jungleCs\n      killParticipation\n      kills\n      level\n      matchCreationTime\n      matchDuration\n      matchId\n      maximumKillStreak\n      primaryStyle\n      queueType\n      regionId\n      role\n      runes\n      subStyle\n      summonerName\n      summonerSpells\n      psHardCarry\n      psTeamPlay\n      lpInfo {\n        lp\n        placement\n        promoProgress\n        promoTarget\n        promotedTo {\n          tier\n          rank\n          __typename\n        }\n        __typename\n      }\n      teamA {\n        championId\n        summonerName\n        teamId\n        role\n        hardCarry\n        teamplay\n        __typename\n      }\n      teamB {\n        championId\n        summonerName\n        teamId\n        role\n        hardCarry\n        teamplay\n        __typename\n      }\n      version\n      visionScore\n      win\n      __typename\n    }\n    __typename\n  }\n}\n",
+        "variables": {
+            "championId": [champ_ids[c] for c in champs],
+            "page": 1, # Finds max of 20 games of a single champ per patch (people rarely play more than this so to keep the code much simpler, I'm only checking a maximum of 20 games of the same champion per summoner per patch.)
+            "queueType": [420], # 420 = solo/duo
+            "regionId": "euw1",
+            "role": [],
+            "seasonId": 16,
+            "summonerName": summoner_name
+        }
+    }
+    
+    if outfile:
+        # remove old outfile
+        try:
+            os.remove(outfile)
+        except OSError:
+            pass
+        with open(outfile, "a+") as f:
+            f.write(target_patch + "\n")
+            f.write(",".join(champs) + "\n")
+            f.write(f"top {len(summoner_names)} ranked summoners\n")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=CONNECTIONS) as executor:
+        future_to_match_id = (executor.submit(
+            handle_req,
+            matches_url,
+            matches_req_body(name)
+        ) for name in summoner_names)
+        for future in concurrent.futures.as_completed(future_to_match_id):
+            try:
+                data = future.result()
+                data = json.loads(data.content)
+                data = data["data"]["fetchPlayerMatchSummaries"]["matchSummaries"]
+            except Exception as exc:
+                data = str(type(exc))
+            finally:
+                for match in data:
+                    if type(match) == str:
+                        print('This replay failed', match, data)
+                        break
+                    if match["version"] == target_patch:
+                        if (win_only and match["win"]) or (not win_only):
+                            match_ids.add(match["matchId"])
+                            if outfile:
+                                with open(outfile, "a+") as f:
+                                    f.write(str(match["matchId"]) + "\n")
+    return match_ids
+
+if __name__ == "__main__":
+    start_idx   = 1  # Start scraping from leaderboard page 1 (1-100 ranked players)
+    stop_idx    = 10 # Stop scraping from leaderboard page 10 (900-1000 ranked players)
+
+    champs = ["Ezreal"]
+
+    fname_champlst = ["-".join(c.split(" ")) for c in champs]
+    fname_champs = f'{",".join(fname_champlst)}'
+    fname_nums   = f"{((stop_idx - start_idx)+1) * 100}({start_idx}-{stop_idx})"
+    fname_win_only = f'{"win_only" if win_only else "win_or_loss"}'
+    fname = f"{fname_champs}_{fname_nums}_{fname_win_only}.txt"
+
+    leaderboard = get_leaderboard(
+        page_start=start_idx,
+        page_end=stop_idx)
+    players = [p["summonerName"] for p in leaderboard]
+
+    matches = scraper.get_matches(
+        summoner_names=players,
+        champs=champs, # Logical OR search for these champs
+        target_patch="11_17",
+        outfile=f"matches/{fname}",
+        win_only=win_only
+    )
+
+    print("match count:", len(matches))
+
+    game_ids = set()
+    files = os.listdir("./matches/")
+    for file in files:
+        if file.endswith(".txt"):
+            path = os.path.join("./matches/", file)
+            with open(path, "r") as f:
+                content = f.read()
+                content = content.split("\n")
+                game_ids = game_ids.union(set(content[3:]))
+
+    with open("./matches/game_ids.txt", "w") as f:
+        for game_id in game_ids:
+            f.write(game_id + "\n")
+```
+
+The above code relies on a `champ_ids.txt` file being in the same directory.
+This is used to convert between the champion IDs used internally in Riot's APIs
+from a champion's name (as of 08/09/2021, which is patch 11.17).
+This can be downloaded from [this](https://miscellaneousstuff.github.io/assets/configs/champ_ids.txt) link.
+
+This code snippet will use the [u.gg](https://u.gg/) API to find every match for
+every provided summoner which matches the provided criteria (up to 20 games per player, due to
+only the first page of results per summoner being checked).
+The criteria used is:
+
+- `summoner_names`
+
+    List of summoners to scrape replays from. Use this in conjunction with the 
+    `get_leaderboards()` function to scrape replays from the top of the leaderboard. You
+    could also get a list of pro players from a website like, [trackingthepros.com](https://www.trackingthepros.com/) and
+    use the summoner names to get replays of pro players for training data. This will
+    be possibly during the **2021 World Championship** as it is being held in `EUW`,
+    which will make it easier to scrape replays from a single region.
+
+- `champs`
+
+    List of champions which need to be present to be included in the search results.
+    If this list is empty, it will accept any champion, if the list contains one champion,
+    then only games where a summoner played that champion will be returned. However, if
+    the `champs` list contains multiple champions, then the search query is logical OR,
+    which means if the summoner played any of the champions, then a `gameId` is returned.
+
+- `target_patch`
+
+    The current patch which League of Legends is currently on, for the specified region. I haven't
+    included code to set the region, you will just need to find the regionId from Riot's
+    documentation, and change the parameters as required. For example, if we are on
+    patch 11.17 (which as of 08/09/2021, we are), then this parameter will need to be set
+    to `"11_17"`.
+
+- `outfile`
+
+    File path to save the list of gameIds to.
+
+- `win_only`
+
+    Set this to true if you only want to scrape games where a player won. For now, I have
+    used this because it is the simplest way to increase the average gameplay quality of
+    the replays. This is intuitive, as everything else being the same, a player was more
+    likely to win a game over 10,000 games if it was them who played better and if they
+    weren't a determine to their team.
+
+From this, we finally get the list of gameIds which match the criteria we want, for the
+individual or multiple champions which we want replays for.
+
 ## References
 
 Summary
