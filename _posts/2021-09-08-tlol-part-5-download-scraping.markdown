@@ -419,17 +419,13 @@ The criteria used is:
 From this, we finally get the list of gameIds which match the criteria we want, for the
 individual or multiple champions which we want replays for.
 
+## Summary
+
+In summary, we are now able to find a list of relevant replay files using u.gg. Next we
+will need to use the League Client Update to download the *.rofl files automatically.
+
 ## References
 
-Summary
+### League Replay Jupyter Notebook
 
-## References
-
-<!--
-https://www.leagueofgraphs.com/rankings/game-durations
--->
-
-<!--
-Papers
-- JueWu-SL
->
+- [TLoL Repository (Contains Notebook and Replay Files)](https://github.com/MiscellaneousStuff/tlol)
