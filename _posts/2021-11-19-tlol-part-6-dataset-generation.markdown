@@ -129,6 +129,16 @@ The code for both processes combined is provided below:
 
 {% gist 509303436e887ba0a4c2732511ad23a2 %}
 
+Below is a real-time log (in seconds) for how long it took me to scrape the summoner names
+of the top 36,000 players in EUW.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/logs/leaderboard_scraping.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
 Now that we have a list of game IDs we would like to download from the Amazon S3 replay
 file store, we need to create a process to actually download the games.
 
@@ -185,6 +195,17 @@ again.
 
 {% gist 9d91b5a239574f7c159ee9b3918b7a3f %}
 
+Also provided are the real-time logs for `19,681` out of the `36,698` final replay files.
+You can roughly double this number to get an idea of how long the full `36,698` replay
+file download took.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/logs/match_scraping.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
 #### Automated Replay Downloads
 
 Now that we know where the server is being hosted and what the token is, we can use
@@ -195,7 +216,12 @@ the downloads take to complete. For me on my internet connection, the downloads 
 around 200Mbit/s. For an idea of the peak speed of download replays, refer to the below image
 which is a log of the download speed over time when downloading the `36,698` replay files.
 
-<!-- Insert Neptune.ai download speed real-time log image here -->
+<div style="text-align: center;">
+   <img
+      src="/assets/logs/download_scraping.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
 
 ## Replay Scraping
 
