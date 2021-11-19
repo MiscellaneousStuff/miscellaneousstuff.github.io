@@ -17,7 +17,7 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 ## Introduction
 
 Following a long hiatus, this section will explain the data generation procedure for
-the TLoL project and how the datasets used will be used to create the first agent
+the TLoL project and how the datasets generated will be used to create the first agent
 which can play League of Legends.
 
 ## Overview
@@ -26,8 +26,10 @@ To generate a basic replay dataset for League of Legends, a process to gather re
 files and extract useful information from them was required. As has been explained
 in previous posts, there is no API from Riot to do this so a custom method was required.
 The League of Legends replay files themselves used an obfuscated and encrypted format
-which changes with each patch, however, there are scripting tools which rely on
-scraping game objects from distinct memory locations which are far easier to update
+which changes with each patch.
+However, there are scripting tools which rely on
+scraping game objects from distinct memory locations from
+the client which are far easier to update
 from patch to patch. These scripting tools are easier to update from patch to patch
 because the League of Legends game engine itself doesn't drastically change from patch
 to patch. This makes using scripting engines to scrape data from replays loaded into
@@ -66,14 +68,14 @@ data from the top of the EUW ranked ladder. I would have preferred to use the KR
 but sadly it is difficult to acquire a KR League of Legends account if you live outside
 of the region.
 
-As for the game selection, I am using the criteria from [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html) when selecting games, #
-however, I have decided to change a few things. Firstly, I will be using `Miss Fortune` 
-instead of `Ezreal`. The reason for this is that the attack damage carry (ADC) who is most
+As for the game selection, I am using the criteria from [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html) when selecting games, 
+however, I have decided to change a few things. Firstly, I will be targetting `Miss Fortune` 
+instead of `Ezreal`. The reason for this is that the champion who is most
 popular each patch changes based on which champion is currently strong within that patch.
 This means that a varying amount of data is available for each champion. Another criteria
 which I changed was deciding to scrape games where the game with the desired champion won
 the game only. Instead I scraped games where they won and lost and instead used basic
-meta-data about the performance of that player later on. This means that more replays
+metadata about the performance of that player later on. This means that more replays
 are available for the dataset and allows more precise fine tuning of the dataset as whether
 a player won or not is a crude estimate of their performance for each game.
 
@@ -104,5 +106,31 @@ The process is split into two main parts:
 The directory for this process was structured as follows:
 - [champ_ids.txt](https://github.com/MiscellaneousStuff/miscellaneousstuff.github.io/blob/main/assets/configs/champ_ids.txt) (Contained a list to map champion names to their Riot defined IDs)
 - replay_scraper.py (Contained the code to gather the game ids)
+
+At first, I tried querying the [u.gg](https://u.gg/) and gathered the list of the players
+one by one, but I quickly found that this was a very slow process. Instead I decided
+to use multithreading to quicken the process but found that issuing 10s, if not 100s of
+HTTP requests to a single website per second will quickly get you temporarily banned
+from using that website. Therefore I introduced a small 0.25s to 0.5s delay between
+each HTTP request which over 360 HTTP requests (36,000 players / 100 players per page),
+gave the best balance between increasing the player list generation process and not
+getting banned. The code for this process is provided below:
+
+<!-- Insert the Git Gist here -->
+
+Afterwards I needed to find games which matched the criteria described above. Fortunately,
+[u.gg](https://u.gg/) also provides a convenient method within their API to do this.
+Now that I had a list of the top 36,000 players summoner names, I could use this to look
+through their list of played games during the target patch `11_21` and determine if
+each game matched the desired criteria. If it did, it was added to the list of games
+which would be downloaded later on. As you can imagine, sending 36,000 queries to
+[u.gg](https://u.gg/) is also a time consuming process which needed to be sped up
+using the same multithreading procedure as above. The code for that process is provided
+below:
+
+<!-- Insert the Git Gist here -->
+
+Now that we have a list of game IDs we would like to download from the Amazon S3 replay
+file store, we need to create a process to actually download the games.
 
 ## References
