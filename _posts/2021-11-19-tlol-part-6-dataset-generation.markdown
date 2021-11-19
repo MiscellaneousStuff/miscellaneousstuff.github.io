@@ -178,7 +178,12 @@ the client. The following images demonstate this process:
 </div>
 
 From these command line arguments, you need the `--remoting-auth-token` and the `--app-port`
-for the next stage.
+for the next stage. Use the `--remoting-auth-token` and `--app-port` with the below code
+to download the desired replays. Be aware, if you close the client and then open it later,
+the token and port change so you will need to use `ProcessExplorer` to get these values
+again.
+
+{% gist 9d91b5a239574f7c159ee9b3918b7a3f %}
 
 #### Automated Replay Downloads
 
