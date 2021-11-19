@@ -249,13 +249,13 @@ information. For instance, we can find out how many replay files we have for eac
 For instance, we may be interested to know how many `Miss Fortune` and `Nami` replay files
 we have specifically using this query:
 
-```SQL
+{% highlight sql %}
 SELECT playerGame.champ, count(playerGame.champ)
 FROM playerGame
 INNER JOIN games ON playerGame.game_id=games.game_id
 GROUP BY champ
 ORDER BY count(playerGame.champ) DESC;
-```
+{% endhighlight %}
 
 Out of the list, the top 10 champs are:
 
