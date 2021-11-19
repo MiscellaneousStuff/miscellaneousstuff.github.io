@@ -172,7 +172,7 @@ the client. The following images demonstate this process:
 
 <div style="text-align: center;">
    <img
-      src="/assets/op_gg/process_explorer_full_lcu_port.png"
+      src="/assets/lol_client/process_explorer_full_lcu_port.png"
       style="width: 100%; max-width: 640px;"
    />
 </div>
