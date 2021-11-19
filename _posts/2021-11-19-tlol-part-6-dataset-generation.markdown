@@ -407,6 +407,13 @@ of a game alone is hard enough. This results in:
 
 <!-- Explain rofl -> json here... -->
 
+<div style="text-align: center;">
+   <img
+      src="/assets/arch/tlol-replay-scraping-arch.svg"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
 {% gist 15235f4e24c73cf33dc4dd872ce04001 %}
 
 ## Dataset Conversion
