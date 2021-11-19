@@ -79,4 +79,30 @@ a player won or not is a crude estimate of their performance for each game.
 
 ### Method
 
+#### Data Source
+
+The data source for this information is the [u.gg](https://u.gg/) website which provides a
+very simplified API for accessing Riot API information. The [u.gg](https://u.gg/) website
+is used instead of the Riot API because when the Riot API switched from `v4` to `v5`, they
+introduced harsh API limits which rendered it useless for this project. I also avoided
+[op.gg](https://op.gg) as the API is out of date and difficult to parse due to it's age,
+this is further explained in [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html).
+
+#### Process
+
+The process is split into two main parts:
+1.  Gather a list of high elo players from rank 1 down to a specified limit.
+    In practice, the limit was set to the top 36,000 players which roughly comprise the
+    top 1% of players in EUW.
+2.  Gather a list of game IDs which match the criteria we want.
+    The criteria used was the following:
+    - Contained either `Miss Fortune` or `Nami` (as they were the most popular champions
+      for the target patch `11_21`).
+    - Games were played on patch `11_21`.
+    - Win or loss.
+
+The directory for this process was structured as follows:
+- [champ_ids.txt](https://github.com/MiscellaneousStuff/miscellaneousstuff.github.io/blob/main/assets/configs/champ_ids.txt) (Contained a list to map champion names to their Riot defined IDs)
+- replay_scraper.py (Contained the code to gather the game ids)
+
 ## References
