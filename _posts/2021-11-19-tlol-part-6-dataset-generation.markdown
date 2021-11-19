@@ -247,9 +247,30 @@ The code used to extract JSON metadata from a replay file is provided below:
 Now, this `metadata.db` SQLite database allows us to query our dataset for useful
 information. For instance, we can find out how many replay files we have for each champion.
 For instance, we may be interested to know how many `Miss Fortune` and `Nami` replay files
-we have specifically.
+we have specifically using this query:
 
-<!-- SQLite MF and Nami query results of their game counts within `metadata.db` -->
+```SQL
+SELECT playerGame.champ, count(playerGame.champ)
+FROM playerGame
+INNER JOIN games ON playerGame.game_id=games.game_id
+GROUP BY champ
+ORDER BY count(playerGame.champ) DESC;
+```
+
+Out of the list, the top 10 champs are:
+
+| Champ             | Game Count   |
+| ----------------- | ------------ |
+| Nami	            | 20875        |
+| Miss Fortune      | 20534        |
+| Lucian	        | 13266        |
+| Graves	        | 7889         |
+| Camille	        | 6552         |
+| Viego	            | 6297         |
+| Jhin	            | 5821         |
+| Lux	            | 5621         |
+| LeeSin	        | 5603         |
+| Yone	            | 5558         |
 
 We can also return games based on their duration. This could be useful in creating a small
 pilot dataset for us to explore and fine tune ideas before moving on to scraping larger
