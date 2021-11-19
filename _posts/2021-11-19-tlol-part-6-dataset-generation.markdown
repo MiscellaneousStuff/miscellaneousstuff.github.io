@@ -148,6 +148,10 @@ dataset for `Miss Fortune` and `Nami` in patch `11_21` where the player won or l
 contains `36,698` replays. This should be a more than adequate amount of data to create
 a human-level League of Legends AI system.
 
+### Process
+
+#### Port and Auth Token
+
 Following this, we actually need to download the games. As mentioned previously, the
 League of Legends Client Update (LCU) hosts a server on the `localhost` which provides
 the local user with an API to directly interact with the League of Legends client.
@@ -169,6 +173,8 @@ the client. The following images demonstate this process:
 
 <!-- Insert image showing how to use ProcessExplorer.exe to get token and port -->
 
+#### Automated Replay Downloads
+
 Now that we know where the server is being hosted and what the token is, we can use
 that information along with the required game IDs and begin to download replay files
 automatically. For these HTTP requests, I use the same request delay as the [u.gg](https://u.gg/) requests as downloads from the Amazon S3 replay file storage take roughly the same
@@ -178,5 +184,61 @@ around 200Mbit/s. For an idea of the peak speed of download replays, refer to th
 which is a log of the download speed over time when downloading the `36,698` replay files.
 
 <!-- Insert Neptune.ai download speed real-time log image here -->
+
+## Replay Scraping
+
+### Explanation
+
+At this stage, we have downloaded all of the replay files we want, in my case that is
+a whopping `36,698` replay files. The total file size of all of these replays is roughly
+`500GB`, as each replay file on average is about `13.5MB`. This should highlight just
+how massive reinforcement learning datasets are in general.
+
+Now that we have these files, we actually need to extract useful information from them.
+However, during our extraction process we didn't scrape any metadata about the individual
+replay files. However, each `*.rofl` file contains a JSON section at the start of the
+file which gives fairly detailed information about the game, including it's patch, the
+summoners who played the game and aggregate statistics about their performance during
+the game and which champions the players played. This means that we can generate a small
+SQL database with this information and use it to tailor our replay scraping process.
+The code used to extract JSON metadata from a replay file is provided below:
+
+<!-- *.rofl JSON extraction method GitHub Gist -->
+
+Now, this `metadata.db` SQLite database allows us to query our dataset for useful
+information. For instance, we can find out how many replay files we have for each champion.
+For instance, we may be interested to know how many `Miss Fortune` and `Nami` replay files
+we have specifically.
+
+<!-- SQLite MF and Nami query results of their game counts within `metadata.db` -->
+
+We can also return games based on their duration. This could be useful in creating a small
+pilot dataset for us to explore and fine tune ideas before moving on to scraping larger
+numbers of games. In this case, I decided to find a list of the games where the games
+ended in an early surrender (first 3.5 minutes of the game) because a player failed to connect
+to the game. This dataset is useful as it guarantees the game length is low and allows us
+to determine which features of a game are useful to extract for a machine learning agent.
+
+<!-- SQL query showing number of games which fit this criteria -->
+
+It would also be useful to know which champions are present within this dataset so we know
+which champions we have the most data for.
+
+<!-- SQL query showing champion counts for 191-EarlyFF dataset and
+compare it so u.gg v11.21 champion count breakdown -->
+
+So as we can see, the champion counts for even this small dataset resemble the champion
+popularity for all of low diamond which means even though this dataset is small and
+contains a player which didn't connect, it is still a proportionate sample of high elo
+Ranked Solo/Duo for patch `11_21`.
+
+After this, we can begin to extract replays from the rest of the dataset. As a simplified
+start, I decided to extract information from the first 5 minutes of each game as scraping
+data from full length games is a time consuming process. I also decided to target games
+where the `Miss Fortune` player spent the highest number of seconds alive during a game,
+as that was the individual feature from the `metadata.db` which had the highest
+correlation with winning, at 64.4%.
+
+### Process
 
 ## References
