@@ -196,8 +196,7 @@ again.
 {% gist 9d91b5a239574f7c159ee9b3918b7a3f %}
 
 Also provided are the real-time logs for `19,681` out of the `36,698` final replay files.
-You can roughly double this number to get an idea of how long the full `36,698` replay
-file download took.
+You can roughly double this number to get an idea of how long the full `36,698` game IDs.
 
 <div style="text-align: center;">
    <img
@@ -214,7 +213,9 @@ automatically. For these HTTP requests, I use the same request delay as the [u.g
 amount of time as the delay which matches the download requests to the amount of time
 the downloads take to complete. For me on my internet connection, the downloads peaked at
 around 200Mbit/s. For an idea of the peak speed of download replays, refer to the below image
-which is a log of the download speed over time when downloading the `36,698` replay files.
+which is a log of the download speed over time when downloading the `19,681` out of the
+`36,698`. You can roughly double this number to get an idea of how long the full `36,698` 
+replay files download took.
 
 <div style="text-align: center;">
    <img
@@ -241,7 +242,7 @@ the game and which champions the players played. This means that we can generate
 SQL database with this information and use it to tailor our replay scraping process.
 The code used to extract JSON metadata from a replay file is provided below:
 
-<!-- *.rofl JSON extraction method GitHub Gist -->
+{% gist eb1e3f25cd31a66200417c6eb2344dbb %}
 
 Now, this `metadata.db` SQLite database allows us to query our dataset for useful
 information. For instance, we can find out how many replay files we have for each champion.
