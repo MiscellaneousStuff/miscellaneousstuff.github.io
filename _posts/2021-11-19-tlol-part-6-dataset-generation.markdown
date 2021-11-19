@@ -105,7 +105,7 @@ The process is split into two main parts:
 
 The directory for this process was structured as follows:
 - [champ_ids.txt](https://github.com/MiscellaneousStuff/miscellaneousstuff.github.io/blob/main/assets/configs/champ_ids.txt) (Contained a list to map champion names to their Riot defined IDs)
-- replay_scraper.py (Contained the code to gather the game ids)
+- [replay_scraper.py](https://gist.github.com/MiscellaneousStuff/509303436e887ba0a4c2732511ad23a2) (Contained the code to gather the game ids)
 
 At first, I tried querying the [u.gg](https://u.gg/) and gathered the list of the players
 one by one, but I quickly found that this was a very slow process. Instead I decided
@@ -114,9 +114,7 @@ HTTP requests to a single website per second will quickly get you temporarily ba
 from using that website. Therefore I introduced a small 0.25s to 0.5s delay between
 each HTTP request which over 360 HTTP requests (36,000 players / 100 players per page),
 gave the best balance between increasing the player list generation process and not
-getting banned. The code for this process is provided below:
-
-<!-- Insert the Git Gist here -->
+getting banned.
 
 Afterwards I needed to find games which matched the criteria described above. Fortunately,
 [u.gg](https://u.gg/) also provides a convenient method within their API to do this.
@@ -125,10 +123,11 @@ through their list of played games during the target patch `11_21` and determine
 each game matched the desired criteria. If it did, it was added to the list of games
 which would be downloaded later on. As you can imagine, sending 36,000 queries to
 [u.gg](https://u.gg/) is also a time consuming process which needed to be sped up
-using the same multithreading procedure as above. The code for that process is provided
-below:
+using the same multithreading procedure as above.
 
-<!-- Insert the Git Gist here -->
+The code for both processes combined is provided below:
+
+{% gist 509303436e887ba0a4c2732511ad23a2 %}
 
 Now that we have a list of game IDs we would like to download from the Amazon S3 replay
 file store, we need to create a process to actually download the games.
