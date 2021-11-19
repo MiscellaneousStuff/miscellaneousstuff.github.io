@@ -148,7 +148,7 @@ file store, we need to create a process to actually download the games.
 
 At this stage, we have a long list of game IDs to download from Riot's Amazon S3
 replay file storage. When I ran the game ID scraping process for `Miss Fortune`
-and `Nami`, I ended up generating at list of `19,534` and `19,860` games respectively.
+and `Nami`, I ended up generating a list of `19,534` and `19,860` games respectively.
 However, because I stored the replay files in different directories, this meant that
 there could be some games between the two lists which were repeated twice, so I combined
 the two lists of game IDs, and removed the duplicates. This reduced the total game
@@ -157,7 +157,7 @@ dataset for `Miss Fortune` and `Nami` in patch `11_21` where the player won or l
 contains `36,698` replays. This should be a more than adequate amount of data to create
 a human-level League of Legends AI system.
 
-### Process
+### Method
 
 #### Port and Auth Token
 
@@ -213,8 +213,9 @@ automatically. For these HTTP requests, I use the same request delay as the [u.g
 amount of time as the delay which matches the download requests to the amount of time
 the downloads take to complete. For me on my internet connection, the downloads peaked at
 around 200Mbit/s. For an idea of the peak speed of download replays, refer to the below image
-which is a log of the download speed over time when downloading the `19,681` out of the
-`36,698`. You can roughly double this number to get an idea of how long the full `36,698` 
+which is a log of the download speed over time when downloading `19,681` out of the
+`36,698` files.
+You can roughly double this number to get an idea of how long the full `36,698` 
 replay files download took.
 
 <div style="text-align: center;">
@@ -235,9 +236,11 @@ how massive reinforcement learning datasets are in general.
 
 Now that we have these files, we actually need to extract useful information from them.
 However, during our extraction process we didn't scrape any metadata about the individual
-replay files. However, each `*.rofl` file contains a JSON section at the start of the
-file which gives fairly detailed information about the game, including it's patch, the
-summoners who played the game and aggregate statistics about their performance during
+replay files. Fortunately for us, each `*.rofl`
+file contains a JSON section at the start of the
+file which gives fairly detailed information about the game.
+This includes it's patch version, the
+summoners who played the game, aggregate statistics about their performance during
 the game and which champions the players played. This means that we can generate a small
 SQL database with this information and use it to tailor our replay scraping process.
 The code used to extract JSON metadata from a replay file is provided below:
@@ -247,7 +250,7 @@ The code used to extract JSON metadata from a replay file is provided below:
 Now, this `metadata.db` SQLite database allows us to query our dataset for useful
 information. For instance, we can find out how many replay files we have for each champion.
 For instance, we may be interested to know how many `Miss Fortune` and `Nami` replay files
-we have specifically using this query:
+we have using this query:
 
 {% highlight sql %}
 SELECT playerGame.champ, count(playerGame.champ)
@@ -257,7 +260,8 @@ GROUP BY champ
 ORDER BY count(playerGame.champ) DESC;
 {% endhighlight %}
 
-Out of the list, the top 10 champs are:
+This query returns the game count for every single champion, however only the top 10
+are provided for brevity here:
 
 | Champ             | Game Count   |
 | ----------------- | ------------ |
@@ -306,7 +310,7 @@ as that was the individual feature from the `metadata.db` which had the highest
 correlation with winning, at 64.4%.
 -->
 
-### Process
+### Method
 
 The process for extracting replay information from games involves using the LViewLoL
 scripting engine. Although this scripting engine was originally intended to give
@@ -315,11 +319,12 @@ extracting information from the game while the game is running.
 
 The LViewLoL project relies on traversing the tree of game objects which are in the
 `League of Legends.exe` game memory in real-time, and copying information from those
-game objects using the `ReadProcessMemory` system call. This system call allows processes
+game objects using the `ReadProcessMemory()` system call. This system call allows processes
 to read the memory of other processes without permission elevation. This system call
 is used by many scripting engines as it provides a convenient way to read the memory
 of other processes with relatively minimal overhead. The LViewLoL project also provides
-an interface for Python scripts to access these observations and interact with the game.
+an interface for Python scripts, using the [C++ boost library](https://www.boost.org/), to 
+access these observations and interact with the game.
 
 I initially used the Python interface to gather observations from replays as they were
 being run but found that the overhead of the Python interface was reducing the efficiency
@@ -327,3 +332,109 @@ of the replay scraping process because of the overhead between the LViewLoL appl
 (C++) and my python script. Instead, I decided to modify the source code of the LViewLoL
 application directly and insert my code to save the observations directly into the main
 part of the code.
+
+#### Experiments
+
+One of the requirements of the replay scraping process is that we can extract enough
+information from the replay files within a reasonable amount of time. This meant that
+it was important to determine the maximum throughput of the replay extraction process
+using LViewLoL. To do this, I simply printed the in `game time` while the LViewLoL
+application was running with a League replay running in the game client at the same
+time. The in `game time` was printed in the following format: `second.milliseconds`,
+so for example `2.1242`.
+
+I then copy and pasted the printed game times from the LViewLoL console
+into a text file and used a python script to
+put each printed game time into seperate bins based on the second of the `game time`.
+I then found the mean number of game times for each in game second within the list.
+
+After running this process multiple times, I determined the maximum throughput of the
+replay scraping system, before actually saving any observations, was roughly 128
+observations a second. This number is important as it determines what multiplier
+we can run the replays on when scraping information from the replays.
+
+For example,
+if we run the replay's at the clients maximum `8x` replay speed, that means the maximum
+number of observations we can scrape per second is
+`128 maximum observations / 8 replay speed = 16 observations a second`. This
+leaves us with the following formula:
+`max_obs / replay_speed = max_obs_sec`. However, we can re-arrange this equation
+to give us the maximum replay speed which still gives us the required number
+of observations per second:
+`max_replay_speed = max_obs / target_obs_sec`.
+
+So for example, if we only want `4 observations / second`, then the formula gives us:
+`max_replay_speed = 128 / 4` which is `32`. This is of interest to us because the League
+of Legends client contains an interesting feature known as the `ReplayAPI`. This allows
+us to override the default replay speed limits to any number we want. So we can playback
+replay files at `x32` speed.
+
+Considering the average game within out dataset lasts roughly
+26 mins (including games ending in surrender), that means we could scrape a single game
+at roughly `26 mins / 32 replay speed` which is roughly `49` seconds. This gives our replay
+system very high throughput. However, this is just the raw speed, the actual speed
+will be slowed down by the following factors:
+
+1.  Overhead of the game engine loading the *.rofl file from disk and parsing it.
+    In practice, I've found this can take up to 15 seconds to load a game on a 7200 RPM
+    HDD, and using an NVMe PCIe SSD only reduces this time down to around 12/13 seconds.
+2.  Overhead of LViewLoL serializing each observation
+
+To serialize each observation within LViewLoL as the game is running, I chose to use
+JSON to serialize all of the game objects per each observation. Although this is a terrible
+choice, and something like [protobuf3](https://developers.google.com/protocol-buffers/docs/proto3), would be a far better choice (and is used to store Dota2 replays within the
+[OpenDota](https://www.opendota.com/) project), I've chosen this for simplicity for now.
+
+This ultimately reduces the maximum number of observations per second from 128 to 64.
+This means, using the same formula as before, the maximum replay speed we can now use
+is `max_replay_speed = 64 / 4` which is `16` and is ultimately the replay speed used
+to generate the current `TLoL` datasets.
+
+This gives us the final formula for calculating how many games can be scraped within
+24 hours:
+`mins_per_day / (mins_per_game / replay_speed + loading_overhead_mins)`
+which is
+`1440 / (26 / 16 + 0.25) = 768`.
+
+However, for the early datasets, I am only scraping
+the first 5 minutes of games as creating an agent which can play the first 5 minutes
+of a game alone is hard enough. This results in:
+`1440 / (5 / 16 + 0.25) = 2,560`.
+
+#### Process
+
+<!-- Insert replay scraping diagram here... -->
+
+<!-- Explain rofl -> json here... -->
+
+## Dataset Conversion
+
+### Explanation
+
+Now that we've generated a list of JSON files for each one of our replays, this leaves
+us with one issue, the JSON files take too much storage and are difficult to parse.
+This means that we need to convert these files into a more efficient data storage
+which is easier to parse. For this stage, I have decided to use SQLite as it is relatively
+storage efficient and it allows us to use SQL statements to parse the data, which is
+sufficient for performing basic data analysis.
+
+### Method
+
+To do this, we need to loop through our JSON files, and insert the contents of each
+JSON file into an SQLite database. The code to do this is provided below:
+
+{% gist 7ccacfaccc093462876266d2027dec89 %}
+
+## Summary
+
+At this stage we have done the following:
+
+1. Found the top 36,000 players on the EUW Ranked Solo/Duo ladder
+2. Gathered all of the game IDs from those players that we're interested in
+3. Downloaded all of the games found in the previous step
+4. Extracted observations for a subset of the replays and stored it in JSON format
+5. Converted the JSON files into SQLite files for easier storage and processing
+
+In the next post, we will actually analyse the data we have gathered, improve the feature
+selection of the replay process and maybe even start training a basic machine learning
+model which can play League of Legends once we have gathered more data!
