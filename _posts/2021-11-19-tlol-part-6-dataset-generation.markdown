@@ -170,7 +170,15 @@ we need the command line arguments are so that we can see which port the client 
 its API interface on and to get the security token to be able to issue HTTP requests to
 the client. The following images demonstate this process:
 
-<!-- Insert image showing how to use ProcessExplorer.exe to get token and port -->
+<div style="text-align: center;">
+   <img
+      src="/assets/op_gg/process_explorer_full_lcu_port.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+From these command line arguments, you need the `--remoting-auth-token` and the `--app-port`
+for the next stage.
 
 #### Automated Replay Downloads
 
