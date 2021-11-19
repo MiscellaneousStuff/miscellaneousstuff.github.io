@@ -278,14 +278,20 @@ numbers of games. In this case, I decided to find a list of the games where the 
 ended in an early surrender (first 3.5 minutes of the game) because a player failed to connect
 to the game. This dataset is useful as it guarantees the game length is low and allows us
 to determine which features of a game are useful to extract for a machine learning agent.
+The following SQL query was used to find this list of game IDs:
 
-<!-- SQL query showing number of games which fit this criteria -->
+```SQL
+SELECT game_id
+FROM games
+WHERE game_mins < 4.0;
+```
 
+This returned 191 games, which later became the `191-EarlyFF` dataset. Analysis of this
+dataset will be provided in a later post.
+
+<!--
 It would also be useful to know which champions are present within this dataset so we know
 which champions we have the most data for.
-
-<!-- SQL query showing champion counts for 191-EarlyFF dataset and
-compare it so u.gg v11.21 champion count breakdown -->
 
 So as we can see, the champion counts for even this small dataset resemble the champion
 popularity for all of low diamond which means even though this dataset is small and
@@ -298,6 +304,7 @@ data from full length games is a time consuming process. I also decided to targe
 where the `Miss Fortune` player spent the highest number of seconds alive during a game,
 as that was the individual feature from the `metadata.db` which had the highest
 correlation with winning, at 64.4%.
+-->
 
 ### Process
 
@@ -320,5 +327,3 @@ of the replay scraping process because of the overhead between the LViewLoL appl
 (C++) and my python script. Instead, I decided to modify the source code of the LViewLoL
 application directly and insert my code to save the observations directly into the main
 part of the code.
-
-## References
