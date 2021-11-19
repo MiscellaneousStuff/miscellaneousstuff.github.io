@@ -157,4 +157,26 @@ is logged into (as League of Legends accounts are tied to [specific regions](htt
 patch as the current patch, as Riot deletes replay files which are from previous patches.
 Fortunately, our game ID scraping process only returns game IDs for the patch we specify.
 
+However, to interface with this `localhost` address, we need to find out which port
+the server is being hosted on and also find its credentials so we can connect to it.
+The easiest way to do this is to log into the League of Legends client with an account
+that matches the server we want to download games from and use a program like
+[Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer)
+which allows us to view which command line arguments a process was started with. The reason
+we need the command line arguments are so that we can see which port the client is hosting
+its API interface on and to get the security token to be able to issue HTTP requests to
+the client. The following images demonstate this process:
+
+<!-- Insert image showing how to use ProcessExplorer.exe to get token and port -->
+
+Now that we know where the server is being hosted and what the token is, we can use
+that information along with the required game IDs and begin to download replay files
+automatically. For these HTTP requests, I use the same request delay as the [u.gg](https://u.gg/) requests as downloads from the Amazon S3 replay file storage take roughly the same
+amount of time as the delay which matches the download requests to the amount of time
+the downloads take to complete. For me on my internet connection, the downloads peaked at
+around 200Mbit/s. For an idea of the peak speed of download replays, refer to the below image
+which is a log of the download speed over time when downloading the `36,698` replay files.
+
+<!-- Insert Neptune.ai download speed real-time log image here -->
+
 ## References
