@@ -241,4 +241,24 @@ correlation with winning, at 64.4%.
 
 ### Process
 
+The process for extracting replay information from games involves using the LViewLoL
+scripting engine. Although this scripting engine was originally intended to give
+players an advantage while playing the game, it also has the useful feature of reliably
+extracting information from the game while the game is running.
+
+The LViewLoL project relies on traversing the tree of game objects which are in the
+`League of Legends.exe` game memory in real-time, and copying information from those
+game objects using the `ReadProcessMemory` system call. This system call allows processes
+to read the memory of other processes without permission elevation. This system call
+is used by many scripting engines as it provides a convenient way to read the memory
+of other processes with relatively minimal overhead. The LViewLoL project also provides
+an interface for Python scripts to access these observations and interact with the game.
+
+I initially used the Python interface to gather observations from replays as they were
+being run but found that the overhead of the Python interface was reducing the efficiency
+of the replay scraping process because of the overhead between the LViewLoL application
+(C++) and my python script. Instead, I decided to modify the source code of the LViewLoL
+application directly and insert my code to save the observations directly into the main
+part of the code.
+
 ## References
