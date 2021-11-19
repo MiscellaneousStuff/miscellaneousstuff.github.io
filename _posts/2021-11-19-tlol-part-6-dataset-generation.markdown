@@ -133,4 +133,28 @@ below:
 Now that we have a list of game IDs we would like to download from the Amazon S3 replay
 file store, we need to create a process to actually download the games.
 
+## Replay Downloading
+
+### Explanation
+
+At this stage, we have a long list of game IDs to download from Riot's Amazon S3
+replay file storage. When I ran the game ID scraping process for `Miss Fortune`
+and `Nami`, I ended up generating at list of `19,534` and `19,860` games respectively.
+However, because I stored the replay files in different directories, this meant that
+there could be some games between the two lists which were repeated twice, so I combined
+the two lists of game IDs, and removed the duplicates. This reduced the total game
+count down from `39,394` to `36,698`. This means the final total number of games in our
+dataset for `Miss Fortune` and `Nami` in patch `11_21` where the player won or lost
+contains `36,698` replays. This should be a more than adequate amount of data to create
+a human-level League of Legends AI system.
+
+Following this, we actually need to download the games. As mentioned previously, the
+League of Legends Client Update (LCU) hosts a server on the `localhost` which provides
+the local user with an API to directly interact with the League of Legends client.
+One of the methods it provides is a way to download a replay file just by providing
+the game ID. This method only works with replays from the region where the client
+is logged into (as League of Legends accounts are tied to [specific regions](https://leagueoflegends.fandom.com/wiki/Servers)). The replay file must also be on the same
+patch as the current patch, as Riot deletes replay files which are from previous patches.
+Fortunately, our game ID scraping process only returns game IDs for the patch we specify.
+
 ## References
