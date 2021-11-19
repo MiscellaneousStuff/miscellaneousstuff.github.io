@@ -280,11 +280,11 @@ to the game. This dataset is useful as it guarantees the game length is low and 
 to determine which features of a game are useful to extract for a machine learning agent.
 The following SQL query was used to find this list of game IDs:
 
-```SQL
+{% highlight sql %}
 SELECT game_id
 FROM games
 WHERE game_mins < 4.0;
-```
+{% endhighlight %}
 
 This returned 191 games, which later became the `191-EarlyFF` dataset. Analysis of this
 dataset will be provided in a later post.
