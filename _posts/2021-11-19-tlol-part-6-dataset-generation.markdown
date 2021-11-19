@@ -403,9 +403,7 @@ of a game alone is hard enough. This results in:
 
 #### Process
 
-<!-- Insert replay scraping diagram here... -->
-
-<!-- Explain rofl -> json here... -->
+Replay extraction architecture:
 
 <div style="text-align: center;">
    <img
@@ -413,6 +411,21 @@ of a game alone is hard enough. This results in:
       style="width: 100%; max-width: 640px;"
    />
 </div>
+
+SQL query to get best performing 1000 games for a specified champ.
+Call this `target_games.sql` or `COUNT CHAMPS.sql` or whatever suits you best:
+
+```SQL
+SELECT playerGame.win, games.game_mins, games.game_id, games.game_length
+FROM playerGame
+INNER JOIN games ON playerGame.game_id=games.game_id
+WHERE playerGame.champ = "MissFortune"
+GROUP BY playerGame.game_id, playerGame.longest_time_spent_living
+ORDER BY playerGame.longest_time_spent_living DESC
+LIMIT 1000 OFFSET 0;
+```
+
+Replay extraction `multi_scrape.py` orchestrator code:
 
 {% gist 15235f4e24c73cf33dc4dd872ce04001 %}
 
