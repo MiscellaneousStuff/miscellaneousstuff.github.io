@@ -55,6 +55,28 @@ following process:
    - Converting the intermediate format into a format more suitable for storage
      and processing
 
-## Player Selection
+## Player and Game Selection
+
+### Explanation
+
+As explained in [part 4](https://miscellaneousstuff.github.io/project/2021/09/04/tlol-part-4-exploring-the-literature.html) and [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html), it is important to gather data
+from the best performing players available as that increases the performance of the agent,
+regardless of how you use the data to train the agent. As such, I simply chose to gather
+data from the top of the EUW ranked ladder. I would have preferred to use the KR ranked ladder
+but sadly it is difficult to acquire a KR League of Legends account if you live outside
+of the region.
+
+As for the game selection, I am using the criteria from [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html) when selecting games, #
+however, I have decided to change a few things. Firstly, I will be using `Miss Fortune` 
+instead of `Ezreal`. The reason for this is that the attack damage carry (ADC) who is most
+popular each patch changes based on which champion is currently strong within that patch.
+This means that a varying amount of data is available for each champion. Another criteria
+which I changed was deciding to scrape games where the game with the desired champion won
+the game only. Instead I scraped games where they won and lost and instead used basic
+meta-data about the performance of that player later on. This means that more replays
+are available for the dataset and allows more precise fine tuning of the dataset as whether
+a player won or not is a crude estimate of their performance for each game.
+
+### Method
 
 ## References
