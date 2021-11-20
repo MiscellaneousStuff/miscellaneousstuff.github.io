@@ -2,7 +2,9 @@
 layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 4 - Exploring the Literature)"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
+excerpt: "This post reviews successful MOBA playing AI agents within the literature, what they done
+well, what could have done better and then concludes with what can be used in creating
+a human-level League of Legends AI."
 date:   2021-09-04 10:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Literature Review"]

@@ -2,7 +2,11 @@
 layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 3 - Initial Ideas)"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
+excerpt: "This post explores how to acquire replay data in League of Legends,
+the League of Legends rofl replay format, and how to extract granular
+information from a replay file using a method which alleviates the
+encryption of the replay files in a way which is robust from patch to
+patch, as the game is updated once every two weeks."
 date:   2021-09-03 08:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]

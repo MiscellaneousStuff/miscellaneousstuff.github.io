@@ -2,7 +2,8 @@
 layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 5 - Download Scraping)"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
+excerpt: "In summary, we are now able to find a list of relevant replay files using u.gg. Next we
+will need to use the League Client Update to download the *.rofl files automatically."
 date:   2021-09-08 18:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Scraping"]

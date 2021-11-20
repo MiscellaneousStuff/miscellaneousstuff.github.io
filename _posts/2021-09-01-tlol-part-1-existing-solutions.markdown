@@ -2,7 +2,11 @@
 layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 1 - Existing Solutions)"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
+excerpt: "This post reviews existing League of Legends AI systems from different games
+which have been released by Riot Games themselves, to bots and scripts which
+have been ever present since the initial release of the game and finally to
+recent academic approaches which have used cutting-edge AI techniques to
+create AI systems which can play League of Legends."
 date:   2021-09-01 14:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"]

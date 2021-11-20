@@ -3,7 +3,9 @@ layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 6 - Dataset
 Generation)"
-excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
+excerpt: "Following a long hiatus, this section will explain the data generation procedure for
+the TLoL project and how the datasets generated will be used to create the first agent
+which can play League of Legends."
 date:   2021-11-19 08:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Generation"]
@@ -460,3 +462,6 @@ At this stage we have done the following:
 In the next post, we will actually analyse the data we have gathered, improve the feature
 selection of the replay process and maybe even start training a basic machine learning
 model which can play League of Legends once we have gathered more data!
+
+## Resources
+
