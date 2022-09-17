@@ -45,3 +45,64 @@ learning framework which provides a readily available
 implementation of this technique.
 - This post will evaluate the increase in runtime performance of a 
 pre-trained deep learning ASR model for cloud deployment.
+
+## Problem Statement & Aims / Objectives
+
+- The problem this research will investigate is how to increase the 
+performance of CPU based deep learning deployments on the 
+cloud.
+- The aim of this research is to investigate the extent to which 
+dynamic quantization can improve the runtime performance of a 
+pre-trained ASR model while evaluating the impact on the 
+model's accuracy.
+- The objective of this research is to reduce the runtime latency, 
+and therefore increase its throughput, of a CPU based deep 
+learning ASR model while maintaining similar speech recognition 
+accuracy, as measured by the model’s word-error rate (WER) on a 
+hold on test set.
+- The results for investigating this problem will allow deep learning 
+practitioners to gain a realistic understanding for how much CPU 
+based deployments may benefit them compared to GPU based 
+deployments, and the trade-offs they may incur.
+
+## Background
+
+- Existing research has been conducted which compares the deployment of CPU and 
+GPU devices for machine learning. Research by Microsoft shows that for a 5 node 35 
+pod CPU cluster and a 3 node GPU cluster (which had a similar cost per hour), that 
+the GPU cluster performed 415% better (Scientist, 2021). This shows that existing 
+approaches to GPU based deployment yield far greater performance that CPU based 
+deployment.
+- However, the literature on deep learning model optimisation shows that by using 
+simple quantization techniques, the performance of deep learning models can easily 
+be improved on CPUs. One search approach (Jacob et al., 2017) shows that 
+quantization methods can reduce the size of a neural network by up to 4 times (by 
+changing the neural networks parameters from 32-bit floating point down to 8-bit 
+integers). This also has the benefit of improving the performance of the models as 
+well.
+- Another paper goes further in describing two main approaches to model 
+quantization. There are two main classes of quantization algorithms which can be 
+applied to neural networks to reduce the bit-width of weights and activations: Post-Training Quantization and Quantization-Aware Training (QAT) (Nagel et al., 2021).
+o Quantization-Aware Training emulates inference-time quantization that downstream 
+tools use to produce quantised models, whereas post-training quantization is only 
+applied after a model has been trained. Post-training quantization (PAT) involves 
+scaling the weights of the model from 8-bits of precision to floating point and 
+computed using floating-point kernels. To further improve latency, dynamic-range 
+operators dynamically quantize activations based on their range to 8-bits and 
+perform computations with 8-bit weights and activations (“Post-training 
+quantization; Tensorflow Lite”, 2021).
+- One interesting use of quantization is also to make recurrent neural networks 
+(RNNs) such as Long-Short Term Memory (LSTM) or Gated Recurrent Network (GRU) 
+more efficient for CPU deployment. This is because they are typically very slow when 
+being run on CPUs due to their sequential nature. However, quantization could 
+provide a promising method of improving the performance of RNNs on CPUs with 
+recent research showing how dynamic quantization can improve the inference 
+speed of RNNs by up to 1.46x. This means that for speech recognition models such 
+as DeepSpeech2, the entire architecture could be significantly sped up using 
+Dynamic Quantization (Silfa et al., 2019).
+
+## References
+
+[Can you close the 
+performance gap between GPU and CPU for deep learning 
+models?”, 2022](https://deci.ai/blog/close-gap-cpu-performance-gpu-deep-learning-models/#:~:text=But%20using%20compilation%20and%20quantization,reduced%20to%202.8X%20difference.)
