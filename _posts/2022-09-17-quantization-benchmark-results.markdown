@@ -101,6 +101,42 @@ speed of RNNs by up to 1.46x. This means that for speech recognition models such
 as DeepSpeech2, the entire architecture could be significantly sped up using 
 Dynamic Quantization (Silfa et al., 2019).
 
+## Experimental Design
+
+- **Speech Recognition Model:** DeepSpeech 2 (Amodei et al., 2015)
+- **Aim:** The aim of this experiment is to use dynamic quantization to improve the 
+runtime performance of a CPU-based deep learning ASR model.
+- **Hypothesis:** Using dynamic quantization reduces the model inference time and 
+increases its throughput, while having a relatively minor hit on its performance
+- **Independent Variable:** Use of dynamic quantization on the pre-trained ASR model or 
+not. Whether a GPU accelerator is being used or not.
+- **Dependent Variable:** There are multiple dependent variables for this experiment. 
+The first is the mean inference latency in milliseconds, the second is the mean 
+throughput of the model and the last one is the WER of the model based on an 
+evaluation dataset. The inference latency and throughput and measured to 
+determine if dynamic quantization is improving run-time performance and the WER 
+of the model is measured to determine the drop in accuracy after quantization.
+- **Controlled Variables:** Number of inference latency trials is set to 300. Number of 
+throughput trials is set to 100. The CPU used was an AMD Ryzen 5 5600X. The GPU 
+used for the baseline GPU performance was an Nvidia GeForce RTX 3060 Ti
+- **Experimental Conditions:**
+  - No Dynamic Quantization: CPU (no quantization model), GPU (no 
+quantization model)
+  - Dynamic Quantization (CPU-only because PyTorch doesn’t support 
+this method for GPUs): CPU (quantization model)
+  - These leaves us with three experiments (CPU-quantized, CPU-non-quantized, GPU-non-quantized) with two models (quant model, non-quantized model) being run using two accelerators (CPU and GPU)
+- **Methodology (for each experimental condition):**
+  - Get WER score on evaluation dataset (hold-out dataset not shown to 
+the model during training)
+  - **(GPU experiment only)** Warm-up the GPU by running 10 dummy 
+inferences. This is because some GPUs have a power saving mode, 
+which means that the wake-up time would be included in the 
+calculation of the inference time.
+  - Calculate the mean inference time (milliseconds) over 300 trials (infer 
+300 examples from the dataset)
+  - Calculate the mean throughput (averaged number of samples per 
+second) over trials
+
 ## References
 
 [Can you close the 
