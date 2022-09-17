@@ -3,7 +3,7 @@ layout: post
 comments: true
 title:  "Improving CPU-based Deep Learning Deployment on the Cloud using Dynamic Quantization"
 excerpt: "TLoL: Human level in League of Legends using Deep Learning. Existing solutions, problem analysis, initial ideas, data exploration, visualisation, intuition and possible solutions."
-date:   2022-09-17 07:30:00
+date:   2022-09-17 07:30:00 +0000
 categories: [Research, Production]
 tags: ["Quantization", "Dynamic Quantization", "ASR", "Benchmarking", "Cloud Deployment", "CPU"]
 ---
