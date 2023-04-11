@@ -1,11 +1,10 @@
 ---
 layout: post
 comments: true
-title:  "TLoL: Human level in League of Legends using Deep Learning (Part 6 - Dataset
-Generation)"
-excerpt: "Following a long hiatus, this section will explain the data generation procedure for
-the TLoL project and how the datasets generated will be used to create the first agent
-which can play League of Legends."
+title:  "TLoL: Human level in League of Legends using Deep Learning (Part 7 - Large Language
+Model Based Agetn)"
+excerpt: "This post explores a novel approach to game playing agents based on recent
+advances in large language models which has cross domain applicability."
 date:   2023-04-11 00:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "Large Language Model", "TLoL", "Data Generation", "GPT-4"]
