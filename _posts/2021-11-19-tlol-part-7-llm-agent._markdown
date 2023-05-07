@@ -1,0 +1,108 @@
+---
+layout: post
+comments: true
+title:  "TLoL: Human level in League of Legends using Deep Learning (Part 7 - Large Language
+Model Based Agetn)"
+excerpt: "This post explores a novel approach to game playing agents based on recent
+advances in large language models which has cross domain applicability."
+date:   2023-04-11 00:00:00
+categories: [Project]
+tags: ["League of Legends", "Machine Learning", "Large Language Model", "TLoL", "Data Generation", "GPT-4"]
+---
+
+## Table of Contents
+
+* TOC
+{:toc}
+
+## Introduction
+
+After an extremely long hiatus, this series is returning with a bang.
+We start with a novel idea, is it possible to create game playing AI
+agents where the main decision making component is an LLM?
+
+The previous posts detailed a process of leveraging 10,000s of scraped
+League of Legends replay files and training a supervised learning system
+to learn to play the game from this data, however, in light of recent
+drastic advancements we consider a different approach in this post.
+
+## Overview
+
+Firstly, what is an LLM? Large Language Models (LLM) are a family
+of neural networks trained on large amounts of unlabeled text using
+self-supervised learning. The most prominent of them is GPT-4 released by
+OpenAI, which is a Transformer based architecture which predicts the next
+token given a prompt in an auto-regressive manner.
+I will leave more detailed explanations to the OpenAI GPT-4 Technical Report
+and many other resources available on the web.
+
+These LLM models exhibit very strong general performance across a wide
+variety of tasks due to their ability to deal with complex instructions
+with a high level of understanding and creativity.
+
+GPT-4 is highly capable of intepreting and responding to a range of user
+requests for generating content, and has also showed the ability to be
+integrated with uni/multi-modal foundation models (refer to references
+for more details). An example would be Visual ChatGPT by Microsoft which
+integrates many visual foundation models along with an LLM interface
+which allows users to flexibly query information about visual inputs
+(e.g. what images are contained within the image?), edit the image
+(e.g. replace the bird in the image with a plane) and many other
+visual requests.
+
+Others have gone further with the development of fully autonomous agents
+such as AutoGPT, which is capable of accepting a general aim for the agent
+(e.g. autonomously develop and run businesses with the goal of increasing
+your net worth). The user can then specify specific goals towards this
+aim which the agent will attempt to automatically achieve. These agents
+are able to run autonomously as they use language as a vehicle to drive
+their behaviour forward towards goals.
+
+With these latest developments, this then leads to another conclusion,
+could a game playing agent
+architecture (or any other semi/fully autonomous agent in the future)
+which leverages the flexibility (interpretive / problem solving capacity)
+and adaptabiilty (zero-shot / few-shot prompting) of LLMs be able to not
+only learn how to play games with limited experience, but also be able to
+dynamically adjust it's behaviour in new situations?
+
+## Data Inefficiency / Limited Generalisation of Purely RL Agents
+
+To assess why that would be a major step-forward, let us take a step-back
+to existing SOTA game playing agents. OpenAI Five was a system that was
+trained by OpenAI (same organisation behind GPT-4) to play DOTA2.
+
+In Dota 2, players are divided into two teams of five players each
+and they compete to destroy the opposing team's ancient, a large
+structure located within their base. Each player controls a hero with
+unique abilities and characteristics, and works with their team to defeat
+enemy heroes and gain experience and gold.
+
+OpenAI Five was a system trained by OpenAI for over 45,000 years worth of
+DOTA 2 matches (billions of games) which was able to beat the world
+champions in 2019 at The International (equivalent of the world cup for DOTA 2).
+
+However, despite being able to beat the world champions, the matches were played
+with severe restrictions:
+1. Limited Hero Pool: OpenAI Five was only able to choose from a pool of 17 pre-selected 
+heroes, rather than the full range of heroes available in the game. This helped to level the 
+playing field and prevent the AI from gaining an unfair advantage by selecting heroes that 
+human players may not have been familiar with.
+
+## Summary
+
+## References
+
+### Game-Playing AI Agents
+- [Arxiv: OpenAI Five](https://cdn.openai.com/dota-2.pdf)
+
+### Fully-Autonomous Agents
+- [GitHub: AutoGPT](https://github.com/Torantulino/Auto-GPT) 
+
+### Foundation Models
+- [Wikipedia: Foundation Models](https://en.wikipedia.org/wiki/Foundation_models)
+
+### Large Language Models (LLMs)
+- [Wikipedia: GPT-4](https://en.wikipedia.org/wiki/GPT-4)
+- [Arxiv: GPT-4 Technical Report](https://arxiv.org/pdf/2303.08774.pdf)
+- [GitHub: Visual ChatGPT](https://github.com/microsoft/visual-chatgpt)
