@@ -3,7 +3,7 @@ layout: post
 comments: true
 title:  "Enhancing Auto-GPT's Capabilities with Visual Learning: Unlocking the Power of YouTube Tutorials"
 excerpt: ""
-date:   2023-05-07 13:00
+date:   2023-05-07 00:00
 categories: [Brainstorming, Project]
 tags: ["Machine Learning", "AutoGPT", "Game Playing AI", "Reinforcement Learning", "AutoDev"]
 ---
