@@ -104,10 +104,14 @@ which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.
 <center>
     <iframe
         src="https://miscellaneousstuff.github.io/attention_vis.html"
-        style="border: 0; width: 600px; height: 400px;"
+        style="border: 0; width: 800px; height: 500px;"
     >
     </iframe>
 </center>
+
+## MLP Analysis
+
+
 
 ## Summary
 
