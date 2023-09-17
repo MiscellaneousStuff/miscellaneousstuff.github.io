@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Attention and MLP Analysis)"
-excerpt: "?"
+excerpt: "This post begins the exploration of mechanistic interpretability for large language models."
 date:   2023-09-17 00:00:00
 categories: [Project, MechInterp]
 tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attention", "MLP", "Embedding"]
