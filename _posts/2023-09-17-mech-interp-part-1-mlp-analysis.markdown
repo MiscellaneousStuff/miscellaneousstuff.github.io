@@ -102,7 +102,11 @@ As stated before, the prompt for this section will be:
 which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper.
 
 <center>
-    <iframe src="https://miscellaneousstuff.github.io/attention_vis.html"></iframe>
+    <iframe
+        src="https://miscellaneousstuff.github.io/attention_vis.html"
+        style="border: 0; width: 600px; height: 400px;"
+    >
+    </iframe>
 </center>
 
 ## Summary
