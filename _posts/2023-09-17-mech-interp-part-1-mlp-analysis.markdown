@@ -1,11 +1,11 @@
 ---
 layout: post
 comments: true
-title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic MLP Analysis)"
+title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic Embedding, Attention and MLP Analysis)"
 excerpt: "?"
 date:   2023-09-17 00:00:00
 categories: [Project, MechInterp]
-tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation"]
+tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attention", "MLP", "Embedding"]
 ---
 
 ## Table of Contents
@@ -34,10 +34,24 @@ was to determine if creating very small Transformer Decoder models which are cap
 producing coherent speech and following instructions was possible. It turns out that even
 models with as little as 1 million parameters show basic emergent capabilites such as fluent
 language generation and instruction following which we see in larger LLMs. Furthermore,
-even models with a single Transformer block are capable of producing coherent speech. This
-is exciting from an interpretability perspective as it means that the attention heads within
-single Transformer Block and it's accompanying MLP layer are directly responsible for
+even models with a single Transformer block layer are capable of producing coherent speech.
+This is exciting from an interpretability perspective as it means that the attention heads within
+a single Transformer Block and it's accompanying MLP layer are directly responsible for
 interpreting the current prompt context, and then predicting the next token all together.
+
+## Toolset
+
+The main custom tool which will be used in this blog post is the
+[TransformerLens](https://github.com/neelnanda-io/TransformerLens) repo from Neel Nanda
+which allows us to hook and intervene in the activations of Transformer models during
+inference. This conveniently allows to then analyse the runtime activations of things
+like the attention matrix per head for an input prompt and the MLP activations. Being
+able to dynamically analyse the runtime values for the model allows us to determine
+how the model is representing and processing information. This is analogous to performing
+dynamic analysis in reverse engineering where we are able to determine how a program is
+processing inputs. However, it is even more useful in the case of neural networks as
+neural network parameters are not set in the same way as programmers explicitly engineer
+programs, instead they are discovered during backpropagation.
 
 ## Summary
 
