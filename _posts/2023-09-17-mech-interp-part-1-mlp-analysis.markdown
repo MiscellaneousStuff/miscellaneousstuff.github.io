@@ -27,7 +27,9 @@ tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attent
 
 This post begins the exploration of mechanistic interpretability for large language models.
 We start off by attempting to understand the MLP layer from a model from the
-[TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper.
+[TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper. For this blog post, we will
+be using the `roneneldan/TinyStories-Instuct-1Layer-21M` model which can be found
+on [HuggingFace](https://huggingface.co/roneneldan/TinyStories-1Layer-21M).
 
 For context, the goal of the paper
 was to determine if creating very small Transformer Decoder models which are capable of 
