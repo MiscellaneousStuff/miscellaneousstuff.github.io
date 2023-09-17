@@ -184,6 +184,21 @@ Start of text token "<|endoftext|>", commas, attends to prior proper nouns on sp
 This may be one of the more interesting attention heads to analyse w.r.t when this embedding
 is being provided to the subsequent MLP layer.
 
+### Attention Embedding Analysis
+
+For this section, we will try to analyse the attention mechanisms embedding itself,
+to see if there are any interesting patterns. In the below image, for the top figure,
+we can see the 1024-dim embedding for the earlier prompt. In the bottom figure, we
+can see the same after the residual is added to it and after layer norm has been
+applied.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/mech_interp/p1/attn_embed_no_norm_and_with_norm.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
 ## MLP Analysis
 
 
