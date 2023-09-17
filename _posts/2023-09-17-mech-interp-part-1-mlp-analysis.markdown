@@ -103,6 +103,8 @@ which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.
 
 Below you can see the attention pattern, which is being visualised by CircuitVis.
 
+### Attention Head Visualisation
+
 <center>
     <iframe
         src="https://miscellaneousstuff.github.io/attention_vis.html"
@@ -110,6 +112,8 @@ Below you can see the attention pattern, which is being visualised by CircuitVis
     >
     </iframe>
 </center>
+
+### Attention Head Qualitative Analysis
 
 After analysing the attention patterns, I have generated the following table which gives
 a rough idea for what each attention head is paying attention to. For some attention heads,
