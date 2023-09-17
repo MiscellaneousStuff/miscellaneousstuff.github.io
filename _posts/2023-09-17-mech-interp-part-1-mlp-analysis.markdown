@@ -92,7 +92,7 @@ requires non-linear filtering. We will see possible evidence for this later on.
 However, a good place to start here is to measure basic characteristics of neuron
 activations across prompts and tokens. It makes sense to do this for the expanded
 MLP layer and the final smaller MLP layer within the Transformer Block. Transformer
-Blocks typically contain and MLP layer after the normed + residual attention mechamism
+Blocks typically contain an MLP layer after the normed + residual attention mechamism
 which is 4 times larger than the model dimensionality, and then a succeeding MLP layer
 which is the models dimensionality size. Later on we will see that within the studied model,
 there may be indications of superposition.
