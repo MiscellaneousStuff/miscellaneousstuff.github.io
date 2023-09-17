@@ -195,7 +195,7 @@ applied.
 <div style="text-align: center;">
    <img
       src="/assets/mech_interp/p1/attn_embed_no_norm_and_with_norm.png"
-      style="width: 100%; max-width: 640px;"
+      style="width: 100%; max-width: 900px;"
    />
 </div>
 
