@@ -1,27 +1,17 @@
 ---
 layout: post
 comments: true
-title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Attention and MLP Analysis)"
+title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic Attention and MLP Analysis)"
 excerpt: "This post begins the exploration of mechanistic interpretability for large language models."
 date:   2023-09-17 00:00:00
 categories: [Project, MechInterp]
-tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attention", "MLP", "Embedding"]
+tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attention", "MLP"]
 ---
 
 ## Table of Contents
 
 * TOC
 {:toc}
-
-## Glossary
-
-- [LLM](https://en.wikipedia.org/wiki/Large_language_model): Large Language Model
-
-## Resources
-
-- [Jupyter Notebook](https://github.com/MiscellaneousStuff/mech-interp-tinystories):
-  The Notebook which contains all of the code and visualisations mentioned in this blog
-  post.
 
 ## Introduction
 
@@ -208,36 +198,24 @@ applied.
 
 And here are the basic statistics for each embedding:
 
-<div style="display: flex; flex-direction: row; width: 100%; max-width: 900px;">
-    <div>
-        ---------------------------------------- <br />
-        Raw Attention Embedding <br />
-        ---------------------------------------- <br />
-        Mean: -0.0011 <br />
-        Standard Deviation: 0.2027 <br />
-        Max Value: 1.9523 <br />
-        Min Value: -5.4120 <br />
-        1st Quartile (25th Percentile): -0.1036 <br />
-        Median (50th Percentile): 0.0019 <br />
-        3rd Quartile (75th Percentile): 0.1089
-    </div>
-    <div>
-        ---------------------------------------- <br />
-        Attention Embed + Residual + LayerNorm <br />
-        ---------------------------------------- <br />
-        Mean: -0.0115 <br />
-        Standard Deviation: 0.7612 <br />
-        Max Value: 5.4987 <br />
-        Min Value: -10.6500 <br />
-        1st Quartile (25th Percentile): -0.4581 <br />
-        Median (50th Percentile): -0.0019 <br />
-        3rd Quartile (75th Percentile): 0.4553
-    </div>
-</div>
+| Metric                              | Raw Attention Embedding | Attention Embed + Residual + LayerNorm |
+| ----------------------------------- | ----------------------- | ------------------------------------- |
+| **Mean**                            | -0.0011                 | -0.0115                               |
+| **Standard Deviation**              | 0.2027                  | 0.7612                                |
+| **Max Value**                       | 1.9523                  | 5.4987                                |
+| **Min Value**                       | -5.4120                 | -10.6500                              |
+| **1st Quartile (25th Percentile)**  | -0.1036                 | -0.4581                               |
+| **Median (50th Percentile)**        | 0.0019                  | -0.0019                               |
+| **3rd Quartile (75th Percentile)**  | 0.1089                  | 0.4553                                |
+
 
 ## MLP Analysis
 
+## Resources
 
+- [Jupyter Notebook](https://github.com/MiscellaneousStuff/mech-interp-tinystories):
+  The Notebook which contains all of the code and visualisations mentioned in this blog
+  post.
 
 ## Summary
 
