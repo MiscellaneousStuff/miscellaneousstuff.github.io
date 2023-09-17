@@ -71,6 +71,12 @@ paper as the paper documents characteristics of the model along with this prompt
 as what the following word should be, as well as what the model is documented as being
 able to do w.r.t keeping context across the prompt and factual knowledge completion.
 
+The visualisation of the attention pattern itself will be done using
+[CircuitVis](https://github.com/alan-cooney/CircuitsVis), which
+takes the attention pattern and allows interactively hovering over tokens and a single
+attention head (or all of them) per layer, determining the attentional relationship
+between tokens.
+
 ### MLP Analysis
 
 From what I can tell, MLP analysis is quite an open-ended topic and is genuinely
