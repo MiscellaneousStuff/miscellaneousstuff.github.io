@@ -71,6 +71,16 @@ paper as the paper documents characteristics of the model along with this prompt
 as what the following word should be, as well as what the model is documented as being
 able to do w.r.t keeping context across the prompt and factual knowledge completion.
 
+### MLP Analysis
+
+From what I can tell, MLP analysis is quite an open-ended topic and is genuinely
+quite difficult. One of the main difficulties arises from a phenomenon that arises
+within MLPs referred to as ["superposition"](https://transformer-circuits.pub/2022/toy_model/index.html).
+This is where models represent more features
+than they have dimensions. This particularly happens when features are sparse, superposition
+allows compression beyond what a linear model can do, at the cost of "interference" which
+requires non-linear filtering. We will see possible evidence for this later on.
+
 ## Summary
 
 Summary
