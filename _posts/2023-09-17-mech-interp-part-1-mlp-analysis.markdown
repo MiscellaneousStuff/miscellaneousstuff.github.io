@@ -53,6 +53,24 @@ processing inputs. However, it is even more useful in the case of neural network
 neural network parameters are not set in the same way as programmers explicitly engineer
 programs, instead they are discovered during backpropagation.
 
+## Experiment Plan
+
+Analysing any language model during inference is a very open ended task as there are
+many different aspects of the model you can analyse and the prompt you provide it can
+also drastically change the runtime values. With this is mind, it is helpful to explicitly
+set what the prompts are going to be and choose which aspects of the model to analyse
+ahead of time.
+
+### Attention Visualisation
+
+For per attention head visualisation, I will be using the following prompt:
+"One day, Lucy asks Tom: "I am looking for a banana but I can't find it". Tom says: "Don't".
+
+This prompt is directly taken from the [TinyStories](https://arxiv.org/pdf/2305.07759.pdf)
+paper as the paper documents characteristics of the model along with this prompt such
+as what the following word should be, as well as what the model is documented as being
+able to do w.r.t keeping context across the prompt and factual knowledge completion.
+
 ## Summary
 
 Summary
