@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic Embedding, Attention and MLP Analysis)"
+title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Attention and MLP Analysis)"
 excerpt: "?"
 date:   2023-09-17 00:00:00
 categories: [Project, MechInterp]
@@ -101,7 +101,9 @@ As stated before, the prompt for this section will be:
 "One day, Lucy asks Tom: "I am looking for a banana but I can't find it". Tom says: "Don't",
 which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper.
 
-<iframe src="attention_vis.html"></iframe>
+<center>
+    <iframe src="attention_vis.html"></iframe>
+</center>
 
 ## Summary
 
