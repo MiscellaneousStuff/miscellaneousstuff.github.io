@@ -61,7 +61,7 @@ also drastically change the runtime values. With this is mind, it is helpful to 
 set what the prompts are going to be and choose which aspects of the model to analyse
 ahead of time.
 
-### Attention Visualisation
+### Attention Analysis
 
 For per attention head visualisation, I will be using the following prompt:
 "One day, Lucy asks Tom: "I am looking for a banana but I can't find it". Tom says: "Don't".
@@ -94,6 +94,14 @@ Blocks typically contain and MLP layer after the normed + residual attention mec
 which is 4 times larger than the model dimensionality, and then a succeeding MLP layer
 which is the models dimensionality size. Later on we will see that within the studied model,
 there may be indications of superposition.
+
+## Attention Analysis
+
+As stated before, the prompt for this section will be:
+"One day, Lucy asks Tom: "I am looking for a banana but I can't find it". Tom says: "Don't",
+which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper.
+
+<iframe src="attention_vis.html"></iframe>
 
 ## Summary
 
