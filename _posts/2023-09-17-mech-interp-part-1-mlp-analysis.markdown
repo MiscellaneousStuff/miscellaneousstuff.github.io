@@ -198,6 +198,7 @@ applied.
 
 And here are the basic statistics for each embedding:
 
+<div style="text-align: center;">
 | Metric                              | Raw Attention Embedding | Attention Embed + Residual + LayerNorm |
 | ----------------------------------- | ----------------------- | ------------------------------------- |
 | **Mean**                            | -0.0011                 | -0.0115                               |
@@ -207,7 +208,7 @@ And here are the basic statistics for each embedding:
 | **1st Quartile (25th Percentile)**  | -0.1036                 | -0.4581                               |
 | **Median (50th Percentile)**        | 0.0019                  | -0.0019                               |
 | **3rd Quartile (75th Percentile)**  | 0.1089                  | 0.4553                                |
-
+</div>
 
 ## MLP Analysis
 
