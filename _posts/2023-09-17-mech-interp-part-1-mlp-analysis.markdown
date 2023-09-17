@@ -210,6 +210,18 @@ And here are the basic statistics for each embedding:
 
 ## MLP Analysis
 
+### MLP Embedding Analysis
+
+| Metric                              | MLP prompt_len * 1024 | MLP prompt_len * 4096 |
+| ----------------------------------- | ---------------------- | ---------------------- |
+| **Mean**                            | 0.0031                 | -0.0256                |
+| **Standard Deviation**              | 0.7454                 | 0.3031                 |
+| **Max Value**                       | 55.2631                | 12.3998                |
+| **Min Value**                       | -3.2519                | -0.1700                |
+| **1st Quartile (25th Percentile)**  | -0.2985                | -0.1456                |
+| **Median (50th Percentile)**        | -0.0122                | -0.0842                |
+| **3rd Quartile (75th Percentile)**  | 0.2719                 | -0.0149                |
+
 ## Resources
 
 - [Jupyter Notebook](https://github.com/MiscellaneousStuff/mech-interp-tinystories):
