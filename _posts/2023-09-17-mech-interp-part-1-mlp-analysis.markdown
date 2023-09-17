@@ -101,6 +101,8 @@ As stated before, the prompt for this section will be:
 "One day, Lucy asks Tom: "I am looking for a banana but I can't find it". Tom says: "Don't",
 which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper.
 
+Below you can see the attention pattern, which is being visualised by CircuitVis.
+
 <center>
     <iframe
         src="https://miscellaneousstuff.github.io/attention_vis.html"
@@ -108,6 +110,30 @@ which is taken straight from the [TinyStories](https://arxiv.org/pdf/2305.07759.
     >
     </iframe>
 </center>
+
+After analysing the attention patterns, I have generated the following table which gives
+a rough idea for what each attention head is paying attention to. For some attention heads,
+it is obvious, for others, it's more ambiguous or the attention head has multiple roles
+which may overlap with each other.
+
+| Head | Description |
+| ---- | ----------- |
+| 0 | Attends to dialogue structure (e.g. speaker changes), contextual relationships (e.g. "I" to "but", action to result), and speech delimiters. |
+| 1 | Attends to start of preceding structural pivot (e.g., start of text token, comma, and full stop). For the word "but," only attends to itself, not preceding structural pivot like others. |
+| 2 | Strongly attends to start of preceding structural pivot (e.g., start of text token, comma, and full stop). For the word "but," only attends to itself, not preceding structural pivot like others. |
+| 3 | ~~Subject of sentence? |
+| 4 | Attends to the current token / also sometimes the previous token. |
+| 5 | Attends to the start of a clause and the start of a co-ordinating junction? |
+| 6 | Attends to the previous token (aside from the closing speech mark, attends to the starting speech mark instead). |
+| 7 | Attending to backward-related parts of skip n-grams? |
+| 8 | Attends to the current token. |
+| 9 | ~Attends to current and previous proper nouns? |
+| 10 | ~Attends to all of the other tokens within same clause/sentence by varying amounts. |
+| 11 | Attends to the start of a clause? Attends to the starting speech mark within speech. |
+| 12 | ~Attending to the previous token unigram / bigram. |
+| 13 | ~~Subject of the sentence? |
+| 14 | Attends to narrative structures and relationships. Start of text token, commas, attends to prior proper nouns on speech marks, the word "asks" i.e., verb before proper noun "Tom," attending to "banana" on token "find." Attention head is trying to keep a high-level summary of ongoing narrative, acting as a guide when generating or predicting subsequent tokens? |
+| 15 | Attending to the start of a clause? |
 
 ## MLP Analysis
 
