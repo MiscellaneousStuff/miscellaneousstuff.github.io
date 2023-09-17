@@ -92,7 +92,7 @@ requires non-linear filtering. We will see possible evidence for this later on.
 However, a good place to start here is to measure basic characteristics of neuron
 activations across prompts and tokens. It makes sense to do this for the expanded
 MLP layer and the final smaller MLP layer within the Transformer Block. Transformer
-Blocks typically contain an MLP layer after the normed + residual attention mechamism
+Blocks typically contain an MLP layer after the normed + residual attention mechanism
 which is 4 times larger than the model dimensionality, and then a succeeding MLP layer
 which is the models dimensionality size. Later on we will see that within the studied model,
 there may be indications of superposition.
@@ -140,6 +140,49 @@ which may overlap with each other.
 | 13 | ~~Subject of the sentence? |
 | 14 | Attends to narrative structures and relationships. Start of text token, commas, attends to prior proper nouns on speech marks, the word "asks" i.e., verb before proper noun "Tom," attending to "banana" on token "find." Attention head is trying to keep a high-level summary of ongoing narrative, acting as a guide when generating or predicting subsequent tokens? |
 | 15 | Attending to the start of a clause? |
+
+### Attention Head Analysis Discussion
+
+#### Simple Tracking Heads (Current Token, Previous Token, etc.)
+From the table above, we can see that there are multiple overlapping attention heads such
+as Head 4 and Head 8 which both attend to the current token, although Head 8 more directly
+attends to the current token. Head 6 clearly attends to the previous token, however, Head 12
+also sometimes attends to the previous token occasionally, however it appears to be attending
+to other tokens which are relevant in context. For example, the token "banana" appears to be
+attending to the tokens "looking" and "for" which are relevant in the given context.
+
+#### Grammatical Heads (Start of Clause)
+
+However, aside from just performing basic routing of information such as current and previous
+tokens, some attention heads operate more grammatically. For example, Head 5 appears to attend
+to the start of the current clause or co-ordinating junction.
+If you set the above visualisation to "Destination <- Source", and however over the
+"<|endoftext|>" token, you will see that all of
+the tokens up to the ":" token are attending to the "<|endoftext|>" token. If you then
+do the same by hovering over the first """ speech mark token, you will see that nearly all
+of the tokens enclosed by the speech marks attend to the first speech mark. The closing
+speech mark is being attended to by all of the following tokens.
+
+Heads 1 and 2 appear to strongly attend to the start of the preceding structural pivot. A
+structural pivot here means significant structural or semantic shift where the flow or
+structure of text changes or pivots. Both of them roughly attend to clear grammatical
+indicators such as the "<|endoftext|>" token or the "," comma token. However, Head 1
+strongly attends to the token "But" and Head 2 doesn't, but Head 2 strongly attends to
+the word "a" but Head 1 doesn't. This might mean that although two attention heads may
+pay attention to similar aspects of speech, they're not exactly the same. This may have
+interesting implications for optimising large language models. It's possible that larger
+models such as GPT-3 contain far more redundancy in their attention heads which may allow
+for pruning the number of attention heads per layer while still mostly retaining performance.
+However from what we can see here, that may mean that the model slightly loses some nuance
+in processing it's prompts.
+
+#### General Head (Multi-purpose: Narrative Stuctures and Relationships)
+
+Head 14 is particulary interesting as it appears to be attending to many different relevant
+parts of speech. It attends to narrative structures and relationships. The
+Start of text token "<|endoftext|>", commas, attends to prior proper nouns on speech marks, the word "asks" i.e., verb before proper noun "Tom," attending to "banana" on token "find." It's possible that this attention head is trying to keep a high-level summary of ongoing narrative, where it may be acting as a guide when generating or predicting subsequent tokens?
+This may be one of the more interesting attention heads to analyse w.r.t when this embedding
+is being provided to the subsequent MLP layer.
 
 ## MLP Analysis
 
