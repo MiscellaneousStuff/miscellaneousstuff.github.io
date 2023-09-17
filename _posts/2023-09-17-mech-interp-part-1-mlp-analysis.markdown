@@ -218,15 +218,15 @@ which uses [GeLU](https://arxiv.org/pdf/1606.08415.pdf) as the activation functi
 
 ### MLP Embedding Analysis
 
-| Metric                              | MLP prompt_len * 1024 | MLP prompt_len * 4096 |
-| ----------------------------------- | ---------------------- | ---------------------- |
-| **Mean**                            | 0.0031                 | -0.0256                |
-| **Standard Deviation**              | 0.7454                 | 0.3031                 |
-| **Max Value**                       | 55.2631                | 12.3998                |
-| **Min Value**                       | -3.2519                | -0.1700                |
-| **1st Quartile (25th Percentile)**  | -0.2985                | -0.1456                |
-| **Median (50th Percentile)**        | -0.0122                | -0.0842                |
-| **3rd Quartile (75th Percentile)**  | 0.2719                 | -0.0149                |
+| Metric                              | MLP prompt_len * 4096 |  MLP prompt_len * 1024  |
+| ----------------------------------- | ---------------------- |  ---------------------- |
+| **Mean**                            | -0.0256                |  0.0031                 |
+| **Standard Deviation**              | 0.3031                 |  0.7454                 |
+| **Max Value**                       | 12.3998                |  55.2631                |
+| **Min Value**                       | -0.1700                |  -3.2519                |
+| **1st Quartile (25th Percentile)**  | -0.1456                |  -0.2985                |
+| **Median (50th Percentile)**        | -0.0842                |  -0.0122                |
+| **3rd Quartile (75th Percentile)**  | -0.0149                |  0.2719                 |
 
 ## Resources
 
