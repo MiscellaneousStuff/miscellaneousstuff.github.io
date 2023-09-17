@@ -206,6 +206,35 @@ applied.
    />
 </div>
 
+And here are the basic statistics for each embedding:
+
+<div style="display: flex; flex-direction: row; width: 100%; max-width: 900px;">
+    <div>
+        ---------------------------------------- <br />
+        Raw Attention Embedding <br />
+        ---------------------------------------- <br />
+        Mean: -0.0011 <br />
+        Standard Deviation: 0.2027 <br />
+        Max Value: 1.9523 <br />
+        Min Value: -5.4120 <br />
+        1st Quartile (25th Percentile): -0.1036 <br />
+        Median (50th Percentile): 0.0019 <br />
+        3rd Quartile (75th Percentile): 0.1089
+    </div>
+    <div>
+        ---------------------------------------- <br />
+        Attention Embed + Residual + LayerNorm <br />
+        ---------------------------------------- <br />
+        Mean: -0.0115 <br />
+        Standard Deviation: 0.7612 <br />
+        Max Value: 5.4987 <br />
+        Min Value: -10.6500 <br />
+        1st Quartile (25th Percentile): -0.4581 <br />
+        Median (50th Percentile): -0.0019 <br />
+        3rd Quartile (75th Percentile): 0.4553
+    </div>
+</div>
+
 ## MLP Analysis
 
 
