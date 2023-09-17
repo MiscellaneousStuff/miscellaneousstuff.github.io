@@ -210,6 +210,12 @@ And here are the basic statistics for each embedding:
 
 ## MLP Analysis
 
+Now we move on to analysing the MLP layers of the Transformer Block. The Transformer
+Block contains two main MLP layers, the 4096 dim which immediately follows the
+Attention Embed + Residual + LayerNorm output, and then another 1024 dim MLP layer
+which follows the 4096 dim layer. For the Tiny Stories model, it uses the GPT-J architecture
+which uses [GeLU](https://arxiv.org/pdf/1606.08415.pdf) as the activation function.
+
 ### MLP Embedding Analysis
 
 | Metric                              | MLP prompt_len * 1024 | MLP prompt_len * 4096 |
