@@ -1,0 +1,33 @@
+---
+layout: post
+comments: true
+title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 2 - MLP Analysis)"
+excerpt: "This post begins the exploration of mechanistic interpretability for large language models."
+date:   2023-09-18 00:00:00
+categories: [Project, MechInterp]
+tags: ["Tiny Stories", "LLM", "MechInterp", "Analysis", "Visualisation", "Attention", "MLP"]
+---
+
+
+## Table of Contents
+
+* TOC
+{:toc}
+
+## Introduction
+
+This post begins the exploration of mechanistic interpretability for large language models.
+We start off by attempting to understand the MLP layer from a model from the
+[TinyStories](https://arxiv.org/pdf/2305.07759.pdf) paper. For this blog post, we will
+be using the `roneneldan/TinyStories-Instuct-1Layer-21M` model which can be found
+on [HuggingFace](https://huggingface.co/roneneldan/TinyStories-1Layer-21M).
+
+## Resources
+
+- [Jupyter Notebook](https://github.com/MiscellaneousStuff/mech-interp-tinystories):
+  The Notebook which contains all of the code and visualisations mentioned in this blog
+  post.
+
+## Summary
+
+Summary
