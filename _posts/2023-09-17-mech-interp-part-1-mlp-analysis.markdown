@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic Attention and MLP Analysis)"
+title:  "MechInterp: TinyStories-1Layer-21M Model Embed, Attention and MLP Analysis (Part 1 - Basic Attention Analysis)"
 excerpt: "This post begins the exploration of mechanistic interpretability for large language models."
 date:   2023-09-17 00:00:00
 categories: [Project, MechInterp]
@@ -208,6 +208,7 @@ And here are the basic statistics for each embedding:
 | **Median (50th Percentile)**        | 0.0019                  | -0.0019                               |
 | **3rd Quartile (75th Percentile)**  | 0.1089                  | 0.4553                                |
 
+<!--
 ## MLP Analysis
 
 Now we move on to analysing the MLP layers of the Transformer Block. The Transformer
@@ -228,6 +229,8 @@ which uses [GeLU](https://arxiv.org/pdf/1606.08415.pdf) as the activation functi
 | **Median (50th Percentile)**        | -0.0842                |  -0.0122                |
 | **3rd Quartile (75th Percentile)**  | -0.0149                |  0.2719                 |
 
+-->
+
 ## Resources
 
 - [Jupyter Notebook](https://github.com/MiscellaneousStuff/mech-interp-tinystories):
@@ -236,4 +239,12 @@ which uses [GeLU](https://arxiv.org/pdf/1606.08415.pdf) as the activation functi
 
 ## Summary
 
-Summary
+This post aims to explore the mechanistic interpretability of large language models, focusing on the `roneneldan/TinyStories-Instuct-1Layer-21M` model from the `TinyStories` paper. The TinyStories paper was investigating the potential of small Transformer Decoder models to produce coherent speech and instructions. Surprisingly, even models with limited parameters can generate fluent language and follow instructions similarly to larger LLMs. This discovery is essential for interpretability as it suggests that a single Transformer Block with its MLP layer can interpret the current context and predict the next token.
+
+Interestingly, we found that attenion heads appear to have dedicated roles, with some of
+them tracking current and previous tokens, attending to the grammatical structures of 
+language, and even some which attend to multiple aspects of language such as narrative
+structures and relationships which may guide the generation of text.
+
+In part 2 we will continue by further analysing what the succeeding MLP layer is doing
+with this information.
