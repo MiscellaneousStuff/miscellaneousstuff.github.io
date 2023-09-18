@@ -174,6 +174,7 @@ Start of text token "<|endoftext|>", commas, attends to prior proper nouns on sp
 This may be one of the more interesting attention heads to analyse w.r.t when this embedding
 is being provided to the subsequent MLP layer.
 
+<!--
 ### Attention Embedding Analysis
 
 For this section, we will try to analyse the attention mechanisms embedding itself,
@@ -207,6 +208,8 @@ And here are the basic statistics for each embedding:
 | **1st Quartile (25th Percentile)**  | -0.1036                 | -0.4581                               |
 | **Median (50th Percentile)**        | 0.0019                  | -0.0019                               |
 | **3rd Quartile (75th Percentile)**  | 0.1089                  | 0.4553                                |
+
+-->
 
 <!--
 ## MLP Analysis
