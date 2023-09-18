@@ -1,0 +1,13 @@
+# Site settings
+title: MiscellaneousStuff blog
+
+# Build settings
+markdown: kramdown
+theme: your
+
+google_analytics: G-CL7K48EHP8
+
+layouts_dir: _layouts
+includes_dir: _includes
+posts_dir: _posts
+assets_dir: assets
