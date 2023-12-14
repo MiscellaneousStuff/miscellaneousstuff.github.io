@@ -17,3 +17,7 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 ## Introduction
 
 Introduction
+
+## Resources
+
+- [GitHub Repo](https://github.com/MiscellaneousStuff/tlol-analysis)
