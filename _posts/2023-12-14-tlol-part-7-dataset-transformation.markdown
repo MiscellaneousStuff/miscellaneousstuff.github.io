@@ -50,11 +50,13 @@ be explained), the following criteria was chosen:
 | Replay Regions | Multiple (EUW1, EUN1, KR, LA1, NA1) | Ideally we would just use all KR replays but unfortunately our method of acquiring KR replays is slow, so we need to compensate by downloading replays from other regions to ensure an adequate number of replays. Also, the reason why we didn't just use EUW1 for all of the other regions is because it's better to use the highest players of the ladder of other regions as they're in theory better than just high elo of other regions below a certain rank (Master tier for example). This is arbitrary and may prove to be wrong, but shouldn't be a major issue. |
 | Replay Count / Dataset Size | ~60,000 / 1TB | As explained in previous sections, the [JueWu-SL](https://ieeexplore.ieee.org/document/9248616) paper which this project is basing it's method on managed to train an agent with performance comparable to human pros using 120,000 games per agent. However, the game length of Honor of Kings is half of League of Legends so in theory, 60,000 should give us a highly performant agent. Although this isn't a very strong argument, 1TB of replay files should be a good base point to tell if it's enough to train a highly performant agent and if more is required further down the line, it is just a case of downloading more and we'd expect the agents performance to just continue to scale |
 
-### (New) KR Region Dataset
+### Method
 
-This is the most substantial difference compared to previous replay dataset dumps.
+The replay downloading method described in [part 6]()
 
 ## Resources
 
-- [GitHub Repo](https://github.com/MiscellaneousStuff/tlol-analysis)
-- [Dataset](https://github.com/MiscellaneousStuff/tlol?tab=readme-ov-file#ezreal-dataset-patch-1323)
+- [League of Legends Python ML Library](https://github.com/MiscellaneousStuff/tlol-py)
+- [Data Analysis / Training Repo](https://github.com/MiscellaneousStuff/tlol-analysis)
+- [Datasets Used in this Post](https://github.com/MiscellaneousStuff/tlol?tab=readme-ov-file#ezreal-dataset-patch-1323)
+- [All Datasets](https://github.com/MiscellaneousStuff/tlol)
