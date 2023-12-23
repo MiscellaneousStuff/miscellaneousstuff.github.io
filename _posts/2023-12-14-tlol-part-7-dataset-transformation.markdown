@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title:  "TLoL: Human level in League of Legends using Deep Learning (Part 7 - Dataset Acquisition, Transformation and Model Training)"
-excerpt: ""
+excerpt: "This post covers the acquisition of a large and diverse dataset of replays, the transformation of these replays into a format suitable for training and the training of basic models."
 date:   2023-12-23 00:00:00
 categories: [Project]
 tags: ["League of Legends", "Machine Learning", "TLoL", "Data Acquisition", "Data Transformation", "Model Training"]
@@ -49,6 +49,10 @@ be explained), the following criteria was chosen:
 | Champion | Ezreal | Ezreal is consistently one of the most played champions in every region and is also easy to infer actions from later on during the data transformation stage. |
 | Replay Regions | Multiple (EUW1, EUN1, KR, LA1, NA1) | Ideally we would just use all KR replays but unfortunately our method of acquiring KR replays is slow, so we need to compensate by downloading replays from other regions to ensure an adequate number of replays. Also, the reason why we didn't just use EUW1 for all of the other regions is because it's better to use the highest players of the ladder of other regions as they're in theory better than just high elo of other regions below a certain rank (Master tier for example). This is arbitrary and may prove to be wrong, but shouldn't be a major issue. |
 | Replay Count / Dataset Size | ~60,000 / 1TB | As explained in previous sections, the [JueWu-SL](https://ieeexplore.ieee.org/document/9248616) paper which this project is basing it's method on managed to train an agent with performance comparable to human pros using 120,000 games per agent. However, the game length of Honor of Kings is half of League of Legends so in theory, 60,000 should give us a highly performant agent. Although this isn't a very strong argument, 1TB of replay files should be a good base point to tell if it's enough to train a highly performant agent and if more is required further down the line, it is just a case of downloading more and we'd expect the agents performance to just continue to scale |
+
+### (New) KR Region Dataset
+
+This is the most substantial difference compared to previous replay dataset dumps.
 
 ## Resources
 
