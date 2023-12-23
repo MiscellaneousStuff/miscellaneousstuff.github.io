@@ -77,57 +77,11 @@ in one go which would be more efficient and because our usage of the LCU API's d
 
 [Here](https://github.com/MiscellaneousStuff/tlol-py/blob/main/replay_scraping.sh) is the Unix-based script (for MacOS and Linux, i.e. Google Colab):
 
-```bash
-#!/bin/bash
-
-# Set the parameters
-champs="Ezreal"
-max_workers=10
-target_patch="13_23"
-
-# Loop from page 41 to 1000 in increments of 10
-for ((start_page=1; start_page<=1000; start_page+=10)); do
-    end_page=$((start_page+9))  # Calculate the end page
-
-    # Run the replay_downloader command
-    python -m tlol.bin.replay_downloader \
-        --champs "$champs" \
-        --max_workers "$max_workers" \
-        --target_patch "$target_patch" \
-        --start_page "$start_page" \
-        --last_page "$end_page"
-        --regionId "na1"
-
-    # Optional: Add a delay between iterations to avoid overloading the server
-    sleep 5  # You can adjust the sleep duration as needed
-done
-```
+{% gist 543f40d2f4fb82b20d7ada852e2d1929 %}
 
 and [here](https://github.com/MiscellaneousStuff/tlol-py/blob/main/replay_scraping.ps1) is the Windows Powershell based script:
 
-```powershell
-# Set the parameters
-$champs = "Ezreal"
-$max_workers = 10
-$target_patch = "13_23"
-
-# Loop from page 41 to 1000 in increments of 10
-for ($start_page = 701; $start_page -le 1000; $start_page += 10) {
-    $end_page = $start_page + 9  # Calculate the end page
-
-    # Run the replay_downloader command
-    & python -m tlol.bin.replay_downloader `
-        --champs $champs `
-        --max_workers $max_workers `
-        --target_patch $target_patch `
-        --start_page $start_page `
-        --last_page $end_page `
-        --regionId "euw1"
-
-    # Optional: Add a delay between iterations to avoid overloading the server
-    Start-Sleep -Seconds 60  # You can adjust the sleep duration as needed
-}v
-```
+{% gist 2e1d65c23c491e6912677bff56ad54f1 %}
 
 ## Resources
 
