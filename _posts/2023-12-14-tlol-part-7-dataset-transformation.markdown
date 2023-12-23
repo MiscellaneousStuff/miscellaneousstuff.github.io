@@ -5,7 +5,7 @@ title:  "TLoL: Human level in League of Legends using Deep Learning (Part 7 - Da
 excerpt: ""
 date:   2023-12-23 00:00:00
 categories: [Project]
-tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL", "Data Transformation"]
+tags: ["League of Legends", "Machine Learning", "TLoL", "Data Transformation", "T_T-Pandoras-Box"]
 ---
 
 ## Table of Contents
@@ -15,8 +15,15 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "TLoL"
 
 ## Introduction
 
-This post is a restart of the TLoL series which has been dormant since 2021. In this post, we will cover the
-following:
+Following a several year hiatus, this section will explain how this project has been restarted and how the progress towards
+a working human-level agent is progressing quickly.
+
+## Overview
+
+Previous posts have detailed many of the dataset requirements, and data procurement methods so I will leave the explanation of these
+to [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html)
+and [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#overview), if readers are interested.
+Here, I will detail significant progress in restarting this project, and any interesting details:
 1. (Replay Dataset) Download a new dataset of replays, totalling 57,667 replays across multiple regions (EUW1, EUN, KR, LA1, NA1).
    This ranges all the way from the top of Korean challenger all the way down to roughly Diamond IV across multiple
    regions.
@@ -29,6 +36,10 @@ following:
    just how open-ended this problem is and that there will be a lot of exploration required to execute this properly.
 
 ## Replay Dataset
+
+### Overview
+
+
 
 ## Resources
 
