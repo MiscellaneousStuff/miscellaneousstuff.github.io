@@ -164,7 +164,31 @@ up to full game replays. Fortunately 3 minute games are 10x smaller than full ga
 ### Explanation
 
 At this stage, we have downloaded almost 60,000 replay files across multiple regions which all contain an Ezreal player, for a total
-of 58,530 replay files. Due to making the replay scraping process simpler
+of 58,530 replay files. Due to making the replay scraping process consistent, we delete all replays which last less than 3 minutes
+(early game forfeits due to AFK players), which reduces our dataset size down to 57,667 replays. We have now filtered the original
+57,667 replays down to 10,065 replays based on games which have the Ezreal player on the blue side, where the Ezreal player spends
+the least amount of time dead and all games are to be scraped for 3 minutes (i.e. 180 seconds) only.
+
+### T_T-Pandoras-Box
+
+Now would be a good time to explain why we're changing from LViewLoL, or more accurately [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64),
+to the [T_T-Pandoras-Box](https://github.com/Braziliana/T_T-Pandoras-Box/) library. On 4th April 2023, Riot Games transitioned League
+of Legends from supporting 32-bit and 64-bit architectures to only 64-bit architectures and also internally changed how some
+parts of the game engine worked for things such as how missiles (i.e. game objects which are projectiles and similar things) work
+which broke [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64). Unfortunately, this also meant that the memory reading process
+used to scrape replays which this project was reliant on no longer worked, and would require far too much work to rebuild for the new
+version of League of Legends, which put this project on hiatus. However, within the last few months another developer created the
+[T_T-Pandoras-Box](https://github.com/Braziliana/T_T-Pandoras-Box/) library, which is another scripting engine which can be adapted
+for replay scraping just as [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64) could. However, the new
+[T_T-Pandoras-Box](https://github.com/Braziliana/T_T-Pandoras-Box/) library also has a far more feature complete API and added support
+for things which [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64) contained, but didn't properly support (such as buff information
+which let you know which buffs were affecting which champions and many other useful pieces of information).
+
+The change was so substantial that it basically meant that (for Patch 13.23 at least), we have complete access to all features which
+we could possibly ask for which is great from a model development / research perspective. However, we are still missing complete support
+for just getting which action champions are performing. That being said, this can mostly be inferred from other features so isn't a
+dealbreaker, just as it wasn't with [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64). The complete listing of features is
+available [here](https://github.com/Braziliana/T_T-Pandoras-Box/?tab=readme-ov-file#sdkapi).
 
 ## Resources
 
