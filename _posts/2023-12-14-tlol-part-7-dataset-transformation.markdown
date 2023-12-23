@@ -24,7 +24,7 @@ Previous posts have detailed many of the dataset requirements, and data procurem
 to [part 5](https://miscellaneousstuff.github.io/project/2021/09/08/tlol-part-5-download-scraping.html)
 and [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#overview), if readers are interested.
 Here, I will detail significant progress in restarting this project, and any interesting details:
-1. (Replay Dataset) Download a new dataset of replays, totalling 57,667 replays across multiple regions (EUW1, EUN1, KR, LA1, NA1).
+1. (Replay Dataset) Download a new dataset of replays, totalling 58,530 replays across multiple regions (EUW1, EUN1, KR, LA1, NA1).
    This ranges all the way from the top of Korean challenger all the way down to roughly Diamond IV across multiple
    regions.
 2. (Replay Scraping) T_T-Pandoras-Box which replaces LViewLoL as the scripting engine used for memory scraping replays and to control
@@ -51,7 +51,7 @@ be explained), the following criteria was chosen:
 | Replay Count / Dataset Size | ~60,000 / 1TB | As explained in previous sections, the [JueWu-SL](https://ieeexplore.ieee.org/document/9248616) paper which this project is basing it's method on managed to train an agent with performance comparable to human pros using 120,000 games per agent. However, the game length of Honor of Kings is half of League of Legends so in theory, 60,000 should give us a highly performant agent. Although this isn't a very strong argument, 1TB of replay files should be a good base point to tell if it's enough to train a highly performant agent and if more is required further down the line, it is just a case of downloading more and we'd expect the agents performance to just continue to scale. |
 | Patch | 13.23 | T_T-Pandoras-Box contains a very complete API specification of data we can scrape from replays (aside from some actions which were included in the specification, but weren't working 100% correctly after manual inspection.). I wasn't sure when it would get updated again so I decided to go all in on this patch.|
 
-### Method
+### Method (Non-KR Regions)
 
 Since the last post, the replay downloading method described in [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html) has now been integrated into a python library called [`tlol-py`](https://github.com/MiscellaneousStuff/tlol-py)
 which allows for much more easily downloading datasets according to a specific criteria (across multiple regions).
@@ -87,6 +87,36 @@ in one go which would be more efficient and because our usage of the LCU API's d
 and [here](https://github.com/MiscellaneousStuff/tlol-py/blob/main/replay_scraping.ps1) is the Windows Powershell based script:
 
 {% gist 2e1d65c23c491e6912677bff56ad54f1 %}
+
+### Method (KR Region)
+
+The KR region replay downloading operated differently, due to differences between KR and other regions. The key difference to understand here
+is that KR League of Legends accounts require you to sign up with your real-name and a valid Korean Social Security Number (SSN) which generally
+makes it harder for non-residents (esp. if you're not located in South Korea) to sign up for a KR LoL account. Fortunately if you're resourceful,
+there are ways of acquiring KR League of Legends accounts. With this first problem solved, this leads us to our next problem, to play on a KR
+League of Legends account from outside of South Korea, you need to play on a South Korean VPN. The issue here is that many of them have throttled
+bandwidth. In the context of this project, this bottlenecks the number of replay files you can download within a certain timeframe. For context,
+the median size of a League of Legends replay in Patch 13.23 is ~16MB. This means that 60,000 replays would be 960GB or in other words ~1TB.
+
+The issue with this is that the speed of the VPN which was being used was 10.53Mbit/s. This means that downloading 1TB of replays would take
+~221.29 hours or 9 days and 5.5 hours. Ideally we want to be able to download replays within a day or a few days (especially for future use
+cases). This means that we only ended up downloading 3,210 KR replays, however they were all Challenger or Grandmaster Ezreal games so the dataset
+was of high quality.
+
+Aside from these differences, the download process of the KR replays was the same as the others, just around 10x slower.
+
+### Dataset Statistics
+
+Overall, the following number of games were downloaded from each region:
+
+| Region | Count |
+| - | - |
+| BR1 (Brazil) | 3,049 |
+| EUW1 (EU West) | 30,404 |
+| KR (Korea) | 3,210 |
+| LA1 (Latin America North) | 2,179 |
+| EUN1 (EU Nordic & East) | 13,156 |
+| NA1 (North America) | 6,532 |
 
 ## Resources
 
