@@ -202,4 +202,5 @@ to support this script). The entire C# based replay scraper is shown here:
 - [Data Analysis / Training Repo](https://github.com/MiscellaneousStuff/tlol-analysis)
 - [Datasets Used in this Post](https://github.com/MiscellaneousStuff/tlol?tab=readme-ov-file#ezreal-dataset-patch-1323)
 - [All Datasets](https://github.com/MiscellaneousStuff/tlol)
-- [T_T-Pandoras-Box](https://github.com/Braziliana/T_T-Pandoras-Box/)
+- [Original T_T-Pandoras-Box](https://github.com/Braziliana/T_T-Pandoras-Box/)
+- [TLoL-Scraper T_T-Pandoras-Box](https://github.com/MiscellaneousStuff/tlol-scraper-pandoras/)
