@@ -126,12 +126,27 @@ Overall, the following number of games were downloaded from each region:
 | EUW1 (EU West) | 30,404 | 3,388,540 |
 | KR (Korea) | 3,210 | 3,697,151 |
 | LA1 (Latin America North) | 2,179 | 770,505 |
-| EUN1 (EU Nordic & East) | 13,156 | 3,388,540 |
+| EUN1 (EU Nordic & East) | 13,156 | 1,585,468 |
 | NA1 (North America) | 6,532 | 1,554,540 |
 
 As we can see, there is a large number of games from EU West and EU Nordic and East. EU West is generally known as the best
-non-Asian region hence it was prioritised after the KR region and Eu Nordic and East afterwards due to its relatively high
+non-Asian region hence it was prioritised after the KR region, and EU Nordic and East afterwards due to its relatively high
 ranked player population.
+
+## Dataset Filtering and Processing Considerations
+
+For us to build our initial agent, we need to ensure high quality replays and simplify our dataset. For starters, it would
+be easier if we just considered replays which were played on one side of the map initially, as which side of the map you're
+on can significantly change decision making and may add unnecessary complexity to our agent early on. For this reason, we
+only want to choose blue side replays which halves the number of replays we can use. Buliding on this, we also want to
+choose replays where players performed the best. As you can see from the above GitHub gist, we have multiple features to
+filter replays on. From empirical evaluations, the best features to filter games on which results in the highest win rate
+for Ezreal players is time spent dead. On top of this, we also should limit the total number of replays initially to something
+which we can process within a reasonable amount of time, and then scale up later when our baseline data transformation process
+if working correctly and somewhat refined. For this purpose, 10,000 games should suffice. It's using the roughly top 33% best played
+replays which were played on blue side which means it's still using a significant number of the entire dataset, and shouldn't include
+many instances of players intentionally feeding or trolling games (again, relying on the fact that players who haven't spent much time
+dead on average have a significantly above average win rate and are therefore unlikely to be trolling games).
 
 ## Resources
 
