@@ -37,9 +37,17 @@ Here, I will detail significant progress in restarting this project, and any int
 
 ## Replay Dataset
 
-### Overview
+### Explanation
 
+As detailed across all of the other posts, the most crucial aspect for this project to work is to use expert replays to train our agent.
+To do this, we need a method to download a dataset of replays according to some criteria which we set out for our expert replays. Based on
+aspects discussed in previous sections, and the fact that we now have access to KR replays which wasn't previously available (the method will
+be explained), the following criteria was chosen:
 
+| Criteria | Choice | Reason |
+| - | - | - |
+| Champion | Ezreal | Ezreal is consistently one of the most played champions in every region and is also easy to infer actions from later on during the data transformation stage. |
+| Replay Regions | Multiple | Ideally we would just use all KR replays but unfortunately our method of acquiring KR replays is slow, so we need to compensate by downloading replays from other regions to ensure an adequate number of replays |
 
 ## Resources
 
