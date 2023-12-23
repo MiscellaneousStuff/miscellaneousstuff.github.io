@@ -138,12 +138,16 @@ ranked player population.
 For us to build our initial agent, we need to ensure high quality replays and simplify our dataset. For starters, it would
 be easier if we just considered replays which were played on one side of the map initially, as which side of the map you're
 on can significantly change decision making and may add unnecessary complexity to our agent early on. For this reason, we
-only want to choose blue side replays which halves the number of replays we can use. Buliding on this, we also want to
+only want to choose blue side replays which halves the number of replays we can use.
+
+Buliding on this, we also want to
 choose replays where players performed the best. As you can see from the above GitHub gist, we have multiple features to
 filter replays on. From empirical evaluations, the best features to filter games on which results in the highest win rate
 for Ezreal players is time spent dead. On top of this, we also should limit the total number of replays initially to something
 which we can process within a reasonable amount of time, and then scale up later when our baseline data transformation process
-if working correctly and somewhat refined. For this purpose, 10,000 games should suffice. It's using the roughly top 33% best played
+if working correctly and somewhat refined.
+
+For this purpose, 10,000 games should suffice. It's using the roughly top 33% best played
 replays which were played on blue side which means it's still using a significant number of the entire dataset, and shouldn't include
 many instances of players intentionally feeding or trolling games (again, relying on the fact that players who haven't spent much time
 dead on average have a significantly above average win rate and are therefore unlikely to be trolling games).
