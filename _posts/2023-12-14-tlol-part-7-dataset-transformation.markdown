@@ -237,6 +237,14 @@ python -m tlol.bin.convert_dataset_pandoras `
 
 Refer to the [tlol-py](https://github.com/MiscellaneousStuff/tlol-py) libraries source code for full implementation details.
 
+## Dataset Transformation
+
+### Explanation
+
+At this stage, we have 10,065 SQLite3 database files which require extensive data cleaning, normalisation and different transformations
+before they are ready to be supplied to any ML model. Refer to the [tlol-analysis](https://github.com/MiscellaneousStuff/tlol-analysis)
+repo for extensive implementation details.
+
 ## Resources
 
 - [League of Legends Python ML Library](https://github.com/MiscellaneousStuff/tlol-py)
