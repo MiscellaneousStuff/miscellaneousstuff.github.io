@@ -29,7 +29,7 @@ Here, I will detail significant progress in restarting this project, and any int
    regions.
 2. (Replay Scraping) T_T-Pandoras-Box which replaces LViewLoL as the scripting engine used for memory scraping replays and to control
    agents in the future.
-3. (Dataset Transformation) Data transformation of replays all the way from JSON files to SQLite3 database files to half precision NumPy arrays
+3. (Dataset Transformation) Data transformation of the SQLite3 DB replays to half precision NumPy arrays
    which contain all of the data required to finally train our ML model.
 4. (Initial ML Model) The initial goal in this type of research is to try and create a model which can make basic action predictions using observations.
    Here we will explore using different types of ML models, some inspired by previous approaches such as OpenAI Five. This section will highlight
@@ -210,7 +210,32 @@ and the redundant recording of all strings and inefficient representation of flo
 
 ### Method
 
+Similar to the replay downloader, the replay scraper has also been somewhat productionised into the tlol-py library, and now only
+requires the following command to be run (refer to [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#overview) or the [source code](https://github.com/MiscellaneousStuff/tlol-py/blob/main/tlol/bin/replay_scraper.py) for a more extensive explanation):
 
+```powershell
+python -m tlol.bin.replay_scraper `
+--game_dir "..\\Game\\" `
+--replay_dir "..\\Replays\\" `
+--dataset_dir "..\\JSON Replays\\" `
+--scraper_dir "..\\T_T-Pandoras-Box\\x64\\Release\\T_T\\" `
+--end_time 180 `
+--replay_speed 16 `
+--replay_list "replay_paths.txt"
+```
+
+This leaves us with a final directory of 10,065 JSON files containing everything we need from the first 3 minutes of each replay file. After this,
+we need to convert the JSON files to SQLite3 databases which have the data in the correct format which we need to load it into the `pandas` library
+for data analysis in Python. This is done using the following command:
+
+```powershell
+python -m tlol.bin.convert_dataset_pandoras `
+--db_dir "..\DB" `
+--json_dir "..\JSON Replays" `
+--max_workers 12
+```
+
+Refer to the [tlol-py](https://github.com/MiscellaneousStuff/tlol-py) libraries source code for full implementation details.
 
 ## Resources
 
