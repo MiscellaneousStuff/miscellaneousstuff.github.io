@@ -190,6 +190,12 @@ for just getting which action champions are performing. That being said, this ca
 dealbreaker, just as it wasn't with [LViewPlus64](https://github.com/ImbaMDT/LViewPlus64). The complete listing of features is
 available [here](https://github.com/Braziliana/T_T-Pandoras-Box/?tab=readme-ov-file#sdkapi).
 
+There is only one major substantial change in the T_T-Pandoras-Box repo for this project (along with some modifications in other files
+to support this script). The entire C# based replay scraper is shown here:
+
+{% gist f89706af372f70b4343a26d45e860f44 %}
+
+
 ## Resources
 
 - [League of Legends Python ML Library](https://github.com/MiscellaneousStuff/tlol-py)
