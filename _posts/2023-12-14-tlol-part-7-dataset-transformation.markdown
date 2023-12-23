@@ -152,6 +152,20 @@ replays which were played on blue side which means it's still using a significan
 many instances of players intentionally feeding or trolling games (again, relying on the fact that players who haven't spent much time
 dead on average have a significantly above average win rate and are therefore unlikely to be trolling games).
 
+The other consideration we have here is game length. Here we are bounded by throughput and also the complexity of developing our model.
+It would be easier to just consider the early game for model development initially, and then scale up the game length of each replay
+when we're happy that it's working correctly. For this, only the first 3 minutes of games are being considered, as they are likely to
+contain all of the scenes which would appear in a full length game so they are a good sampling of what will be required when scaling
+up to full game replays. Fortunately 3 minute games are 10x smaller than full games (mean game length in League of Legends is roughly
+30 minutes), so should also make processing of these datasets much faster and require far less storage.
+
+## Replay Scraping
+
+### Explanation
+
+At this stage, we have downloaded almost 60,000 replay files across multiple regions which all contain an Ezreal player, for a total
+of 58,530 replay files. Due to making the replay scraping process simpler
+
 ## Resources
 
 - [League of Legends Python ML Library](https://github.com/MiscellaneousStuff/tlol-py)
