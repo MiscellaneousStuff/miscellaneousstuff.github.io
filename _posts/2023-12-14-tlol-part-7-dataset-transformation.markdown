@@ -138,7 +138,10 @@ ranked player population.
 For us to build our initial agent, we need to ensure high quality replays and simplify our dataset. For starters, it would
 be easier if we just considered replays which were played on one side of the map initially, as which side of the map you're
 on can significantly change decision making and may add unnecessary complexity to our agent early on. For this reason, we
-only want to choose blue side replays which halves the number of replays we can use.
+only want to choose blue side replays which halves the number of replays we can use. The following SQL statement was used
+on the metadata SQLite3 database to find these games:
+
+{% gist 52c259e796940c5bdbdb4787bae1e88b %}
 
 Buliding on this, we also want to
 choose replays where players performed the best. As you can see from the above GitHub gist, we have multiple features to
@@ -202,6 +205,10 @@ when scraping the game objects from the game engine as it's highly flexible and 
 later on. The main downside is how storage inefficient JSON is, especially for our use case where it is roughly 20x bigger compared
 to be compressed with 7-Zip. This is due to each sample, and sub-object within each sample requiring so much boilerplate to be represented,
 and the redundant recording of all strings and inefficient representation of floating point number values.
+
+### Method
+
+
 
 ## Resources
 
