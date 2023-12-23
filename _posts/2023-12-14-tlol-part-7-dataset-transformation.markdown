@@ -109,14 +109,18 @@ Aside from these differences, the download process of the KR replays was the sam
 
 Overall, the following number of games were downloaded from each region:
 
-| Region | Count |
-| - | - |
-| BR1 (Brazil) | 3,049 |
-| EUW1 (EU West) | 30,404 |
-| KR (Korea) | 3,210 |
-| LA1 (Latin America North) | 2,179 |
-| EUN1 (EU Nordic & East) | 13,156 |
-| NA1 (North America) | 6,532 |
+| Region | Count | Ranked Population (For Context - As of 23/12/2023) |
+| - | - | - |
+| BR1 (Brazil) | 3,049 | 1,333,420 |
+| EUW1 (EU West) | 30,404 | 3,388,540 |
+| KR (Korea) | 3,210 | 3,697,151 |
+| LA1 (Latin America North) | 2,179 | 770,505 |
+| EUN1 (EU Nordic & East) | 13,156 | 3,388,540 |
+| NA1 (North America) | 6,532 | 1,554,540 |
+
+As we can see, there is a large number of games from EU West and EU Nordic and East. EU West is generally known as the best
+non-Asian region hence it was prioritised after the KR region and Eu Nordic and East afterwards due to its relatively high
+ranked player population.
 
 ## Resources
 
