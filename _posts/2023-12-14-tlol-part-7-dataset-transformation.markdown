@@ -41,7 +41,7 @@ Here, I will detail significant progress in restarting this project, and any int
 
 As detailed across all of the other posts, the most crucial aspect for this project to work is to use expert replays to train our agent.
 To do this, we need a method to download a dataset of replays according to some criteria which we set out for our expert replays. Based on
-aspects discussed in previous sections, and the fact that we now have access to KR replays which wasn't previously available (the method will
+aspects discussed in previous sections, and the fact that we now have access to KR replays which weren't previously available (the method will
 be explained), the following criteria was chosen:
 
 | Criteria | Choice | Reason |
@@ -54,8 +54,12 @@ be explained), the following criteria was chosen:
 ### Method
 
 Since the last post, the replay downloading method described in [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html) has now been integrated into a python library called [`tlol-py`](https://github.com/MiscellaneousStuff/tlol-py)
-which allows for much more easily downloading datasets according to a specific criteria (across multiple regions). This is done by first installing
-the library by doing:
+which allows for much more easily downloading datasets according to a specific criteria (across multiple regions).
+The replay downloading script within [`tlol-py`](https://github.com/MiscellaneousStuff/tlol-py) does two things:
+1. Returns the list of players on the ranked ladder for a specific region between the `start_page` and `end_page`.
+2. Returns a combined list of game ids for each player on the ladder who played the specified champion on the specified patch.
+
+[`tlol-py`](https://github.com/MiscellaneousStuff/tlol-py) can be installed by doing the following:
 
 ```bash
 git clone https://github.com/MiscellaneousStuff/tlol-py.git
@@ -68,14 +72,15 @@ the players, we need to respect their rate limits. The easiest way to do this is
 at a time, and then use the League client to download the small list of replays. This naturally introduces a delay between bulk requests from the
 [U.GG](https://u.gg/) website which will stop us from being temporarily banned from accessing the site and is more respectful usage of the site.
 
-This stage was executed simultaneously on a Windows Desktop, MacBook Air and also partially on Google Colab instance. Therefore, there are two different scripts for running this stage. This
+This stage was executed simultaneously on a Windows Desktop, MacBook Air and also partially on Google Colab instance.
+Therefore, there are two different scripts for running this stage. This
 also forced the [`tlol-py`](https://github.com/MiscellaneousStuff/tlol-py) library to be re-written to support multiple platforms and download regions, 
 which was a plus. The main reason why this replay downloading process was split across two devices is because replay downloading is throttled by
 the League client (which downloads replays from an AWS S3 store in the background). This can be verified as the download speed of the replays was
 slower than my internet speed. This is likely because the API downloads indivdiual replay files at a time and doesn't properly request bulk downloads
 in one go which would be more efficient and because our usage of the LCU API's download function is not what it was originally designed for.
 
-[Here](https://github.com/MiscellaneousStuff/tlol-py/blob/main/replay_scraping.sh) is the Unix-based script (for MacOS and Linux, i.e. Google Colab):
+[Here](https://github.com/MiscellaneousStuff/tlol-py/blob/main/replay_scraping.sh) is the Unix-based script (for macOS and Linux, i.e. Google Colab):
 
 {% gist 543f40d2f4fb82b20d7ada852e2d1929 %}
 
