@@ -245,6 +245,46 @@ At this stage, we have 10,065 SQLite3 database files which require extensive dat
 before they are ready to be supplied to any ML model. Refer to the [tlol-analysis](https://github.com/MiscellaneousStuff/tlol-analysis)
 repo for extensive implementation details.
 
+## Model Exploration
+
+### Explanation
+
+Now that we have converted the raw replays into scaled, flattened and embedded observations which are split into observations and
+actions, we can begin to feed the observations into an ML model and predict which actions the user took, this is the beginning
+of a very real ML model which can play League of Legends!
+
+The methodology here is based on advice
+from Andrej Karpathy's ["A Recipe for Training Neural Networks"](https://karpathy.github.io/2019/04/25/recipe/),
+which I've found to often be good advice. The key pieces of advice which we'll follow here are:
+1. Overfit
+   This is especially important. The task which we're trying to accomplish here is actually very complicated, we're trying to train an
+   ML model to essentially receive the variable game object tree and in-game time of some sample of a League of Legends game, and predict
+   which action a high elo player would have taken in that situation. Before even attempting to create a model which can generalise, we
+   need to determine what architecture even has the capacity / capability of performing the task. This is where just even trying to create
+   a model which will overfit will be essential.
+2. Get Dumb Baselines
+   This completely ties in with the previous point. However, we also need to try the simplest model which works at all. This means that before
+   we jump on to more complex model architectures such as sequential models (LSTMs, Transformers, etc.), we should at least try to use simple
+   architectures such as MLP layers or possibly even non-deep learning methods such as SVMs, Decision Tree's etc.
+3. Neural Net Training Fails Silently 
+   This is an insidious problem which most researchers would have encountered at some stage. The problem is that, when you're trying to train
+   a model to make a prediction for a real world problem, you often have to transform that data into some abstract format and then provide that
+   to a model to perform the prediction. In the case of our task, it's even worse. We could train the model to have a high prediction accuracy
+   for predicting expert actions within certain situations, and then when deployed within a real game, it performs absolutely horribly. The key
+   idea here is to rapidly also deploy our trained models into the real game and test it during training to make sure our entire pipeline is
+   working as expected and that we're not getting false positives during the research and development phase.
+
+### Models
+
+#### First Model: Simple MLP Model (Partially Based on JueWu-SL)
+
+The first model which we're going to try is just a simple MLP based model which was empirically tweaked to see what is the simplest
+model we can train which results in being able to predict anything with above chance accuracy. 
+
+#### Second Model: OpenAI Five Architecture Component (ProcessSet)
+
+TBC.
+
 ## Resources
 
 - [League of Legends Python ML Library](https://github.com/MiscellaneousStuff/tlol-py)
