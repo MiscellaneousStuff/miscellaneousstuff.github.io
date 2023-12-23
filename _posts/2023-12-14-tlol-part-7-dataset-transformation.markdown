@@ -107,6 +107,17 @@ Aside from these differences, the download process of the KR replays was the sam
 
 ### Dataset Statistics
 
+After the replay downloading process was completed, we need to make sense of this large dataset. To do so, we re-use the code
+from [part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#overview):
+
+{% gist eb1e3f25cd31a66200417c6eb2344dbb %}
+
+The data for this can be found [here](https://drive.google.com/file/d/1czT2ZgWvZ09JPOy2_Uov8379MRcybQNv/view?usp=sharing).
+Now we have the metadata for the entire dataset, we can use the following command to find out how many replay files we have
+per each region:
+
+{% gist 6ab489510f09d0cd1db96453b3b3a53a %}
+
 Overall, the following number of games were downloaded from each region:
 
 | Region | Count | Ranked Population (For Context - As of 23/12/2023) |
