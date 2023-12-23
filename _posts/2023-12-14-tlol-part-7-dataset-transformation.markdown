@@ -195,6 +195,13 @@ to support this script). The entire C# based replay scraper is shown here:
 
 {% gist f89706af372f70b4343a26d45e860f44 %}
 
+The main takeaway from this code is that we set the replay speed of the client to whatever speed we want (in this case, x16 real-time),
+with many of the decisions here already having been justified in
+[part 6](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#overview). We initially use JSON
+when scraping the game objects from the game engine as it's highly flexible and can easily be converted into whatever format we want
+later on. The main downside is how storage inefficient JSON is, especially for our use case where it is roughly 20x bigger compared
+to be compressed with 7-Zip. This is due to each sample, and sub-object within each sample requiring so much boilerplate to be represented,
+and the redundant recording of all strings and inefficient representation of floating point number values.
 
 ## Resources
 
