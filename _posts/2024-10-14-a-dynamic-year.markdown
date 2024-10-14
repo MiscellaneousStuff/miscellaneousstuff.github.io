@@ -65,12 +65,26 @@ Whereby each part of the title and description has a specific meaning:
 | INFO list (within description) | Contextual info for that sub-task, such as links to resources, general contextual info, etc. |
 | TODO list (within description) | A further breakdown of tasks for that sub-task |
 
-This extensive documentation and future planning allows me to take complete ownership of my time and actions, to ensure I'm actually commiting to
+This extensive documentation and future planning allows me to take complete ownership of my time and actions, to ensure I'm actually committing to
 what I claim to be doing with others, and most importantly myself as well. From what I've observed over time, many people make claims about where
 their time is going, but this is often inaccurate for various reasons. This also forms a crucial record of things I've tried over time across multiple
 hierarchies of time (per-day, per-week, per-month, etc.) and also contains many recipes of how to solve complex problems. This is especially useful
 for reinforcing things I've learnt over time or teaching things to others.
 
 It also forms one other, very useful purpose. I can perform deep analysis about exactly where my time is going, and now, may form a realistic
-picture for others for how long product development takes, how long it actually takes too develop technical skills and how long it takes to build
+picture for others for how long product development takes, how long it actually takes to develop technical skills and how long it takes to build
 a business with very precise data.
+
+## Analysis of Time
+
+It's a sobering reality that the one resource in life which is finite is time, so once in a while it's good to see where it's being spent!
+
+Firstly, let's see how I've spent my time in aggregate across the major categories of my life for the last year in total.
+I started accurately recording data from new years day until today, so we'll get the time counts from 1st Jan 2024 to 14th Oct 2024.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/dynamic_year/year-work-hours.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
