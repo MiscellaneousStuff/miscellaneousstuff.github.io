@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: false
-title:  "Exploration: Hackathons, Consulting, Startups..."
+title:  "Exploration: Hackathons, AI Agencies, Startups and What Gets Monitored Gets Managed"
 excerpt: "10 months since last post - what a wild year! Shifted from consulting and AI research to hackathons, startups, and a crash course in business and relationships."
 date:   2024-10-14 00:00:00
 categories: [Startups]
