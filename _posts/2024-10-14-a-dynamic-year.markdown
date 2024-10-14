@@ -26,7 +26,7 @@ To recap, let's go over what has happened in the last 10 months:
 
 | Month | Event |
 |-------|-------|
-| November 2023 | Joined a team at the Anthropic Hackathon in London and came second place out of 60 teams. Won the GenAI Hackathon and $100,000 AWS credits the following weekend. |
+| November 2023 | Joined a team at the Anthropic Hackathon in London and came second place out of 60 teams with a project called aGP Chat. Our project managed to get featured on the [Anthropic Linkedin](https://www.linkedin.com/posts/anthropicresearch_the-bulletpapers-winning-hackathon-project-activity-7128532162961702912-4Kvw/)!. Won the GenAI Hackathon and $100,000 AWS credits the following weekend! |
 | December 2023 | Holiday to Finland |
 | January 2024 | Competed in the e/acc Hackathon in London, reached the finals. Started a cloud computing startup. |
 | February 2024 | Moved on from the cloud computing startup to found an AI agency with two hackathon team members as co-founders. |
