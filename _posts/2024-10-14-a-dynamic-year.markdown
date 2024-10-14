@@ -22,7 +22,7 @@ relationships along the way.
 
 ## Overview
 
-To recap, let's go over what has happened in the last 10 months:
+To recap, let's go over what has happened in the last 12 months...
 
 | Month | Event |
 |-------|-------|
