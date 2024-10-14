@@ -80,7 +80,7 @@ a business with very precise data.
 It's a sobering reality that the one resource in life which is finite is time, so once in a while it's good to see where it's being spent!
 
 Firstly, let's see how I've spent my time in aggregate across the major categories of my life for the last year in total.
-I started accurately recording data from new years day until today, so we'll get the time counts from 1st Jan 2024 to 14th Oct 2024.
+I started accurately recording data from new years day until today, so we'll get the time counts from 1st Jan 2024 to 26th June 2024.
 
 <div style="text-align: center;">
    <img
@@ -123,5 +123,6 @@ what I was doing at the time.
 </div>
 
 The above graph shows the mean number of hours worked per the different "epochs" of things I was doing
-during the year. We can see that the year started with an average working pace (although highly volatile
-week-to-week)
+during the year. We can see that the year started with an average working pace, then I entered a period
+of very high intensity during the AI agency and AI agent time period, and then tapered off during the finalising
+of the AI agency work.
