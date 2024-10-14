@@ -88,3 +88,9 @@ I started accurately recording data from new years day until today, so we'll get
       style="width: 100%; max-width: 640px;"
    />
 </div>
+
+So here we can see in the cold light of day how many hours I have actually worked in total this year, which is 
+2269.5 hours. If we were to extrapolate this to a full year, we might arrive at 2,269.5 hours / 9.5 months 12 
+months ≈ 2,866 hours per year. This gives us a average weekly hours of 2,269.5 hours / (9.5 months 4.33 weeks per 
+month) ≈ 55 hours per week. This is higher than a normal jobs working hours, however, there is more than meets
+eye here.
