@@ -38,3 +38,39 @@ To recap, let's go over what has happened in the last 12 months...
 | August 2024 | Refined product offering by removing unnecessary features. Continued relationships with existing clients to tailor the product. |
 | September 2024 | Rebranded to [Azolla](http://azolla.ai/) and officially launched the product! |
 | October 2024 | Product stable and fully launched. Gathering feedback from trial users and refining the product. |
+
+Now this is a gross overview of what has happened. One habit I've maintained since the age of 18 is manually recording tasks that I'm currently doing, and that I plan
+to do as Google Calendar events. One such entry might have a title such as "(Desc.) Azolla: Platform: Logging (Winston: Connect to AWS)".
+Whereby the entry might look like the following:
+
+```markdown
+INFO:
+- Winston supports multiple different outputs for logging
+
+TODO:
+- [ ] Setup Winston for logging to console
+- [ ] Setup Winston for logging to AWS CloudWatch
+```
+
+Whereby each part of the title and description has a specific meaning:
+
+| Part | Meaning |
+| - | - |
+| (Desc.) | A visual indicator when looking at my calendar that there is further information in the event, such as a TODO list of tasks |
+| Azolla | The category of task |
+| Platform | The sub-category of task |
+| Logging | The task-category which I'm doing (Or just task if there's no bracketed section) |
+| Winston | The task which I'm doing which I'm doing |
+| Connect to AWS | The sub-task which I'm doing |
+| INFO list (within description) | Contextual info for that sub-task, such as links to resources, general contextual info, etc. |
+| TODO list (within description) | A further breakdown of tasks for that sub-task |
+
+This extensive documentation and future planning allows me to take complete ownership of my time and actions, to ensure I'm actually commiting to
+what I claim to be doing with others, and most importantly myself as well. From what I've observed over time, many people make claims about where
+their time is going, but this is often inaccurate for various reasons. This also forms a crucial record of things I've tried over time across multiple
+hierarchies of time (per-day, per-week, per-month, etc.) and also contains many recipes of how to solve complex problems. This is especially useful
+for reinforcing things I've learnt over time or teaching things to others.
+
+It also forms one other, very useful purpose. I can perform deep analysis about exactly where my time is going, and now, may form a realistic
+picture for others for how long product development takes, how long it actually takes too develop technical skills and how long it takes to build
+a business with very precise data.
