@@ -2,7 +2,7 @@
 layout: post
 comments: false
 title:  "Exploration: Hackathons, Consulting, Startups..."
-excerpt: ""
+excerpt: "10 months since last post - what a wild year! Shifted from consulting and AI research to hackathons, startups, and a crash course in business and relationships."
 date:   2024-10-14 00:00:00
 categories: [Startups]
 tags: ["Startups", "Productivity"]
