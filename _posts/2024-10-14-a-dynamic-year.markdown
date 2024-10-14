@@ -5,7 +5,7 @@ title:  "Exploration: Hackathons, AI Agencies, Startups and What Gets Monitored 
 excerpt: "10 months since last post - what a wild year! Shifted from consulting and AI research to hackathons, startups, and a crash course in business and relationships."
 date:   2024-10-14 00:00:00
 categories: [Startups]
-tags: ["Startups", "Productivity"]
+tags: ["AI", "AI Agencies", "Exploration", "Startups", "Productivity", "Monitoring"]
 ---
 
 ## Table of Contents
@@ -92,5 +92,22 @@ I started accurately recording data from new years day until today, so we'll get
 So here we can see in the cold light of day how many hours I have actually worked in total this year, which is 
 2269.5 hours. If we were to extrapolate this to a full year, we might arrive at 2,269.5 hours / 9.5 months 12 
 months ≈ 2,866 hours per year. This gives us a average weekly hours of 2,269.5 hours / (9.5 months 4.33 weeks per 
-month) ≈ 55 hours per week. This is higher than a normal jobs working hours, however, there is more than meets
-eye here.
+month) ≈ 55 hours per week. This is higher than a normal persons working hours but not unusual for an entrepreneur.
+If anything I can probably work more intensely towards the end of the year.
+
+However, there is more than meets the eye to this.
+
+### Consistency
+
+One of the biggest issues I have is with maintaining a regular working routine, instead trending more towards
+boom and bust cycles (working very intensely for some weeks, and then considerably slowing down during others).
+
+Here is a good demonstration of that in terms of hours worked per week, starting from Jan 1 2024, until Oct 14 
+2024.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/dynamic_year/work-hours-per-week.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
