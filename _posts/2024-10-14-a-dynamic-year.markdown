@@ -111,3 +111,18 @@ Here is a good demonstration of that in terms of hours worked per week, starting
       style="width: 100%; max-width: 640px;"
    />
 </div>
+
+Here we can see that in reality, the time period from the AI agency starting (late Feb) until the end of
+the AI agency job (mid June) was a period of particulaly high intensity with high variance based on
+what I was doing at the time.
+
+<div style="text-align: center;">
+   <img
+      src="/assets/dynamic_year/mean-per-epoch.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
+
+The above graph shows the mean number of hours worked per the different "epochs" of things I was doing
+during the year. We can see that the year started with an average working pace (although highly volatile
+week-to-week)
