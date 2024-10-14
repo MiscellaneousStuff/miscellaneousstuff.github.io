@@ -102,8 +102,7 @@ However, there is more than meets the eye to this.
 One of the biggest issues I have is with maintaining a regular working routine, instead trending more towards
 boom and bust cycles (working very intensely for some weeks, and then considerably slowing down during others).
 
-Here is a good demonstration of that in terms of hours worked per week, starting from Jan 1 2024, until Oct 14 
-2024.
+Here is a good demonstration of that in terms of hours worked per week, starting from Jan 1 2024, until 26th June 2024.
 
 <div style="text-align: center;">
    <img
