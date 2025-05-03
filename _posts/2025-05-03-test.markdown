@@ -10,4 +10,17 @@ tags: ["Test"]
 
 ## Table of Contents
 
-Hi
+* TOC
+{:toc}
+
+## Introduction
+
+This post is the first of a three part series exploring my journey involving
+modern lip reading AI. The posts are arranged as follows:
+- Part 1: Literature review and research paper
+- Part 2: Using lip reading to win $100k at a hackathon!
+- Part 3: Another hackathon showcasing real-world performance
+
+## References
+
+- [Lip2Seq](https://github.com/MiscellaneousStuff/comp-vis-avhubert/blob/main/paper.pdf)

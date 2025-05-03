@@ -28,8 +28,8 @@ create AI systems which can play League of Legends.
 
 ## Existing Solutions
 
-
 ### League of Legends: Wild Rift inbuilt AI
+
 The League of Legends mobile spin-off game, Wild Rift, is a game developed in Unity
 and released as a game on the iOS App Store and Google Play Store. Reverse engineering
 the game using [Il2CppInspector](https://github.com/djkaty/Il2CppInspector), which converts the Unity source code of the game into an intermediate representation along with the original meta-data, allows the function labels, data types and parameters to be recovered.
@@ -203,7 +203,6 @@ with low friction. This is a problem because the main method used to achieve hum
 performance in RTS-style games is reinforcement learning. However we will see later in
 the series that it is possible to use other AI training methods to reduce the amount
 of data required to train a human-level League of Legends AI.
-
 
 ## References
 
