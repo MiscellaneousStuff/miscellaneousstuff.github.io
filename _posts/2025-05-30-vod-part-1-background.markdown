@@ -100,10 +100,3 @@ There had been existing attempts at creating fully autonomous programming agents
 before, such as GPT Engineer (which eventually became Lovable), AutoGPT (which
 was an attempt to see how recursive prompting and basic prompt scaffolding could
 achieve AGI using GPT-4, the best model at the time).
-
-<div class="mermaid">
-graph TD
-    A[Cursor/IDEs] --> B[Partial Automation]
-    B --> C[Autonomous Agents]
-    C --> D[Devin/Lovable/Bolt]
-</div>
