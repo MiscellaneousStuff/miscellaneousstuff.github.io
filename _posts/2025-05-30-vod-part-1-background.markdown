@@ -80,4 +80,13 @@ those which are similar to existing projects which the LLMs have been trained on
 ### Lovable, Bolt.new, Devin.ai, Anterion, etc. (Mostly Autonomous Agents)
 
 This has further culminated in an interesting new class of software production
-agents such as Lovable, Bolt.new, Devin.ai and others.
+agents such as Lovable, Bolt.new, Devin.ai and others. The goal of these tools
+is to allow a person with no prior programming experience to have a ChatGPT-style
+experience where, similar to Cursor, the user simply dictates the problem they
+want the software to build. However, unlike Cursor, these tools also execute all
+of the steps required to execute the building and debugging of these projects,
+which aims to provide a seamless experience for the end users.
+
+The solution of this class was Devin.ai, created by Cognition Labs. The founding
+team of Cognition Labs is comprised of current and former world class competitive
+programmers, including the brothers Scott Wu and Neal Wu.
