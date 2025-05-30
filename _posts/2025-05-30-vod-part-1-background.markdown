@@ -6,6 +6,7 @@ excerpt: ""
 date:   2025-05-30 00:00:00
 categories: [Project]
 tags: ["Programming", "Machine Learning"]
+devinai: fjHtjT7GO1c
 ---
 
 ## Table of Contents
@@ -90,3 +91,7 @@ which aims to provide a seamless experience for the end users.
 The solution of this class was Devin.ai, created by Cognition Labs. The founding
 team of Cognition Labs is comprised of current and former world class competitive
 programmers, including the brothers Scott Wu and Neal Wu.
+
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.devinai %}
+</div>
