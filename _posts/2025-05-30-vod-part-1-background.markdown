@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "VOD: Applying Game Playing AI to Programming (Part 1 - Why?)" # this could be a lot better
+title:  "VOD: Human Level Programming Agents (Part 1 - Existing Solutions)" # this could be a lot better
 excerpt: ""
 date:   2025-05-30 00:00:00
 categories: [Project]
