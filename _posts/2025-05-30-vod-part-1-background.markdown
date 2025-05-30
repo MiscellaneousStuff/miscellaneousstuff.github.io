@@ -16,12 +16,12 @@ devinai: fjHtjT7GO1c
 
 ## Introduction
 
-This post examines existing AI-powered programming solutions, across
-the entire gamut.
+This post examines emerging AI-powered programming tools, across the wide
+range in which they're being used.
 There are currently varying levels of automation being used in the programming
-context. The range of automation ranges from existing tools such as linters,
-IDEs to recent additions such as Microsoft Co-Pilot style IDEs such as
-Cursor.
+context. The range of automation ranges from existing tools such as
+coding IDEs to tools promising full automation such as Devin.ai, along with my own
+personal attempts to create tools in this space.
 
 ## Existing Solutions
 
@@ -78,7 +78,7 @@ them to quickly iterate on greenfield projects and experiment with ideas, especi
 those which are similar to existing projects which the LLMs have been trained on
 (such as Next.js + ShadCN + Tailwind style, full stack projects).
 
-### Lovable, Bolt.new, Devin.ai, Anterion, etc. (Mostly Autonomous Agents)
+### Lovable, Bolt.new, Devin.ai, AutoGPT, SWE-Agent, Anterion, etc. (Mostly Autonomous Agents)
 
 This has further culminated in an interesting new class of software production
 agents such as Lovable, Bolt.new, Devin.ai and others. The goal of these tools
@@ -94,4 +94,16 @@ programmers, including the brothers Scott Wu and Neal Wu.
 
 <div style="text-align: center;">
 {% include youtubePlayer.html id=page.devinai %}
+</div>
+
+There had been existing attempts at creating fully autonomous programming agents
+before, such as GPT Engineer (which eventually became Lovable), AutoGPT (which
+was an attempt to see how recursive prompting and basic prompt scaffolding could
+achieve AGI using GPT-4, the best model at the time).
+
+<div class="mermaid">
+graph TD
+    A[Cursor/IDEs] --> B[Partial Automation]
+    B --> C[Autonomous Agents]
+    C --> D[Devin/Lovable/Bolt]
 </div>
