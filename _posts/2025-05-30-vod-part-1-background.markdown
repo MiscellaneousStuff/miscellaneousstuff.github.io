@@ -67,16 +67,28 @@ famous deep learning expert, Andrej Karparthy.
 https://x.com/karpathy/status/1886192184808149383?lang=en-GB
 -->
 
-Vibe coding refers to the experience of iteratively producing software by dictating
-your project in natural language terms to an LLM which then plans out how to
-create the software, and then users iteratively debug issues during development
-using the AI IDE + LLM tool combination. This has introduced new capabilities for
-two classes of software engineers.
+### Vibe Coding
 
-For people who were unable to program before it has allowed
-them to quickly iterate on greenfield projects and experiment with ideas, especially
-those which are similar to existing projects which the LLMs have been trained on
-(such as Next.js + ShadCN + Tailwind style, full stack projects).
+Vibe coding refers to the experience of iteratively developing software by describing requirements in natural language to an AI, which then generates code that developers refine through conversation. The term was popularised by deep learning expert Andrej Karpathy, capturing the shift from writing code line-by-line to "vibing" with an AI assistant.
+
+For people who were unable to program before, it has allowed
+them to quickly iterate on greenfield projects and experiment with ideas.
+This is especially true for projects which are similar to existing projects
+which the LLMs have been trained on (such as Next.js + ShadCN + Tailwind style,
+full stack projects).
+
+As for experienced engineers, this allows them to architect and scaffold out the solution,
+and then use tools such as Cursor to automatically generate the more boilerplate aspects
+of the solution (such as generating API specifications, database schemas, etc.) and then
+use other LLMs to implement the solution. This might look like taking in a set of requirements
+which have already been gathered, working alongside a powerful reasoning model more suited
+to accurate, architectural decision making such as OpenAI's o3 model, generating a high
+level spec or architecture, and then using something like Gemini 2.5 Pro or Claude 4 Opus
+or another model to actually implement the modules along with their testing.
+
+This has also transitioned development more towards Testing Driven Development (TDD) where
+the process allows the compiler or scripting engines feedback to inform the LLM of errors
+in a recipricol loop to quickly build out functionality.
 
 ### Lovable, Bolt.new, Devin.ai, AutoGPT, SWE-Agent, Anterion, etc. (Mostly Autonomous Agents)
 
