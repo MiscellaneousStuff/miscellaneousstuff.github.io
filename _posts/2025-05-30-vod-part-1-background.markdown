@@ -124,6 +124,19 @@ clone as you can see below.
 {% include youtubePlayer.html id=page.anterion %}
 </div>
 
+This was created by combining the SWE-Agent environment and agent framework,
+and the full stack environment from OpenDevin. This allowed us to rapidly
+build out a functional Devin-clone with GPT-4o as the backend.
+
+The most surprising thing about this setup was that Anterion started showing
+rudimentary self-healing capabilities during task execution. For example, the
+agent had basic tool calling functionality to publish websites to Netlify,
+however we had setup the .env keys incorrectly in the environment. During
+one of our demo's, the agent `noticed` that and decided to move it to the
+correct location before executing the publish command. This was a major
+surprise at the time as it showed that the agent, at least in some limited cases,
+could execute basic fixes without being prompted.
+
 ## Issues with Exising Solutions
 
 - ?
