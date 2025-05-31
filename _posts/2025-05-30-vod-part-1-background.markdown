@@ -7,6 +7,7 @@ date:   2025-05-30 00:00:00
 categories: [Project]
 tags: ["Programming", "Machine Learning"]
 devinai: fjHtjT7GO1c
+anterion: X2fm7K3sBR8
 ---
 
 ## Table of Contents
@@ -90,7 +91,7 @@ This has also transitioned development more towards Testing Driven Development (
 the process allows the compiler or scripting engines feedback to inform the LLM of errors
 in a recipricol loop to quickly build out functionality.
 
-### Lovable, Bolt.new, Devin.ai, AutoGPT, SWE-Agent, Anterion, etc. (Mostly Autonomous Agents)
+### Lovable, Bolt.new, Devin.ai, AutoGPT, SWE-Agent (Mostly Autonomous Agents)
 
 This has further culminated in an interesting new class of software production
 agents such as Lovable, Bolt.new, Devin.ai and others. The goal of these tools
@@ -100,7 +101,7 @@ want the software to build. However, unlike Cursor, these tools also execute all
 of the steps required to execute the building and debugging of these projects,
 which aims to provide a seamless experience for the end users.
 
-The solution of this class was Devin.ai, created by Cognition Labs. The founding
+One of these solutions was Devin.ai, created by Cognition Labs. The founding
 team of Cognition Labs is comprised of current and former world class competitive
 programmers, including the brothers Scott Wu and Neal Wu.
 
@@ -113,6 +114,15 @@ before, such as GPT Engineer (which eventually became Lovable), AutoGPT (which
 was an attempt to see how recursive prompting and basic prompt scaffolding could
 achieve AGI using GPT-4, the best model at the time), but this new generation
 of tools now includes human-guidance to steer the process.
+
+### Anterion (My Attempt)
+
+During April and May of 2024, I also attempted to create my own Devin-style
+clone as you can see below.
+
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.anterion %}
+</div>
 
 ## Issues with Exising Solutions
 
