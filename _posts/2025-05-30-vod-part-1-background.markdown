@@ -118,7 +118,7 @@ of tools now includes human-guidance to steer the process.
 ### Anterion (My Attempt)
 
 During April and May of 2024, I also attempted to create my own Devin-style
-clone as you can see below.
+clone as you can see below (co-founder pictured below).
 
 <div style="text-align: center;">
 {% include youtubePlayer.html id=page.anterion %}
