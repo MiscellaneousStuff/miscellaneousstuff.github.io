@@ -39,6 +39,10 @@ with integrated AI capabilities, such as in-context code generation (the ability
 to arbitrarily reference any project file, external documentation, etc.),
 intelligent autocompletion and codebase querying.
 
+The key innovation was their "context engine" which uses semantic search and AST parsing
+to intelligently select relevant code snippets from across the codebase, feeding them
+into the LLM's context window.
+
 Then in 2024, they raised a much larger round at $60 million which valued
 Anysphere (the company behind Cursor) at $400 million.
 At this stage, Cursor.ai was growing rapidly, especially in the startup space.
@@ -108,6 +112,11 @@ programmers, including the brothers Scott Wu and Neal Wu.
 <div style="text-align: center;">
 {% include youtubePlayer.html id=page.devinai %}
 </div>
+
+Devin.ai's unique approach allowed for executing long-running tasks autonomously,
+it also allowed the agent to debug errors by reading the messages and executing
+the solutions in the command line interface (CLI), and to maintain context across
+multiple sessions.
 
 There had been existing attempts at creating fully autonomous programming agents
 before, such as GPT Engineer (which eventually became Lovable), AutoGPT (which
