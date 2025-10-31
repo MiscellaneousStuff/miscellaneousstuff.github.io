@@ -15,7 +15,16 @@ tags: ["BAAIWorm", "Whole Brain Emulation"]
 
 ## Introduction
 
-BAAI Worm
+Is it possible to upload the brain of an organism onto a computer? This question is the
+basis of Whole Brain Emulation (WBE), a field which is attempting to do just that.
+
+In pursuit of this, researchers start with a simple type of roundworm known
+as Caenorhabditis elegans (C. Elegans). This worm is chosen because it's entire
+nervous system consisting of 302 neurons has been fully mapped by researchers,
+including its synapses. So in theory, this should allow us to just replicate the
+worm in sillico and then be done with it?
+
+Well turns out, it's not that simple.
 
 ## Overview
 
