@@ -97,6 +97,25 @@ here is the timeline for this reproduction and validation effort:
 | 5. Behavioral Validation & Analysis | Aug 21 – Aug 24, 2025 | The core scientific validation began. The primary goal was to replicate the paper's central claim of chemotaxis (movement towards a food source). Quantitative analysis of the worm's distance to the food source revealed a consistent divergence from the expected behavior. Debugging focused on the sensory-motor loop, specifically the gradient calculation that guides the worm. |
 | 6. Collaborative Review & Findings | August 25, 2025 | The investigation culminated in a productive meeting with one of the paper's original authors. The findings from the validation analysis were shared and discussed, leading to a deeper understanding of the model's behavior under the tested conditions and clarifying the path forward. |
 
+The most time consuming aspect of the reproduction was setting up the complex simulation,
+de-coupling the essential parts from the niceties, and fundamentally understanding
+the purpose of each component of the entire system w.r.t the published paper.
+
+### 1. Initial Research and Onboarding
+
+First things first, why did we decide to deep-dive into BAAIWorm in the first place?
+Based on the papers purported claims, it appeared to be the most biophysically faithful
+attempt at whole brain emulation out of all of the published attempts based on our
+initial literature review.
+
+This initial stage involved analysing the research papers claims, with the central one
+being the quoted chemotaxi behaviour earlier. The team then agreed that we would
+commit to reproducing the claimed results for the foreesable future.
+
+### 2. Environment Setup & Reproduction
+
+?
+
 ## Resources
 
 ### Papers
