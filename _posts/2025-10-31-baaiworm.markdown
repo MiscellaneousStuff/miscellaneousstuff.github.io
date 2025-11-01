@@ -39,7 +39,22 @@ synaptic plasticity, which is fundamental to learning and memory.
 - **Embodiment:** A brain doesn't exist in a vacuum. It controls a body with muscles and receives feedback from sensors. To truly emulate the worm, we also need to simulate its physical body and its interaction with the environment.
 
 This means that accurate emulations of an organism and its brain need to account for as many
-of these properties as possible. One such holistic approach is BAAIWorm.
+of these properties as possible. 
+
+Over time there have been many different projects relating if not directly to whole brain emulation,
+then to its accompanying fields such as connectomics and fundamental neuroscience research:
+
+*OpenWorm Project:* An open-source, collaborative project aiming to create the first "digital lifeform" by simulating the C. elegans worm at a cellular level, including its 302 neurons and 95 muscle cells.
+
+*Blue Brain Project (BBP):* A Swiss-based project (at EPFL) that uses a bottom-up approach to create digital reconstructions and simulations of rodent, and eventually human, brain tissue. It is famous for its detailed simulation of a single rat neocortical column.
+
+*Human Brain Project (HBP):* A massive, decade-long European research project intended to create a comprehensive digital simulation of the human brain. Its legacy and infrastructure (e.g., simulation tools, atlases) are now continued through the EBRAINS platform.
+
+*Virtual FlyBrain:* A project focused on the Drosophila (fruit fly), which aims to build a comprehensive, integrated "virtual brain" that combines its connectome (wiring diagram) with gene expression data and other biological information.
+
+*IARPA MICrONS:* A US government research program that focused on reverse-engineering and mapping a cubic millimeter of a mouse's visual cortex, a foundational step in gathering the "wiring diagram" data needed for WBE.
+
+However this post will focus on our work reproducing and validating BAAI Worm.
 
 ## BAAIWorm
 
