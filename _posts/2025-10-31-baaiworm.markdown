@@ -4,8 +4,8 @@ comments: true
 title:  "BAAIWorm: At the frontier of whole brain emulation"
 excerpt: ""
 date:   2025-10-31 00:00:00
-categories: [Project]
-tags: ["BAAIWorm", "Whole Brain Emulation"]
+categories: [Research]
+tags: ["BAAIWorm", "Whole Brain Emulation", "Visualisation"]
 ---
 
 ## Table of Contents
@@ -39,12 +39,12 @@ synaptic plasticity, which is fundamental to learning and memory.
 - **Embodiment:** A brain doesn't exist in a vacuum. It controls a body with muscles and receives feedback from sensors. To truly emulate the worm, we also need to simulate its physical body and its interaction with the environment.
 
 This means that accurate emulations of an organism and its brain need to account for as many
-of these properties as possible. The current state-of-the-art approach to emulating any organisms
-brain and body is BAAIWorm.
+of these properties as possible. One such holistic approach is BAAIWorm.
 
 ## BAAIWorm
 
-BAAIWorm
+BAAIWorm is an in-silico simulation of C. Elegans worms based on an integrative data-driven
+model consisting of two sub-modules: the brain model and the body-environment model.
 
 <div style="text-align: center;">
    <img
