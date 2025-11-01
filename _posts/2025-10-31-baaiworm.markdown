@@ -76,6 +76,13 @@ However, the authors of the paper further claim that...
 
 `Through the closed-loop interaction between the two submodels, BAAIWorm reproduced the realistic zigzag movement toward attractors observed in C. elegans.`
 
+If this is the case, then this represents a useful case of a biorealistic body-environment
+simulation governed by an equally realistic and plausible biophysical model of C. Elegans
+chemotaxi behaviour, and the underlying circuits which serve that behaviour.
+
+Thus, this started the journey to reproduce and validate that this is indeed what the
+project achieved.
+
 ## Resources
 
 ### Papers
