@@ -29,6 +29,15 @@ is known as the connectome. This is akin to knowing the road layout of a city, t
 doesn't inform you of the moment to moment traffic conditions, vehicles, pedestrian activity,
 etc. at any one time.
 
+Just some of the complexities are listed below:
+- **Synaptic details:** The strength of each connection isn't captured by the basic connectome.
+Also, each synapse can either be excitatory (encouraging the next neuron to fire), or inhibitory
+(discouraging the next neuron to fire).
+- **Dynamic Activity:** The strength of connections change over time through processes such as
+synaptic plasticity, which is fundamental to learning and memory.
+- **Neuromodulation:** The entire nervous system is bathed in a chemical soup of neuromodulators. These substances can change the "mood" of the neural circuits, altering the worm's behaviour—for example, switching it from a food-seeking state to a resting state—without changing the underlying wiring.
+- **Embodiment:** A brain doesn't exist in a vacuum. It controls a body with muscles and receives feedback from sensors. To truly emulate the worm, we also need to simulate its physical body and its interaction with the environment.
+
 ## Overview
 
 ?
