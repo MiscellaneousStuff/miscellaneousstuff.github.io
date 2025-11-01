@@ -38,9 +38,20 @@ synaptic plasticity, which is fundamental to learning and memory.
 - **Neuromodulation:** The entire nervous system is bathed in a chemical soup of neuromodulators. These substances can change the "mood" of the neural circuits, altering the worm's behaviour—for example, switching it from a food-seeking state to a resting state—without changing the underlying wiring.
 - **Embodiment:** A brain doesn't exist in a vacuum. It controls a body with muscles and receives feedback from sensors. To truly emulate the worm, we also need to simulate its physical body and its interaction with the environment.
 
-## Overview
+This means that accurate emulations of an organism and its brain need to account for as many
+of these properties as possible. The current state-of-the-art approach to emulating any organisms
+brain and body is BAAIWorm.
 
-?
+## BAAIWorm
+
+BAAIWorm
+
+<div style="text-align: center;">
+   <img
+      src="/assets/baaiworm/diagram.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
 
 ## Visualisation
 
