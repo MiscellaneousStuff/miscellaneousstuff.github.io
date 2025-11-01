@@ -49,10 +49,16 @@ goal of the project is re-create C. Elegans chemotaxi behaviour, i.e. the worm m
 a food source along a gradient.
 
 <div style="text-align: center;">
-   <img
-      src="/assets/baaiworm/diagram.png"
-      style="width: 100%; max-width: 640px;"
-   />
+    <div style="text-align: center;">
+        <img
+            src="/assets/baaiworm/diagram.png"
+            style="width: 100%; max-width: 640px;"
+        />
+    </div>
+    <p style="font-style: italic; color: #666; margin-top: 8px; font-size: 0.9em;">
+      Figure 1: Diagram of BAAIWorm's two component approach to simulating C. Elegans
+      in-silico.
+    </p>
 </div>
 
 This gives us an interesting simulation of C. Elegans moving in 3-dimensions in a fluid-like
