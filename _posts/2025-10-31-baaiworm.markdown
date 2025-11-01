@@ -58,18 +58,19 @@ a food source along a gradient.
 This gives us an interesting simulation of C. Elegans moving in 3-dimensions in a fluid-like
 space.
 
-<center>
+<div style="text-align: center;">
     <iframe
         src="https://miscellaneousstuff.github.io/baaiworm.html"
         style="border: 0; width: 900px; height: 600px;"
     >
     </iframe>
-</center>
+    <p style="font-style: italic; color: #666; margin-top: 8px; font-size: 0.9em;">
+      Figure 2: Interactive 3D visualization of C. Elegans open-loop simulation. The heatmap shows muscle activation patterns along the body.
+    </p>
+</div>
 
 The simulation above is animating the exact data readout from the BAAIWorm simulator for it's
 open loop demo data from [here](https://github.com/Jessie940611/BAAIWorm).
-In the muscle activation heatmap shows how the worm is just executing the same muscular outputs
-given some inputs, which validates the behaviour of the body and the environment.
 
 However, the authors of the paper further claim that...
 
