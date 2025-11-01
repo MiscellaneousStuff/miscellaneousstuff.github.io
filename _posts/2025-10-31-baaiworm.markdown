@@ -71,6 +71,10 @@ open loop demo data from [here](https://github.com/Jessie940611/BAAIWorm).
 In the muscle activation heatmap shows how the worm is just executing the same muscular outputs
 given some inputs, which validates the behaviour of the body and the environment.
 
+However, the authors of the paper further claim that...
+
+`Through the closed-loop interaction between the two submodels, BAAIWorm reproduced the realistic zigzag movement toward attractors observed in C. elegans.`
+
 ## Resources
 
 ### Papers
