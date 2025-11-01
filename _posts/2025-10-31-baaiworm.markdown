@@ -64,7 +64,8 @@ space.
     </iframe>
 </center>
 
-The simulation above is a re-creation of the data provided
+The simulation above is animating the exact data readout from the BAAIWorm simulator
+from [here](https://github.com/Jessie940611/BAAIWorm).
 
 ## Resources
 
