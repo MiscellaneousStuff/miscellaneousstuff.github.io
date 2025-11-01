@@ -83,9 +83,19 @@ chemotaxi behaviour, and the underlying circuits which serve that behaviour.
 Thus, this started the journey to reproduce and validate that this is indeed what the
 project achieved.
 
-## Anatomy of Reproduction in Computational Neuroscience
+### Anatomy of Reproduction in Computational Neuroscience
 
-For context, the following project started on the 14th July 2025 and ended on 25th August 2025.
+For those of you who are curious about how long it takes to reproduce others findings,
+here is the timeline for this reproduction and validation effort:
+
+| Epoch | Date Range | Key Activities & Milestones |
+| :--- | :--- | :--- |
+| 1. Initial Research & Onboarding | July 14 – July 21, 2025 | The project began with a deep dive into the state-of-the-art in Whole Brain Emulation and a thorough review of the BAAIWorm paper. Initial team discussions helped scope the goals for reproduction and validation. |
+| 2. Environment Setup & Reproduction | July 24 – Aug 12, 2025 | This phase focused on the significant technical challenge of creating a functional environment. Initial attempts with Docker revealed complex dependencies, leading to a pivot towards a Virtual Machine (VM) that precisely mirrored the original setup. After extensive debugging of core modules (neuron, visualization tools), a stable baseline simulation was finally achieved. |
+| 3. Codebase Deep Dive | Aug 13 – Aug 18, 2025 | With a running simulation, the focus shifted to understanding the implementation. This involved a systematic analysis of the codebase, particularly the eworm module, to map out how the brain, body, and environment models were integrated. |
+| 4. Porting & Accessibility | Aug 19 – Aug 20, 2025 | An effort was made to increase the model's accessibility by attempting to port it to macOS and remove its dependency on specific Nvidia hardware. This involved refactoring code, recompiling components, and optimizing performance bottlenecks. |
+| 5. Behavioral Validation & Analysis | Aug 21 – Aug 24, 2025 | The core scientific validation began. The primary goal was to replicate the paper's central claim of chemotaxis (movement towards a food source). Quantitative analysis of the worm's distance to the food source revealed a consistent divergence from the expected behavior. Debugging focused on the sensory-motor loop, specifically the gradient calculation that guides the worm. |
+| 6. Collaborative Review & Findings | August 25, 2025 | The investigation culminated in a productive meeting with one of the paper's original authors. The findings from the validation analysis were shared and discussed, leading to a deeper understanding of the model's behavior under the tested conditions and clarifying the path forward. |
 
 ## Resources
 
