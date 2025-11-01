@@ -77,7 +77,9 @@ a food source along a gradient.
 </div>
 
 This gives us an interesting simulation of C. Elegans moving in 3-dimensions in a fluid-like
-space.
+space. We have taken the liberty of reproducing the simulation environment from the BAAIWorm
+paper and instead implementing it as a far more accessible in-browser simulation, check it
+out below!
 
 <div style="text-align: center;">
     <iframe
