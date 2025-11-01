@@ -83,6 +83,10 @@ chemotaxi behaviour, and the underlying circuits which serve that behaviour.
 Thus, this started the journey to reproduce and validate that this is indeed what the
 project achieved.
 
+## Anatomy of Reproduction in Computational Neuroscience
+
+For context, the following project started on the 14th July 2025 and ended on 25th August 2025.
+
 ## Resources
 
 ### Papers
