@@ -21,10 +21,13 @@ basis of Whole Brain Emulation (WBE), a field which is attempting to do just tha
 In pursuit of this, researchers start with a simple type of roundworm known
 as Caenorhabditis elegans (C. Elegans). This worm is chosen because it's entire
 nervous system consisting of 302 neurons has been fully mapped by researchers,
-including its synapses. So in theory, this should allow us to just replicate the
-worm in sillico and then be done with it?
+including the synaptic connections between the neurons.
+So in theory, this should allow us to just replicate the worm in sillico and then be done with it?
 
-Well turns out, it's not that simple.
+Well turns out, it's not that simple. The mapping of the neurons and their connections
+is known as the connectome. This is akin to knowing the road layout of a city, that
+doesn't inform you of the moment to moment traffic conditions, vehicles, pedestrian activity,
+etc. at any one time.
 
 ## Overview
 
