@@ -53,7 +53,8 @@ model consisting of two sub-modules: the brain model and the body-environment mo
    />
 </div>
 
-## Visualisation
+This gives us an interesting simulation of C. Elegans moving in 3-dimensions in a fluid-like
+space.
 
 <center>
     <iframe
@@ -63,8 +64,24 @@ model consisting of two sub-modules: the brain model and the body-environment mo
     </iframe>
 </center>
 
+The simulation above is a re-creation of the data provided
+
 ## Resources
 
+### Papers
+
 - [Nature Paper](https://www.nature.com/articles/s43588-024-00738-w)
+
+### Code
+
 - [BAAIWorm Original Repo](https://github.com/Jessie940611/BAAIWorm)
 - [BAAIWorm Visualisation Repo](https://github.com/MiscellaneousStuff/baaiworm-render)
+
+### Videos
+
+*Exact closed-loop simulation in visualisation*
+
+<video width="100%" controls>
+  <source src="https://static-content.springer.com/esm/art%3A10.1038%2Fs43588-024-00738-w/MediaObjects/43588_2024_738_MOESM6_ESM.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
