@@ -30,6 +30,16 @@ Well turns out, it's not that simple.
 
 ?
 
+## Visualisation
+
+<center>
+    <iframe
+        src="https://miscellaneousstuff.github.io/baaiworm.html"
+        style="border: 0; width: 900px; height: 600px;"
+    >
+    </iframe>
+</center>
+
 ## Resources
 
 - [Nature Paper](https://www.nature.com/articles/s43588-024-00738-w)
