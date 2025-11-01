@@ -44,7 +44,9 @@ of these properties as possible. One such holistic approach is BAAIWorm.
 ## BAAIWorm
 
 BAAIWorm is an in-silico simulation of C. Elegans worms based on an integrative data-driven
-model consisting of two sub-modules: the brain model and the body-environment model.
+model consisting of two sub-modules: the brain model and the body-environment model. The
+goal of the project is re-create C. Elegans chemotaxi behaviour, i.e. the worm moving towards
+a food source along a gradient.
 
 <div style="text-align: center;">
    <img
