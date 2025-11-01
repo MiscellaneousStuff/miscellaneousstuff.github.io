@@ -43,4 +43,5 @@ Well turns out, it's not that simple.
 ## Resources
 
 - [Nature Paper](https://www.nature.com/articles/s43588-024-00738-w)
-- [BAAIWorm Repo](https://github.com/Jessie940611/BAAIWorm)
+- [BAAIWorm Original Repo](https://github.com/Jessie940611/BAAIWorm)
+- [BAAIWorm Visualisation Repo](https://github.com/MiscellaneousStuff/baaiworm-render)
