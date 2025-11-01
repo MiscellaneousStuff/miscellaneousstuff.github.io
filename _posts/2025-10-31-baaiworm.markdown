@@ -66,8 +66,10 @@ space.
     </iframe>
 </center>
 
-The simulation above is animating the exact data readout from the BAAIWorm simulator
-from [here](https://github.com/Jessie940611/BAAIWorm).
+The simulation above is animating the exact data readout from the BAAIWorm simulator for it's
+open loop demo data from [here](https://github.com/Jessie940611/BAAIWorm).
+In the muscle activation heatmap shows how the worm is just executing the same muscular outputs
+given some inputs, which validates the behaviour of the body and the environment.
 
 ## Resources
 
