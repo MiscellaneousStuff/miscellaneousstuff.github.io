@@ -83,3 +83,7 @@ The common theme among these projects is:
 - Vision: the pokemon related projects use purely vision inputs into Gemini and Claude as input
 - Motor control: The systems expose a simpler action paradigm for the agents (aside from Voyager) which is essentially tool use. However for Minecraft Voyager, it also has a simpler
 set of basic actions, however the agent learns to flexibly compose these into hierarchies of complex tool use to be able to accompolish the in-game achievements such as acquiring diamonds
+
+So between the existing LLM agentic control projects (Pokemon, Voyager, etc.), the existing Opus 4.5 League of Legends agent and history of successful MOBA game playing AI systems, 
+it stands to reason that producing a bot which can play League of Legends is entirely feasible. However this brings up the next question, can Grok 5 learn to beat the world champions
+at League of Legends, and what would be required to achieve this?
