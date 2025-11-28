@@ -55,6 +55,6 @@ Grok 5 will presumably have to control five agents within League of Legends, one
 restrictions. Aside from that, the system has no other restrictions.
 
 So, has this type of thing been done before? Yes, multiple MOBA-style games have had AI-based systems beat professional teams, ranging from Dota 2 (OpenAI Five),
-Honor of Kings - which is a game very similar to League of Legends (JueWu-SL), etc.
+Honor of Kings - which is a game very similar to League of Legends ([JueWu-SL](https://miscellaneousstuff.github.io/project/2021/09/04/tlol-part-4-exploring-the-literature.html)), etc.
 
 However, the nature of Grok 5 being the agent along with the purely visual input changes things drastically.
