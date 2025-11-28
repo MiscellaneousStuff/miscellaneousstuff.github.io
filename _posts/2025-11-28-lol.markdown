@@ -87,3 +87,15 @@ set of basic actions, however the agent learns to flexibly compose these into hi
 So between the existing LLM agentic control projects (Pokemon, Voyager, etc.), the existing Opus 4.5 League of Legends agent and history of successful MOBA game playing AI systems, 
 it stands to reason that producing a bot which can play League of Legends is entirely feasible. However this brings up the next question, can Grok 5 learn to beat the world champions
 at League of Legends, and what would be required to achieve this?
+
+## Existing Work
+
+The first place to look would be existing work into League of Legends game playing AI. Earlier in this blog, we focused strongly on a project called TLoL. This was my attempt
+at producing human level League of Legends AI. Ultimately that project concluded prematurely due to the sheer difficulty of the task and the nature of its execution.
+
+However, some key lessons were learned and many resources were produced, namely:
+- [pylol](https://github.com/MiscellaneousStuff/pylol) - League of Legends patch 4.20 reinforcment learning environment
+- [TLoL RL](https://github.com/MiscellaneousStuff/tlol-rl) - League of Legends Season 13 reinformcent learning environment
+
+- [TLoL](https://github.com/MiscellaneousStuff/tlol) - League of Legends season 11 to 13 game playing AI datasets (10k+ games)
+- [lolgym](https://github.com/jjlee0802cu/lolgym) - Adversarial multi-agent system trained to outperform hardcoded bot and humans in a 1v1 environment (from Columbia University students: Mustafa Eyceoz and Justin Lee)
