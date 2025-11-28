@@ -78,3 +78,8 @@ general curiosity, such as:
 - [Gemini plays Pokemon](https://www.twitch.tv/gemini_plays_pokemon) - Gemini 3 Pro playing Pokemon Crystal
 - [Claude plays Pokemon](https://www.twitch.tv/claudeplayspokemon) - Claude Opus 4.5 playing Pokemon Red
 - [Minecraft Voyager](https://github.com/MineDojo/Voyager) - LLM-based agent learns to play minecraft by adapting python policy based on game feedback
+
+The common theme among these projects is:
+- Vision: the pokemon related projects use purely vision inputs into Gemini and Claude as input
+- Motor control: The systems expose a simpler action paradigm for the agents (aside from Voyager) which is essentially tool use. However for Minecraft Voyager, it also has a simpler
+set of basic actions, however the agent learns to flexibly compose these into hierarchies of complex tool use to be able to accompolish the in-game achievements such as acquiring diamonds
