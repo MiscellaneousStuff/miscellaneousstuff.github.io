@@ -15,4 +15,9 @@ tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Grok"
 
 ## Introduction
 
-Intro
+<div style="text-align: center;">
+   <img
+      src="/assets/lol/elon.png"
+      style="width: 100%; max-width: 640px;"
+   />
+</div>
