@@ -96,10 +96,11 @@ at producing human level League of Legends AI. Ultimately that project concluded
 League of Legends patch 4.20:
 - [pylol](https://github.com/MiscellaneousStuff/pylol) - League of Legends patch 4.20 reinforcment learning environment
 - [pylol-demo](https://colab.research.google.com/github/MiscellaneousStuff/pylol-demo/blob/68e9f8dbdd54b822d710c879fcfe1e249b55c620/demonstration.ipynb) - First open-source League of Legends RL environment, successfully trains a basic agent using [PPO](https://arxiv.org/pdf/1707.06347) in Google Colab!
-- [lolgym](https://github.com/jjlee0802cu/lolgym) - Adversarial multi-agent system trained to outperform hardcoded bot and humans in a 1v1 environment (from Columbia University students: Mustafa Eyceoz and Justin Lee)
+- [lolgym](https://github.com/jjlee0802cu/lolgym) - Adversarial multi-agent system trained to outperform hardcoded bot and humans in a 1v1 environment (from Mustafa Eyceoz and Justin Lee at from Columbia University)
 
 League of Legends season 11 to 13:
 - [TLoL RL](https://github.com/MiscellaneousStuff/tlol-rl) - League of Legends Season 13 reinforcement learning environment
 - [tlol-py](https://github.com/MiscellaneousStuff/tlol-py) - Replay scraping orchestration, conversion of extracted datasets into datasets for analysis and model training, etc.
 - [TLoL](https://github.com/MiscellaneousStuff/tlol) - League of Legends season 11 to 13 game playing AI datasets (10k+ games)
 - [tlol-llm](https://github.com/MiscellaneousStuff/tlol-llm) - Very early attempts at analysing League of Legends games using LLMs to test understanding
+- [League Data Scraping](https://maknee.github.io/blog/2025/League-Data-Scraping/) - Packet-based approach at producing League of Legends training datasets at scale (in constrast to tlol-py, from Henry Zhu at University of Illinois Urbana-Champaign)
