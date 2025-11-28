@@ -107,3 +107,14 @@ League of Legends season 11 to 13:
 - [TLoL](https://github.com/MiscellaneousStuff/tlol) - League of Legends season 11 to 13 game playing AI datasets (10k+ games)
 - [tlol-llm](https://github.com/MiscellaneousStuff/tlol-llm) - Very early attempts at analysing League of Legends games using LLMs to test understanding
 - [League Data Scraping](https://maknee.github.io/blog/2025/League-Data-Scraping/) - Packet-based approach at producing League of Legends training datasets at scale (in constrast to tlol-py, from Henry Zhu at University of Illinois Urbana-Champaign)
+
+However each strand of research here has particular issues. The patch 4.20 research benefits from an offline simulator of the game which allows hyper-scaling of training, but alas is very limited. Only one champion, Ezreal, is implemented properly and it lacks any support for minions, can be slightly buggy in general, etc.
+
+As for the TLoL set of tools, they were matched to the actual live game patches but suffered from the issue
+of League of Legends active attempts to encrypt and obfuscate the game. This meant that the offsets of the game 
+(which the underlying scripting engines depended on) needed to be determined to be able continue to use the replay analysis tools, and for the RL environment. This lead to an enigma-style effort to constantly update
+the offsets (akin to the allies having to re-crack the enigma cipher used by the German's daily during
+the second world war).
+Since the release
+of Vanguard (Riot Games kernel-level anti-cheat tool), this has made the development of scripting based
+systems for League of Legends harder.
