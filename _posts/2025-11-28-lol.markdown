@@ -28,7 +28,7 @@ There are also two very interesting restrictions for the challenge:
 
 The second criteria is to avoid the issue of the bot simply out "APMing" humans, in the sense that the bot has higher mechanical precision and reaction
 speeds and can therefore mathematically calculate the perfect way of avoiding damage. Most would agree this isn't a display of interesting behaviour,
-but rather a "hydrolic press" way of beating humans.
+but rather a "hydraulic press" way of beating humans.
 
 However the first criteria is more interesting, that the input into the bot is simply just the raw visual feed from the game. This departs from
 other frontier game playing systems such as OpenAI Five and AlphaStar which were provided raw data from the game using an API. This means that
@@ -49,7 +49,7 @@ information, along with semantic information per each unit. Grok 5 will have to 
 
 ## Feasibility?
 
-The key question for this project is, within the next year is it feasible that a visual largue language model (vLLM) such as Grok 5 could genuinely
+The key question for this project is, within the next year is it feasible that a visual large language model (vLLM) such as Grok 5 could genuinely
 beat the best League of Legends team in the world? Let's assess this question by asking what beating the worlds best team actually means.
 Grok 5 will presumably have to control five agents within League of Legends, one for each role (Top, Jungle, Mid, ADC and Support) with the aforementioned
 restrictions. Aside from that, the system has no other restrictions.
@@ -82,7 +82,7 @@ general curiosity, such as:
 The common theme among these projects is:
 - Vision: the pokemon related projects use purely vision inputs into Gemini and Claude as input
 - Motor control: The systems expose a simpler action paradigm for the agents (aside from Voyager) which is essentially tool use. However for Minecraft Voyager, it also has a simpler
-set of basic actions, however the agent learns to flexibly compose these into hierarchies of complex tool use to be able to accompolish the in-game achievements such as acquiring diamonds
+set of basic actions, however the agent learns to flexibly compose these into hierarchies of complex tool use to be able to accomplish the in-game achievements such as acquiring diamonds
 
 So between the existing LLM agentic control projects (Pokemon, Voyager, etc.), the existing Opus 4.5 League of Legends agent and history of successful MOBA game playing AI systems, 
 it stands to reason that producing a bot which can play League of Legends is entirely feasible. However this brings up the next question, can Grok 5 learn to beat the world champions
