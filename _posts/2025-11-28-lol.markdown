@@ -62,6 +62,9 @@ already built out environments using Claude 4.5 Opus (currently SOTA for LLM-bas
 
 <div style="text-align: center;">
     <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="en" dir="ltr">Can computer-use models play games now, one-shot?<br><br>I gave Claude Opus 4.5 a simple prompt like &quot;play league of legends&quot; and it starts clicking and typing around my computer pretty effectively even though it doesn&#39;t win due to latency<br><br>More interestingly between Minecraft, finding… <a href="https://t.co/jSXf6E6a95">pic.twitter.com/jSXf6E6a95</a></p>&mdash; Surya Dantuluri (@sdand) <a href="https://twitter.com/sdand/status/1993820274387767533?ref_src=twsrc%5Etfw">November 26, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+        Credit: <a href="https://twitter.com/sdand" target="_blank">Surya Dantuluri (@sdand)</a>
+    </div>
 </div>
 
 From this we can already see some interesting strengths and weaknesses from this SOTA (state-of-the-art) system:
