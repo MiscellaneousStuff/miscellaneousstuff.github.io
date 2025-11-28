@@ -101,6 +101,8 @@ at League of Legends, and what would be required to achieve this?
 
 ## Existing Work
 
+**To answer this, we need to understand what has and hasn't worked in prior League of Legends game playing AI research, and why those limitations matter for the Grok 5 challenge.**
+
 The first place to look would be existing work into League of Legends game playing AI. My previous work in this domain centered on a project called TLoL. This was an attempt
 at producing human level League of Legends AI. Ultimately that project concluded prematurely due to the sheer difficulty of the task and the nature of its execution.
 
