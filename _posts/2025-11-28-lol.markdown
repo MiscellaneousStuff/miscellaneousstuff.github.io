@@ -126,3 +126,8 @@ systems for League of Legends harder.
 
 This means that any serious attempt to train Grok 5 to conquer League of Legends would be far easier
 to accomplish directly with the aide of Riot Games.
+
+For scaling, it would be most useful if Riot Games either provided
+an offline version of the League of Legends game server or at least an API to instances running on Riot's
+end along with an API to control agents within these games. This would work similar to the [Bot Scripting API](https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting) for Dota 2 from Steam, or an offline version
+which is then exposed via a convenient API like [PySC2](https://github.com/google-deepmind/pysc2) for Starcraft would also suffice.
