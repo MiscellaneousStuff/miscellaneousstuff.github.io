@@ -29,3 +29,9 @@ There are also two very interesting restrictions for the challenge:
 The second criteria is to avoid the issue of the bot simply out "APMing" humans, in the sense that the bot has higher mechanical precision and reaction
 speeds and can therefore mathematically calculate the perfect way of avoiding damage. Most would agree this isn't a display of interesting behaviour,
 but rather a "hydrolic press" way of beating humans.
+
+However the first criteria is more interesting, that the input into the bot is simply just the raw visual feed from the game. This departs from
+other frontier game playing systems such as OpenAI Five and AlphaStar which were provided raw data from the game using an API. This means that
+Grok 5 will also have to learn how to process visual information, segment different objects in view and many other complex visual processing skills.
+Presumably Grok will also have the same viewport restrictions which humans have, so the bot would also have to pan the camera over to areas of interest
+as well??
