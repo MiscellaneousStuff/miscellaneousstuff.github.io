@@ -46,3 +46,15 @@ as well??
 Above we can see the architecture of OpenAI Five, the architecture of the system which beat the world champions at Dota 2 in 2019. The
 section in blue is dedicated purely to processing each of the individual units in the game and directly integrates complex spatial-visual
 information, along with semantic information per each unit. Grok 5 will have to learn to process similar visual information for League of Legends.
+
+## Feasibility?
+
+The key question for this project is, within the next year is it feasible that a visual largue language model (vLLM) such as Grok 5 could genuinely
+beat the best League of Legends team in the world? Let's assess this question by asking what beating the worlds best team actually means.
+Grok 5 will presumably have to control five agents within League of Legends, one for each role (Top, Jungle, Mid, ADC and Support) with the aforementioned
+restrictions. Aside from that, the system has no other restrictions.
+
+So, has this type of thing been done before? Yes, multiple MOBA-style games have had AI-based systems beat professional teams, ranging from Dota 2 (OpenAI Five),
+Honor of Kings - which is a game very similar to League of Legends (JueWu-SL), etc.
+
+However, the nature of Grok 5 being the agent along with the purely visual input changes things drastically.
