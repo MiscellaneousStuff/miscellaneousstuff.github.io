@@ -21,4 +21,11 @@ Recently there has been a massive development for League of Legends game playing
     <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Let’s see if <a href="https://twitter.com/grok?ref_src=twsrc%5Etfw">@Grok</a> 5 can beat the best human team <a href="https://twitter.com/LeagueOfLegends?ref_src=twsrc%5Etfw">@LeagueOfLegends</a> in 2026 with these important constraints:<br><br>1. Can only look at the monitor with a camera, seeing no more than what a person with 20/20 vision would see. <br><br>2. Reaction latency and click rate no faster than human.…</p>&mdash; Elon Musk (@elonmusk) <a href="https://twitter.com/elonmusk/status/1993208505486979327?ref_src=twsrc%5Etfw">November 25, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </div>
 
-Elon Musk has issued a public challenge to beat the worlds best League of Legends team by the end of 2026.
+Elon Musk has issued a public challenge to beat the worlds best League of Legends team by the end of 2026 using Grok 5.
+There are also two very interesting restrictions for the challenge:
+1. Can only look at the monitor with a camera, seeing no more than what a person with 20/20 vision would see.
+2. Reaction latency and click rate no faster than human.
+
+The second criteria is to avoid the issue of the bot simply out "APMing" humans, in the sense that the bot has higher mechanical precision and reaction
+speeds and can therefore mathematically calculate the perfect way of avoiding damage. Most would agree this isn't a display of interesting behaviour,
+but rather a "hydrolic press" way of beating humans.
