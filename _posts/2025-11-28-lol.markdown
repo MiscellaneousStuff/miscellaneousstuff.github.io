@@ -68,3 +68,13 @@ From this we can already see some interesting strengths and weaknesses from this
 - Mechanical precision: there is a clear lack of mechanical precision in the movement orders issued by Claude
 - Object segmentation: the system is struggling to precisely identify different objects in the view
 - Speed: the main limitation is the lack of a real-time control loop due to the time-to-first-token and the time taken by claude to generate the text based responses which encode the reasoning and the final action prediction
+
+However there are some impressive trends:
+- Learning: the agent is learning from its experience in real time. It's adjusting its policy in real time based on feedback
+- Generalisation: despite having not been trained to play league of legends, it is somewhat successfully controlling the player and issuing commands
+
+This vein of work follows a growing body of work aimed at using LLMs to play games as a test of their utilisation of world-knowledge, on-going learning abilities and
+general curiosity, such as:
+- [Gemini plays Pokemon](https://www.twitch.tv/gemini_plays_pokemon) - Gemini 3 Pro playing Pokemon Crystal
+- [Claude plays Pokemon](https://www.twitch.tv/claudeplayspokemon) - Claude Opus 4.5 playing Pokemon Red
+- [Minecraft Voyager](https://github.com/MineDojo/Voyager) - LLM-based agent learns to play minecraft by adapting python policy based on game feedback
