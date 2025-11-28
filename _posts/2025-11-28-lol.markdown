@@ -57,4 +57,14 @@ restrictions. Aside from that, the system has no other restrictions.
 So, has this type of thing been done before? Yes, multiple MOBA-style games have had AI-based systems beat professional teams, ranging from Dota 2 ([OpenAI Five](https://openai.com/index/openai-five/)),
 Honor of Kings - which is a game very similar to League of Legends ([JueWu-SL](https://miscellaneousstuff.github.io/project/2021/09/04/tlol-part-4-exploring-the-literature.html)), etc.
 
-However, the nature of Grok 5 being the agent along with the purely visual input changes things drastically.
+However, the nature of Grok 5 being the agent along with the purely visual input changes things drastically. Some contributors on X (formerly Twitter) have
+already built out environments using Claude 4.5 Opus (currently SOTA for LLM-based agentic control systems) to play League of Legends.
+
+<div style="text-align: center;">
+    <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="en" dir="ltr">Can computer-use models play games now, one-shot?<br><br>I gave Claude Opus 4.5 a simple prompt like &quot;play league of legends&quot; and it starts clicking and typing around my computer pretty effectively even though it doesn&#39;t win due to latency<br><br>More interestingly between Minecraft, finding… <a href="https://t.co/jSXf6E6a95">pic.twitter.com/jSXf6E6a95</a></p>&mdash; Surya Dantuluri (@sdand) <a href="https://twitter.com/sdand/status/1993820274387767533?ref_src=twsrc%5Etfw">November 26, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+From this we can already see some interesting strengths and weaknesses from this SOTA (state-of-the-art) system:
+- Mechanical precision: there is a clear lack of mechanical precision in the movement orders issued by Claude
+- Object segmentation: the system is struggling to precisely identify different objects in the view
+- Speed: the main limitation is the lack of a real-time control loop due to the time-to-first-token and the time taken by claude to generate the text based responses which encode the reasoning and the final action prediction
