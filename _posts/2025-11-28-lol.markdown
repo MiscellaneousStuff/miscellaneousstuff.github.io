@@ -35,3 +35,14 @@ other frontier game playing systems such as OpenAI Five and AlphaStar which were
 Grok 5 will also have to learn how to process visual information, segment different objects in view and many other complex visual processing skills.
 Presumably Grok will also have the same viewport restrictions which humans have, so the bot would also have to pan the camera over to areas of interest
 as well??
+
+<div style="text-align: center;">
+   <img
+      src="/assets/lol/openai_five_arch.png"
+      style="width: 100%; max-width: 1024px;"
+   />
+</div>
+
+Above we can see the architecture of OpenAI Five, the architecture of the system which beat the world champions at Dota 2 in 2019. The
+section in blue is dedicated purely to processing each of the individual units in the game and directly integrates complex spatial-visual
+information, along with semantic information per each unit. Grok 5 will have to learn to process similar visual information for League of Legends.
