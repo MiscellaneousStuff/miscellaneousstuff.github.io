@@ -95,6 +95,7 @@ at producing human level League of Legends AI. Ultimately that project concluded
 
 However, some key lessons were learned and many resources were produced, namely:
 - [pylol](https://github.com/MiscellaneousStuff/pylol) - League of Legends patch 4.20 reinforcment learning environment
+- [pylol-demo](https://colab.research.google.com/github/MiscellaneousStuff/pylol-demo/blob/68e9f8dbdd54b822d710c879fcfe1e249b55c620/demonstration.ipynb) - First open-source League of Legends RL environment, fully runnable in Google Colab!
 - [TLoL RL](https://github.com/MiscellaneousStuff/tlol-rl) - League of Legends Season 13 reinformcent learning environment
 
 - [TLoL](https://github.com/MiscellaneousStuff/tlol) - League of Legends season 11 to 13 game playing AI datasets (10k+ games)
