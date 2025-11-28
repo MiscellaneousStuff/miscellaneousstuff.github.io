@@ -1,0 +1,18 @@
+---
+layout: post
+comments: true
+title:  "TLoL: Human level in League of Legends using Deep Learning (Grok)"
+excerpt: "Some excerpt"
+date:   2025-11-28 00:00:00
+categories: [Project]
+tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Grok", "LLMs"]
+---
+
+## Table of Contents
+
+* TOC
+{:toc}
+
+## Introduction
+
+Intro

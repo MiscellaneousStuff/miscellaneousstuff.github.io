@@ -139,7 +139,7 @@ commit to reproducing the claimed results for the foreesable future.
 
 Setting up and getting the BAAIWorm repo to work was nothing short of painful.
 This is common with complex, multi-component neuroscience code releases, especially
-those which weren't originally intended to be open-sourced
+those which weren't originally intended to be open-sourced.
 
 ## Resources
 
