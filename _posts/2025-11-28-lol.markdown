@@ -101,12 +101,13 @@ at League of Legends, and what would be required to achieve this?
 
 ## Existing Work
 
-**To answer this, we need to understand what has and hasn't worked in prior League of Legends game playing AI research, and why those limitations matter for the Grok 5 challenge.**
+**To answer this, we need to understand what has and hasn't worked in prior League of Legends game playing AI research, and why those limitations matter for the Grok 5 challenge. For a comprehensive overview of other existing projects, refer to [TLoL - Part 1](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-part-1-existing-solutions.html)**
 
 The first place to look would be existing work into League of Legends game playing AI. My previous work in this domain centered on a project called TLoL. This was an attempt
 at producing human level League of Legends AI. Ultimately that project concluded prematurely due to the sheer difficulty of the task and the nature of its execution.
 
 ### League of Legends (Patch v4.20)
+
 - [pylol](https://github.com/MiscellaneousStuff/pylol) - League of Legends patch 4.20 reinforcement learning environment
 - [pylol-demo](https://colab.research.google.com/github/MiscellaneousStuff/pylol-demo/blob/68e9f8dbdd54b822d710c879fcfe1e249b55c620/demonstration.ipynb) - First open-source League of Legends RL environment, successfully trains a basic agent using [PPO](https://arxiv.org/pdf/1707.06347) in Google Colab!
 - [lolgym](https://github.com/jjlee0802cu/lolgym) - Adversarial multi-agent system trained to outperform hardcoded bot and humans in a 1v1 environment (from Mustafa Eyceoz and Justin Lee at from Columbia University)
