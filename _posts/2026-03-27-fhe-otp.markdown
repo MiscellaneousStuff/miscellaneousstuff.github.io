@@ -168,6 +168,196 @@ to compute on the encrypted data and return a useful encrypted result. This is
 the core homomorphic idea: operations on ciphertext correspond to operations on
 plaintext.
 
+Crucially this relies on the sender, Alice, knowing the compute graph which
+the data is being processed on. Otherwise we're not able to correctly decrypt
+the results. This also means we get subtraction for free, since subtraction is
+just addition with a negative number.
+
+### Caesar Cipher Naive Multiplication
+
+Addition worked nicely because the extra shifts simply added together, and
+Alice could remove them at the end. So the next obvious question is, can we
+also multiply encrypted numbers?
+
+Let's try the same setup as before. Suppose we encrypt:
+
+| Plaintext Number | Shifted Position (+5) | Ciphertext Number |
+| - | - | - |
+| 2 | 7 | 7 |
+| 3 | 8 | 8 |
+
+If a third party multiplies the ciphertexts together, they get:
+
+| | Plaintext Number | Ciphertext Number |
+| - | - | - |
+| | 2 | 7 |
+| | 3 | 8 |
+| product | 6 | 56 |
+
+At first glance this looks promising: the plaintext product is $6$, and the
+ciphertext product is $56$. But unlike addition, the difference between these
+two values is not just a simple combined shift.
+
+If we write the encrypted values as:
+
+$$c_a = a + k_a,\qquad c_b = b + k_b$$
+
+then multiplying them gives:
+
+$$c_a c_b = (a + k_a)(b + k_b)$$
+
+Expanding this out:
+
+$$(a + k_a)(b + k_b) = ab + ak_b + bk_a + k_a k_b$$
+
+So the ciphertext product is not just the real product $ab$ with some simple
+offset added on top. Instead it contains three extra terms:
+- $ak_b$
+- $bk_a$
+- $k_a k_b$
+
+These are called cross terms. They are the main problem.
+
+In our toy example:
+- $a = 2$
+- $b = 3$
+- $k_a = 5$
+- $k_b = 5$
+
+So:
+
+$$(2 + 5)(3 + 5) = 2 \cdot 3 + 2 \cdot 5 + 3 \cdot 5 + 5 \cdot 5
+= 6 + 10 + 15 + 25 = 56$$
+
+The issue is that removing these extra terms is much harder than in the
+addition case. For addition, Alice only had to subtract off the combined key:
+
+$$(a + k_a) + (b + k_b) = a + b + k_a + k_b$$
+
+which is easy to undo if she knows $k_a$ and $k_b$.
+
+But for multiplication she has to somehow remove:
+
+$$ak_b + bk_a + k_a k_b$$
+
+and this is non-trivial because the unwanted terms now depend on both the
+plaintext values and the keys. In other words, the noise is no longer just a
+simple offset: it is entangled with the computation itself.
+
+This gets worse as computations become deeper. Each multiplication introduces
+new cross terms, and those cross terms interact with later operations to create
+even more complicated expressions. So while this shift-based scheme supports
+addition naturally, multiplication does not compose cleanly.
+
+Crucially, if Alice knows the full computation graph in advance, she may be
+able to account for some of these extra terms in restricted cases. But in the
+general case the correction terms grow too messy, which is exactly why a simple
+shift cipher is not enough to build a practical fully homomorphic encryption
+scheme.
+
+### Caesar Cipher Multiplication Lookup
+
+So does multiplication failing algebraically mean we are completely stuck?
+Not quite.
+
+If the input space is small enough, Alice can pre-compute the answer to every
+possible multiplication ahead of time and store the results in a lookup table.
+Instead of trying to symbolically remove the cross terms
+
+$$ak_b + bk_a + k_a k_b,$$
+
+we simply treat the encrypted inputs as indices into a table.
+
+For example, suppose Alice is using a shift of $+5$ and wants to support
+multiplication on small numbers. If we encrypt
+
+$$a \mapsto a + 5,\qquad b \mapsto b + 5,$$
+
+then instead of asking the server to directly multiply the ciphertexts and
+hoping the result is easy to decrypt, we can define a table:
+
+| Encrypted Input 1 | Encrypted Input 2 | Plaintext Product | Encrypted Output |
+| - | - | - | - |
+| 6 | 6 | 1 | 6 |
+| 6 | 7 | 2 | 7 |
+| 6 | 8 | 3 | 8 |
+| 7 | 6 | 2 | 7 |
+| 7 | 7 | 4 | 9 |
+| 7 | 8 | 6 | 11 |
+| 8 | 6 | 3 | 8 |
+| 8 | 7 | 6 | 11 |
+| 8 | 8 | 9 | 14 |
+
+Here:
+- encrypted value $6$ corresponds to plaintext $1$,
+- encrypted value $7$ corresponds to plaintext $2$,
+- encrypted value $8$ corresponds to plaintext $3$,
+- and so on.
+
+So if the server receives encrypted values $7$ and $8$, it does not compute
+
+$$7 \times 8 = 56,$$
+
+because that introduces the unwanted cross terms. Instead it looks up the pair
+$(7, 8)$ in the table and returns $11$, which is the encryption of the correct
+plaintext product:
+
+$$2 \times 3 = 6,\qquad 6 + 5 = 11.$$
+
+This works because the table already "bakes in" the correction. Rather than
+undoing
+
+$$ab + ak_b + bk_a + k_a k_b,$$
+
+we avoid producing those terms in the first place.
+
+Conceptually, the lookup table is acting like a tiny precomputed program:
+- take encrypted inputs,
+- interpret them as table indices,
+- return the encrypted result associated with the corresponding plaintext
+  operation.
+
+This is useful as a toy demonstration because it shows that even when the raw
+algebra becomes awkward, we may still be able to evaluate functions on encrypted
+data by replacing arithmetic with table lookup.
+
+However, this comes with major limitations:
+- the input space must be very small,
+- Alice must know in advance which function is being evaluated,
+- every supported operation needs its own table,
+- table sizes grow rapidly as the domain gets larger,
+- and chaining many such lookups becomes cumbersome.
+
+So lookup tables can rescue multiplication in restricted cases, but only by
+trading algebraic elegance for brute-force precomputation. This is one of the
+main reasons that toy schemes like Caesar cipher do not scale into practical
+fully homomorphic encryption.
+
+There is also another major issue, the Caesar Cipher is not actually cryptographically secure. The default version only has 25 possible
+keys, for each shift value, so it's easy to brute force.
+
+So do we
+have another option? It turns out that we actually do, the One-Time Pad (OTP).
+
+### One-Time Pad (OTP) Addition
+
+An OTP is an unbreakable form of encryption, provided that the key is truly
+random, at least as long as the message, kept secret, and never reused.
+
+On Unix-like systems, randomness is typically obtained from the operating
+system's cryptographic random number generator, which is seeded using
+unpredictable system events such as interrupt timing, device activity and,
+sometimes, dedicated hardware random number generators.
+
+The only difference for us here is that we use a cryptographically secure
+random number generate, such as `getrandom()` on Linux and get enough bytes
+for our message length (e.g. 2KiB per value). And then we pick a large enough
+modulo value and then we have perfect secrecy!
+
+However, we're also able to still perform addition on the encrypted numbers,
+but now the reversal process needs to subtract the encryption bits which
+are specific to each value.
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
