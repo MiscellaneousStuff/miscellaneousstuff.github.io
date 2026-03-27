@@ -349,14 +349,28 @@ system's cryptographic random number generator, which is seeded using
 unpredictable system events such as interrupt timing, device activity and,
 sometimes, dedicated hardware random number generators.
 
-The only difference for us here is that we use a cryptographically secure
-random number generate, such as `getrandom()` on Linux and get enough bytes
-for our message length (e.g. 2KiB per value). And then we pick a large enough
-modulo value and then we have perfect secrecy!
+For our toy numeric setting, the main difference from the Caesar cipher is that
+we no longer use one fixed shift for every value. Instead, each value gets its
+own fresh random pad. If we are working modulo $q$, we encrypt a plaintext
+value $a$ by sampling a random key $k_a \in \{0, 1, \dots, q-1\}$ and computing:
 
-However, we're also able to still perform addition on the encrypted numbers,
-but now the reversal process needs to subtract the encryption bits which
-are specific to each value.
+$$c_a = a + k_a \bmod q$$
+
+As long as $k_a$ is chosen uniformly at random and never reused, the ciphertext
+reveals nothing about the plaintext.
+
+Crucially, we can still perform addition on encrypted values. If we encrypt two
+numbers as
+
+$$c_a = a + k_a \bmod q,\qquad c_b = b + k_b \bmod q,$$
+
+then adding the ciphertexts gives:
+
+$$c_a + c_b = a + b + k_a + k_b \bmod q$$
+
+So the result is still an encryption of the sum, just under the combined pad
+$k_a + k_b \bmod q$. To decrypt, Alice or Bob subtracts the combined key
+material from the final result.
 
 ## Resources
 
