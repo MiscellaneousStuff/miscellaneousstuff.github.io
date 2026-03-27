@@ -23,6 +23,19 @@ sofware.
 There is also a real possibility that these tools could be compromised in the future if these providers become co-opted by other forces, for a further
 discussion refer to [this](https://miscellaneousstuff.github.io/project/2026/03/13/trusting-trust.html) post.
 
+So our options are currently to either run local models which are less capable
+and still require $1000s of dollars in hardware (either Macs with at least 32GB RAM, or GPUs with 24GB RAM+ running quantized models) or to purchase hardware
+in the $10,000+ range to run open-source frontier models (e.g. high-end Mac Studio
+which can run GPT OSS 120B or Kimi k2.5, etc.).
+
+Or we go with the default option of using Claude, GPT, Gemini and other frontier
+models straight from the providers and opt-out of their training / data collection
+and pray they actually obey this. This also requires ignoring how OpenAI has shared
+information with law enforcement for prosecutions, Anthropic's relationships with
+Palantir and the CCP's history of being heavily "entangled" with China's tech giants. Not to mention PRISM and the Edward Snowden era leaks, Elon Musk releasing
+the Twitter files not least of which involved suppressing opinions counter to
+the COVID narrative.
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
