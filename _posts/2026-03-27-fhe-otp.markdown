@@ -46,7 +46,7 @@ However, there is another option which is emerging, Fully Homomorphic Encryption
 
 ## Fully Homomorphic Encryption (FHE) Background
 
-FHE allows one to perform computations on encrypted data without ever needing
+FHE allows you to perform computations on encrypted data without ever needing
 to decrypt the data first. This naturally lends itself to use cases where the
 person performing the compute has an advantage in either compute or access to
 certain data which is private or proprietary. This makes it a natural fit for
@@ -72,6 +72,101 @@ $$ 1e^9 \text{ params} \times 2 \text{ bytes/param} \times 10{,}000
 
 However we are able to multiply an encrypted value by a constant which means
 that we can keep the model weights in plaintext.
+
+## Intuitive Walkthrough (Shift Cipher)
+
+### Caesar Cipher Recap
+
+So how does it work? Let's start with a simplified example. Anyone who has
+studied computer science before is likely familiar with the Caesar Cipher.
+
+The idea is to convert some text into its integer representation, shift it
+along by some fixed amount, transmit the shifted text, and the receiver
+will unshift the text by the same amount decrypting the text and ensuring
+private communication between the two parties.
+
+| Plaintext Letter | Alphabetical Position | Shifted Position (+3) | Ciphertext Letter |
+| - | - | - | - |
+| H | 8  | 11 | K |
+| E | 5  | 8  | H |
+| L | 12 | 15 | O |
+| L | 12 | 15 | O |
+| O | 15 | 18 | R |
+
+The sender, lets say Alice, would send KHOOR to Bob, who would already know to
+shift the message back by 3 letters. However what happens if the letter goes
+past the last letter of the alphabet?
+
+| Plaintext Letter | Alphabetical Position | Shifted Position (+5) | Ciphertext Letter |
+| - | - | - | - |
+| W | 23 | 28 → 2  | B |
+| O | 15 | 20      | T |
+| R | 18 | 23      | W |
+| L | 12 | 17      | Q |
+| D | 4  | 9       | I |
+
+What happens is that we take the letter position, add the shift and crucially
+we divide by 26 and take the remainder as the new letter. So in this case:
+
+$$23 \; (W) + 5 \; (\text{shift}) = 28,\quad 28 \bmod 26 = 2,\quad 2 = B$$
+
+### Caesar Cipher Addition
+
+Great we can now scramble messages and if someone has an accompanying key
+they will be able to decrypt it. But can it be used for anything else?
+
+Notice how the cipher uses addition and subtraction for encryption and
+decryption respectively? Well what if instead we represented numbers
+instead of letters?
+
+| Plaintext Number  | Shifted Position (+5) | Ciphertext Number |
+| - | - | - |
+| 1 | 6 | 6 |
+| 2 | 7 | 7 |
+
+Ok now we're able to encrypt and decrypt numbers. But we if we could
+send this data to a third-party to process and have them return the new data
+without ever having to reveal the original information? This would be a crucial
+first building block towards allowing for secure LLM provisioning!
+
+It turns out that this is quite easy to do, we can simply just add the numbers
+together!
+
+| | Plaintext Number  | Ciphertext Number |
+| - | - | - |
+| | 1 | 6  |
+| | 2 | 7  |
+| sum | 3 | 13 |
+
+You'll notice above that the Ciphertext sum, 13, is exactly 10 higher
+than the real sum of the two numbers, 3.
+
+That is because the ciphertext sum is actually a sum of:
+
+$$(a + k_a) + (b + k_b) = a + b + k_a + k_b$$
+
+Where:
+- $a$ and $b$ are the original plaintext values,
+- $k_a$ and $k_b$ are the secret shifts used to encrypt them.
+
+In our toy example:
+- $a = 1$
+- $b = 2$
+- $k_a = 5$
+- $k_b = 5$
+
+So the encrypted sum is:
+
+$$(1 + 5) + (2 + 5) = 1 + 2 + 5 + 5 = 13$$
+
+Bob can then decrypt the result by subtracting off the combined shift:
+
+$$13 - (5 + 5) = 3$$
+
+So even though the third party never saw the original numbers, it was still able
+to compute on the encrypted data and return a useful encrypted result. This is
+the core homomorphic idea: operations on ciphertext correspond to operations on
+plaintext.
 
 ## Resources
 
