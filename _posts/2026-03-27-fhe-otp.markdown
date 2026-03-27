@@ -15,6 +15,14 @@ tags: ["Fully Homomorphic Encryption"]
 
 ## Overview
 
+Every time you send data to an LLM provider to be processed (OpenAI, Anthropic, etc.) you are trusting that your data isn't being leaked, trained on without your
+permission or otherwise misappropriated. This is a growing concern as tools such
+as Claude Code are now beginning to produce a significant amount of the worlds
+sofware.
+
+There is also a real possibility that these tools could be compromised in the future if these providers become co-opted by other forces, for a further
+discussion refer to [this](https://miscellaneousstuff.github.io/project/2026/03/13/trusting-trust.html) post.
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
