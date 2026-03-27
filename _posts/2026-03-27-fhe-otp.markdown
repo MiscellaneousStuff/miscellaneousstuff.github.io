@@ -70,6 +70,9 @@ $$ 1e^9 \text{ params} \times 2 \text{ bytes/param} \times 10{,}000
 = 20{,}000{,}000{,}000{,}000 \text{ bytes}
 \approx 20 \text{ TB} $$
 
+However we are able to multiply an encrypted value by a constant which means
+that we can keep the model weights in plaintext.
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
