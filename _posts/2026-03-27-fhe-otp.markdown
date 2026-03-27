@@ -36,6 +36,40 @@ Palantir and the CCP's history of being heavily "entangled" with China's tech gi
 the Twitter files not least of which involved suppressing opinions counter to
 the COVID narrative.
 
+Another alternative would be if LLM specific processors such as Google's TPUs,
+Apple's unified memory architecture and ANE (Apple Neural Engine) units becoming
+cheaper, LPUs (Language Processing Units which are LLM optimised devices from
+Groq) and AWS's Inferentia hardware become more affordable and mainstream.
+
+However, there is another option which is emerging, Fully Homomorphic Encryption
+(FHE).
+
+## Fully Homomorphic Encryption (FHE) Background
+
+FHE allows one to perform computations on encrypted data without ever needing
+to decrypt the data first. This naturally lends itself to use cases where the
+person performing the compute has an advantage in either compute or access to
+certain data which is private or proprietary. This makes it a natural fit for
+deploying LLMs in a way that is private for both parties, so whats the catch?
+
+The issue with current FHE implementations is that they are slow, *painfully*
+slow. Firstly modern FHE implementations require representing data using
+x10,000 more data than the original data requires. So for instance if you have
+a text prompt for an LLM which is 100 tokens long (and let's assume each token)
+requires 4 bytes to represent. Then the prompt would require:
+
+$$100 \text{ tokens} \times 4 \text{ bytes/token} \times 10{,}000
+= 4{,}000{,}000 \text{ bytes}
+\approx 4 \text{ MB}$$
+
+That doesn't seem to bad? Well remember that it applies to *all* data which
+is being processed. So if we're passing that through even a 1B parameter model
+which is represented in [bfloat16](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format) format, then the numbers look more like:
+
+$$ 1e^9 \text{ params} \times 2 \text{ bytes/param} \times 10{,}000
+= 20{,}000{,}000{,}000{,}000 \text{ bytes}
+\approx 20 \text{ TB} $$
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
