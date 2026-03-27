@@ -15,3 +15,6 @@ tags: ["Fully Homomorphic Encryption"]
 
 ## Overview
 
+## Resources
+
+- [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
