@@ -22,7 +22,7 @@ Here are some of my predictions for 2031.
 
 The main issue with current agentic systems is that you're reliant on end providers (OpenAI, Anthropic, etc.)
 to protect the data you send to them by: not sharing it with others, not training or analysing it, and not having
-the data be shared with the goverment, etc.
+the data be shared with the government, etc.
 
 However, do we *have* to share our data with the end providers to use frontier systems? The answer is quickly becoming
 no.
