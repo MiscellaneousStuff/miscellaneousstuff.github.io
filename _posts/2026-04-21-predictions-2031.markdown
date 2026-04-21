@@ -1,0 +1,52 @@
+---
+layout: post
+comments: true
+title:  "Predictions for 2031 (Five Years Time...)"
+excerpt: ""
+date:   2026-04-21 00:00:00
+categories: [Predictions]
+tags: [""]
+---
+
+## Table of Contents
+
+* TOC
+{:toc}
+
+## Overview
+
+Technology is rapidly changing, ranging from LLMs devouring programming, viable humanoid robots, and others...
+Here are some of my predictions for 2031.
+
+### Anonymous Agents (21/04/2026)
+
+The main issue with current agentic systems is that you're reliant on end providers (OpenAI, Anthropic, etc.)
+to protect the data you send to them by: not sharing it with others, not training or analysing it, and not having
+the data be shared with the goverment, etc.
+
+However, do we *have* to share our data with the end providers to use frontier systems? The answer is quickly becoming
+no.
+
+[Fully Homomorphic Encryption (FHE)](https://www.zama.org/post/fully-homomorphic-encryption-and-post-quantum-cryptography) allows us to encrypt our data using [lattice-based cryptography](https://en.wikipedia.org/wiki/Lattice-based_cryptography) (which also happens
+to be post-quantum, meaning there are no known efficient attacks using quantum *or* classical computers)
+but also allow us to perform arbitrary computations on the data.
+
+This means that you would be able to locally encrypt your prompt, send it to the provider (who has the benefit of more
+powerful hardware, a better trained model, etc.), who then processes the response and sends it  back to you still encrypted,
+and only then would you decrypt it. This means that your request (and its response) are never revealed as plaintext
+to the provider, it remains as ciphertext during the entire journey (true roundtrip encryption).
+
+Okay this sounds amazing, how might this actually be done? The main issue with FHE currently is that the processing time is
+roughly 10,000x slower than comparable methods. This means that if you normally achieve 100 tokens / second, then an FHE-based
+system would achieve 100 seconds per token, yes thats right, 1 min 40 seconds per generated output token.
+
+However there has been a program running by DARPA called [DARPA DPRIVE](https://www.darpa.mil/research/programs/data-protection-in-virtual-environments) which tasked companies, such as Intel, to produce an ASIC
+device which accelerates the compute primitives required for FHE to be within 10x the speed of native operations for FHE. Intel
+produced a prototype device called [Intel Heracles](https://spectrum.ieee.org/fhe-intel) which has achieved this as of March 2026.
+This means that by 2031 these prototype devices could realistically be deployed to cloud providers such as AWS, who also so happen
+to have a [partnership with Anthropic](https://www.aboutamazon.com/news/aws/amazon-invests-additional-4-billion-anthropic-ai), for completely anonymous LLM usage. AWS already provides [secure enclaves](https://aws.amazon.com/ec2/nitro/nitro-enclaves/) which serve a similar
+purpose, although they do not have the absolute guarantee of FHE.
+
+When combined with other technology such as the Tor Network, these anonymous LLMs allow one to have a completely secure and anonymous
+method of accessing frontier intelligence. You can imagine a network of compute providers taking payment for compute credits via
+cryptocurrency and providing entirely anonymous frontier open-source (or perhaps closed source?) models.

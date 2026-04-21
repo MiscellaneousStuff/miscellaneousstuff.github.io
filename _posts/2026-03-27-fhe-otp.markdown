@@ -372,6 +372,8 @@ So the result is still an encryption of the sum, just under the combined pad
 $k_a + k_b \bmod q$. To decrypt, Alice or Bob subtracts the combined key
 material from the final result.
 
+So surely we can just move on to multiplication right?
+
 ## Resources
 
 - [Notebook](https://github.com/MiscellaneousStuff/homomorphic-caesar-cipher/blob/main/main.ipynb)
