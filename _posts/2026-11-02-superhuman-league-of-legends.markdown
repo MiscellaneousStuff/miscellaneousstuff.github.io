@@ -37,6 +37,42 @@ to e-sports what Michael Jordan, or Messi/Ronaldo are to traditional sports.
 Its no exaggeration to say that beating T1/Faker would capture the publics imagination
 similar to [IBM Deep Blue beating Garry Kasparov](https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov) or [AlphaGo beating Lee Sedol](https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol).
 
+Before OpenAI became world famous for releasing ChatGPT to the public
+in late 2022, they were originally known for beating the two-time world champions (OG) at
+Dota 2 in 2019 (albeit it was under restricted game conditions).
+
+However, why does any of this matter?
+
+AlphaGo's show match against Le Sedol pushed the frontier of what learning systems were
+able to achieve in a dramatic fashion. Go is a game played by hundreds of millions of people
+all across Asia and was thought to be 10 years away in 2016 from being solved.
+
+IBM Deep Blue showed that the greatest human chess player could now be beaten by, an
+admittedly cruder and more narrow form, of artificial intelligence.
+
+Whereas OpenAI Five showed that the learning algorithm itself not need be embued with
+finnicky human assumptions on *how* to play the game, rather it was provided the environment
+and rewarded for actions which *lead* to winning the game. Eventually the model was simply
+just rewarded for winning the game and this was enough for the learning algorithm to improve
+so a superhuman level as well.
+
+Ok so thats all well and good, but again this is just beating humans at video games, why
+does this matter?
+
+Each one of these achievements lead to more profound impact.
+
+AlphaGo was part of DeepMind's RL lineage spanning back to DQN (and arguably going even
+further back to the individual contributors reach backgrounds). DQN (Deep Q-Networks) were
+a breakthrough application by DeepMind which showed how to combine deep neural networks (DNNs)
+with reinforcement learning (RL) and computer vision (CNNs specifically). This allowed
+systems to simply observe games (Atari games), try different actions, and improve at the game
+simply by playing the game and without having to hand-craft rules around *how* to play the game.
+This RL lineage arguably spurred on OpenAI Five's PPO (Proximal Policy Optimisation) lineage
+which allowed them to beat the world champions, without any human training data or forcing how
+the agent should play. PPO goes on to be combined with GPT-3 in 2021 in the InstructGPT paper,
+specifically to tune their "amazing next word predictor" towards tasks using RLHF. That system
+became known as "ChatGPT".
+
 ## Appendix
 
 ### League of Legends Playerbase Count
