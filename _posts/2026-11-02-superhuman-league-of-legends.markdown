@@ -160,7 +160,7 @@ Without doing it injustice, it is simply to say that general purpose methods tha
 effective and by a large margin. Each successive generation has consumed more and more computation to tackle more
 and more complex problems. Can we predict *how much* computation?
 
-In 2023 OpenAI (Hilton, Tang and Schulman — the OpenAI Five / PPO lineage) published scaling laws for reinforcement learning,
+In 2023, OpenAI (Hilton, Tang and Schulman — the OpenAI Five / PPO lineage) [published](https://arxiv.org/abs/2301.13442) scaling laws for reinforcement learning,
 showing that on 1v1 Dota 2 an agent’s skill rating improves as a smooth power law in compute, just as loss does for language models. The same
 paper shows that the cost of a long-horizon task grows linearly with the horizon, not with the size of the game tree.
 The 10^219,000 figure above is a measure of how much League can surprise you, not of how much compute it takes to beat it.
@@ -216,14 +216,11 @@ calls its own “Move 37 moment”.
 So given the right constraints agents *can* learn novel solutions, and League of Legends
 certainly qualifies as such.
 
-Looking back I've realised that reinforcement learning was the *right* option all along
-but I was limited by compute. I always assumed that I was compute starved in general, but
-have come to realise, this isn't true? Lets think about this, what is computationally
-demanding about training AI agents for League of Legends?
-
 There are two main components:
 - Simulation
 - Action / Training
+
+### Simulation and Training
 
 Simulation has always been considered impossible as it would require faithfully re-implementing
 the League of Legends game server to *practically* perfect fidelity. Historically this would
@@ -234,7 +231,31 @@ On the other side we have action and training, which really amounts to the deep 
 used to drive the agents and train them from feedback. The main limitations here fundamentally
 relate to the scaling laws discovered throughout the deep learning field from RL, to LLMs to others.
 
-What if those assumptions no longer hold?
+It turns out those two components are not equal. OpenAI Five ran on roughly 128,000 CPU cores
+simulating Dota against only 256 GPUs training the network - the game, not the model, was the bill.
+The scaling-laws paper explains why that’s structural: the compute-optimal RL model is tiny (their
+Dota frontier tops out around two million parameters, versus hundreds of millions for a language
+model at the same budget), and the cost of a game is dominated by the ~15,000 decisions per
+agent the environment has to simulate. They even write the total as (N + Nₑ)·E, with Nₑ the
+cost of the environment per step, and show it’s inefficient to train a model much cheaper than
+your simulator.
+
+They even write the total as (N + Nₑ)·E, with Nₑ the cost of the environment per step, and
+show it’s inefficient to train a model much cheaper than your simulator. When Nₑ is that large
+the only affordable move is to reuse every expensive sample as many times as possible — which
+is exactly what imitation learning on replays is. I wasn’t wrong about the method; I was right
+about the simulator I didn’t have. A real League client is real-time, rendered, one instance
+per machine, and behind anti-cheat. That is an Nₑ nobody outside a lab with a publisher deal
+could afford a real League client which is real-time, rendered, one instance per machine, anti-cheat.
+
+A faithful headless reimplementation that runs faster than real time on commodity CPUs collapses
+that number by orders of magnitude. So the only thing standing between an individual and OpenAI
+Five–scale training is a fast, faithful League simulator.
+
+Looking back, reinforcement learning was the right choice all along; what’s changed is that
+it’s now affordable, and the scaling laws tell us it improves predictably with compute rather than by luck.”
+
+Which brings us to to the modern era.
 
 ## A Brave New World
 
