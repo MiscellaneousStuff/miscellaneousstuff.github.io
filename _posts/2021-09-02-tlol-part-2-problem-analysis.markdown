@@ -68,7 +68,7 @@ which was created by Google Deepmind and went on to beat the world champion,
 Lee Sedol in 2016. Prior to this accomplishment, the best computer Go engines
 were unable to take even a single game from a professional Go player due to
 the greater complexity of Go compared to Chess, where the state space is estimated to be
-\$$ 10^170 $$.
+$$10^{170}$$.
 AlphaGo used a deep reinforcement learning model to train the weights of a
 Monte Carlo tree search (MCTS). The deep learning model used two artificial
 neural networks, a policy network to predict the probabilities of potential
