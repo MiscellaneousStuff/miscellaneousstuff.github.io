@@ -134,10 +134,26 @@ and AI in general?
 ## Relevance of League of Legends to the progress of AI
 
 League of Legends is a complex co-operative and competitive, partially observable, long-horizon
-game played in real-time with rich strategic and motor execution. To really break this down we
+game played in real-time with rich strategic and motor execution.
+
+To boil it down to one comparison, the full estimated state-space complexity of League of Legends
+vs games like Chess or Go would roughly be:
+
+| Game | Estimated Complexity |
+| - | - |
+| League of Legends | **10^219,000** |
+| Go | ~10^360 |
+| Chess | ~10^120 |
+
+For a full breakdown of League's state space complexity, refer to its (appendix section)[#estimating-the-observation-and-action-space-of-league-of-legends].
+<!-- 
+
+To really break this down we
 ought to estimate the state-space complexity of League of Legends.
 
 First lets state our assumptions:
+
+Observations:
 
 | Entity | Count | Notes |
 | - | - | - |
@@ -156,6 +172,23 @@ First lets state our assumptions:
 | Plants/Vision | 9 | 3 plants (health, vision, satchel), 6 ward types | 
 | Terrain | 10 | ~7 elemental masks, 3 baron pit layouts |
 
+Actions:
+
+Assuming discretised action space for sanity...
+
+| Action | Param Space | Notes |
+| - | - | - |
+| Movement | 9 * 9 = 81 | Assuming we discretise X offset to -4 to +4 (9) and Y, in 100s of in-game units. |
+| Recall | 1 | - |
+| Stop | 1 | We'd treat movement at (0, 0) as a no-op and this action specifically as stopping |
+| Spell Usage (Skillshot) | 36 | Assuming 10 degree discrete bins |
+| Spell Usage (Targetted) | 17 | Depends on number of nearby valid units. Rough ceiling at full minion wave + 5 enemy champs? |
+| Summoner Spell (Flash) | 9 * 9 = 81 | Simplifying to same as movement |
+| Summoner Spell (Targetted) | 5 | Exhaust, Ignite, lets say teleport has 5 targets ish to keep this sane, ghost and barrier are self-cast etc. |
+
+There are more still for item actives and other things but this is most of it. -->
+
+
 ## Appendix
 
 ### League of Legends Playerbase Count
@@ -173,3 +206,57 @@ instead administered by Tencent):
 
 However many Ranked Solo/Duo players also play flex and many players play more than one
 game per patch, these are the upper bounds per game mode.
+
+### Estimating the Observation and Action Space of League of Legends
+
+These are back-of-envelope estimates, discretising the 16,000 × 16,000 unit map at
+100-unit resolution (~25k cells) and using typical mid-game unit counts rather than
+theoretical maxima.
+
+**Observation space (structured, per tick)**
+
+| Entity group | Count | Features each | Total | Notes |
+| - | - | - | - | - |
+| Champions | 10 | ~200 | ~2,000 | pos, HP/mana/XP/gold, level, ~30 stats, ability/summoner/item cooldowns, 6 items (of 216), ~20 buffs (of 3,936) |
+| Lane minions | 40–60 (max ~120) | ~10 | ~500 | type, pos, HP, target |
+| Jungle monsters | ~40 | ~8 | ~300 | 18 camps + scuttles + epics |
+| Structures | ~30 | ~5 | ~150 | turrets, plates, inhibs, nexus |
+| Wards | ~20–30 | ~5 | ~150 | 6 types |
+| Spell objects / missiles | ~20–50 | ~8 | ~300 | from a pool of ~4,740 spell objects |
+| Global | 1 | ~50 | ~50 | clock, objective timers, souls, terrain variant |
+| Map mask | 160 × 160 | 1–3 | ~25k–77k | walkable, bush, fog-of-war visibility |
+
+Roughly **4k scalar features plus a ~25k-cell visibility mask** per tick — the same
+order as OpenAI Five's ~16k inputs per hero. Under xAI's camera-only constraint this
+becomes **1920 × 1080 × 3 ≈ 6.2M pixels per frame**, or ~1.9 GB of raw input across a
+5-second window at 60 Hz. Only about half the champions and a minority of minions and
+wards are visible at any moment, so the true input is a history, not a snapshot.
+
+**Action space (per agent, per tick)**
+
+| Action head | Params | Notes |
+| - | - | - |
+| Move | 81 | 9 × 9 offset grid |
+| Stop / Recall | 2 | |
+| Basic attack | ~17 | nearby valid units |
+| Q/W/E/R | ~144 | ~36 skillshot bins each; ~430 with 3 range bins |
+| Summoner spells | ~86 | Flash 81 + targeted ~5 |
+| Item actives | ~40 | ~2 slots × ~20 |
+| Level-up | 4 | |
+| Ward placement | ~162 | 81 positions × 2 types |
+| Shop | ~216 | fountain only |
+| Pings (optional) | ~800 | ~10 types × 81 positions |
+
+Roughly **600 discrete actions per agent per tick** (~1,000 with range bins), of which
+~50–200 are valid at any moment after masking cooldowns, mana, range and shop
+availability. Joint team action per tick: 600⁵ ≈ 8 × 10¹³.
+
+**Per-game complexity**
+
+Pro players sit at ~300–400 APM (5–7 actions/sec), so a 4–8 Hz decision tick is
+"human-fair" (OpenAI Five used 7.5 Hz). A 35-minute game at 7.5 Hz is ~15,750 decisions
+per player and ~79,000 per team, giving a game tree of roughly
+(8 × 10¹³)^15,750 ≈ **10^219,000** — versus ~10^120 for chess and ~10^360 for Go.
+The instantaneous state count is ~**10^1,000** reachable snapshots, dominated by
+minion bookkeeping (~10^700), with items (~10^110), runes (~10^40) and draft (~10^22)
+making up most of the rest.
