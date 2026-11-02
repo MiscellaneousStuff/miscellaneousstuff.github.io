@@ -73,6 +73,52 @@ the agent should play. PPO goes on to be combined with GPT-3 in 2021 in the Inst
 specifically to tune their "amazing next word predictor" towards tasks using RLHF. That system
 became known as "ChatGPT".
 
+Arguably showcases such as IBM Deep Blue established the major cultural motif of "man vs machine"
+which demonstrates the moment when human inventions best the human mind, of which AlphaGo sort
+to prove that more "intelligent" methods than IBM Deep Blue now work for more complex domains (i.e.
+Go).
+
+Ok so we've seen how game playing AI pursuits can eventually lead to changing public perception,
+re-allocating focus towards newer more promising methods and eventually allowing us to tackle
+entirely different classes of problems. Where does League of Legends come into play?
+
+## Why is League of Legends important and why are xAI now focusing on it?
+
+This [earlier](https://miscellaneousstuff.github.io/project/2025/11/28/lol.html) blog post
+touches on the "how" to achieve such a feat and pays particular attention on Elon Musk's
+announcement that xAI will train Grok 5 to beat the world champions at League
+of Legends by the end of 2026, under fair conditions (only seeing what a person can
+see and fair mechanical restraints vs what a human being can realisticly do).
+
+<div style="text-align: center;">
+    <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Let’s see if <a href="https://twitter.com/grok?ref_src=twsrc%5Etfw">@Grok</a> 5 can beat the best human team <a href="https://twitter.com/LeagueOfLegends?ref_src=twsrc%5Etfw">@LeagueOfLegends</a> in 2026 with these important constraints:<br><br>1. Can only look at the monitor with a camera, seeing no more than what a person with 20/20 vision would see. <br><br>2. Reaction latency and click rate no faster than human.…</p>&mdash; Elon Musk (@elonmusk) <a href="https://twitter.com/elonmusk/status/1993208505486979327?ref_src=twsrc%5Etfw">November 25, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+        Elon Musk announcement of League of Legends challenge for Grok 5
+    </div>
+</div>
+
+During 2026 Elon has also posted about the Digital Optimus project which aims to give LLMs real-time complex visual-based control:
+
+<div style="text-align: center;">
+    <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Macrohard or Digital Optimus is a joint xAI-Tesla project, coming as part of Tesla’s investment agreement with xAI. <br><br>Grok is the master conductor/navigator with deep understanding of the world to direct digital Optimus, which is processing and actioning the past 5 secs of real-time computer screen video and keyboard/mouse actions. Grok is like a much more advanced and sophisticated version of turn-by-turn navigation software. <br><br>You can think of it as Digital Optimus AI being System 1 (instinctive part of the mind) and Grok being System 2. (thinking part of the mind).…</p>&mdash; Elon Musk (@elonmusk) <a href="https://twitter.com/elonmusk/status/2031751255060885911?ref_src=twsrc%5Etfw">March 11, 2026</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+        Elon Musk announces Digital Optimus / Macrohard (5-second real-time horizon, System 1/2 architecture)
+    </div>
+</div>
+
+And also announced that (most likely) Grok 5 / Digital Optimus is continuing to train on League:
+
+<div style="text-align: center;">
+    <blockquote class="twitter-tweet"><p lang="en" dir="ltr">We’re making interesting progress here. <br><br>Digital Optimus can play about halfway through the Diablo campaign so far just by looking at the screen like a human. <br><br>Skill at Counter-Strike and other fast games is good too. <br><br>League is also in training. <br><br>Goal is to generalize across all games.</p>&mdash; Elon Musk (@elonmusk) <a href="https://twitter.com/elonmusk/status/2108823477071303109?ref_src=twsrc%5Etfw">October 10, 2026</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+        Elon Musk update: Digital Optimus progress on Diablo, Counter-Strike, and League of Legends training
+    </div>
+</div>
+
+This may mean that they're not where near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship, who knows?
+
+Suffice to say, there is now growing interest in League of Legends
+
 ## Appendix
 
 ### League of Legends Playerbase Count
