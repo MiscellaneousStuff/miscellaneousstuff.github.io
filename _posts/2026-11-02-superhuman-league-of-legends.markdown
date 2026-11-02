@@ -80,9 +80,10 @@ Go).
 
 Ok so we've seen how game playing AI pursuits can eventually lead to changing public perception,
 re-allocating focus towards newer more promising methods and eventually allowing us to tackle
-entirely different classes of problems. Where does League of Legends come into play?
+entirely different classes of problems. Where does League of Legends come into play and are
+any major players tackling it?
 
-## Why is League of Legends important and why are xAI now focusing on it?
+## xAI's League of Legends Challenge
 
 This [earlier](https://miscellaneousstuff.github.io/project/2025/11/28/lol.html) blog post
 touches on the "how" to achieve such a feat and pays particular attention on Elon Musk's
@@ -117,7 +118,43 @@ And also announced that (most likely) Grok 5 / Digital Optimus is continuing to 
 
 This may mean that they're not where near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship, who knows?
 
-Suffice to say, there is now growing interest in League of Legends
+Suffice to say, there is now growing interest in League of Legends from at least one frontier lab and more may follow.
+However we haven't seen multiple frontier labs go after the same game at the same time so it is most likely xAI
+who have a relationship with Riot Games to pull this feat off.
+
+So why are xAI focusing on League of Legends, as well as many other current games? Games are
+a useful microcosm of reality. They allow us to train systems to predict into the future, reason,
+perform precise actions, optimise across multiple objectives simulataneously as well as being
+intuitively interpretable compared to other complex domains (esp. due to our ability to fully
+measure what is happening within them compared to many complex real world problems).
+
+So what does League of Legends uniquely offer which is useful for the progress of game playing AI
+and AI in general?
+
+## Relevance of League of Legends to the progress of AI
+
+League of Legends is a complex co-operative and competitive, partially observable, long-horizon
+game played in real-time with rich strategic and motor execution. To really break this down we
+ought to estimate the state-space complexity of League of Legends.
+
+First lets state our assumptions:
+
+| Entity | Count | Notes |
+| - | - | - |
+| Champions | 173 | - |
+| Champion Spells | ~865 | - |
+| Spell Objects | ~4,740 | 865 roots, 1,145 children (missiles, recasts), 552 passive parts, 425 extra/transform, 498 attacks, 207 pet/clone spells, 1,008 other |
+| Missile Specs | ~1,156 | These are spells with related in-game missiles |
+| Summoner Spells | ~9 | - |
+| Buffs | 3,936 BuffData records (1,958 champion + 547 skin variants, 1,164 global, 267 Map11) | These incl buffs, debuffs and virtually all modifiers in the game |
+| Items | ~216 | - |
+| Runes | 61 perks, 7 stat shards | 
+| Lane minions | 4 types (melee, caster, siege, super) | - |
+| Structures | 24 in total | per team: 12 turrets, 3 inhibitors, 1 nexus, 5 plates per turret |
+| Jungle Camps | 18 in total | 9 per team, 14 unique camps |
+| Epic Monsters | 10 | 7 dragon kinds (infernal, ocean, mountain, cloud, hextech, chemtech, elder, herald, baron, voidgrubs + mites) |
+| Plants/Vision | 9 | 3 plants (health, vision, satchel), 6 ward types | 
+| Terrain | 10 | ~7 elemental masks, 3 baron pit layouts |
 
 ## Appendix
 
