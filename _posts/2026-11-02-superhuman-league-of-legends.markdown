@@ -204,8 +204,44 @@ more sample efficient due to avoiding spending compute on exploration. However, 
 also make agents far more robust by experiencing more of the state-tree for some given task.
 
 RL also allows for something which imitation learning doesn't, which is discovering "novel"
-solutions to problems. We have seen this in Move 37 from AlphaGo vs Lee Sedol, and we more
-actively see this in recent times with ...
+solutions to problems.
+
+We have seen this in Move 37 from AlphaGo vs Lee Sedol, and we see it far more often now:
+in 2026 alone, a general-purpose OpenAI model disproved an 80-year-old Erdős conjecture
+via number theory nobody expected to apply, Claude found a construction for an open problem
+Donald Knuth had been stuck on for weeks (he titled the write-up “Claude’s Cycles”), and
+DeepMind’s AlphaEvolve beat a 56-year-old matrix multiplication record, what Hassabis
+calls its own “Move 37 moment”.
+
+So given the right constraints agents *can* learn novel solutions, and League of Legends
+certainly qualifies as such.
+
+Looking back I've realised that reinforcement learning was the *right* option all along
+but I was limited by compute. I always assumed that I was compute starved in general, but
+have come to realise, this isn't true? Lets think about this, what is computationally
+demanding about training AI agents for League of Legends?
+
+There are two main components:
+- Simulation
+- Action / Training
+
+Simulation has always been considered impossible as it would require faithfully re-implementing
+the League of Legends game server to *practically* perfect fidelity. Historically this would
+have been impossible due to being unable to cover the *entire* distribution of the game. You
+would of had to have accepted restrictions such as less champions, less items, less buffs, etc.
+
+On the other side we have action and training, which really amounts to the deep learning techniques
+used to drive the agents and train them from feedback. The main limitations here fundamentally
+relate to the scaling laws discovered throughout the deep learning field from RL, to LLMs to others.
+
+What if those assumptions no longer hold?
+
+## A Brave New World
+
+During late 2026, there has been a cambrian explosion of software engineering, particularly
+those focused on reverse engineering games across the board, to name a few:
+
+--
 
 ## Appendix
 
