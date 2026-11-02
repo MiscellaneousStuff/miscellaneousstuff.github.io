@@ -43,12 +43,16 @@ Dota 2 in 2019 (albeit it was under restricted game conditions).
 
 However, why does any of this matter?
 
-AlphaGo's show match against Le Sedol pushed the frontier of what learning systems were
+AlphaGo's show match against Lee Sedol pushed the frontier of what learning systems were
 able to achieve in a dramatic fashion. Go is a game played by hundreds of millions of people
 all across Asia and was thought to be 10 years away in 2016 from being solved.
 
 IBM Deep Blue showed that the greatest human chess player could now be beaten by, an
 admittedly cruder and more narrow form, of artificial intelligence.
+Showcases such as IBM Deep Blue established the major cultural motif of "man vs machine"
+which demonstrates the moment when human inventions best the human mind, of which AlphaGo sort
+to prove that more "intelligent" methods than IBM Deep Blue now work for more complex domains (i.e.
+Go).
 
 Whereas OpenAI Five showed that the learning algorithm itself not need be embued with
 finnicky human assumptions on *how* to play the game, rather it was provided the environment
@@ -56,10 +60,9 @@ and rewarded for actions which *lead* to winning the game. Eventually the model 
 just rewarded for winning the game and this was enough for the learning algorithm to improve
 so a superhuman level as well.
 
-Ok so thats all well and good, but again this is just beating humans at video games, why
-does this matter?
+Ok so thats all well and good, but again, are we just beating humans at video games?
 
-Each one of these achievements lead to more profound impact.
+Each one of these achievements lead to a more profound impact.
 
 AlphaGo was part of DeepMind's RL lineage spanning back to DQN (and arguably going even
 further back to the individual contributors reach backgrounds). DQN (Deep Q-Networks) were
@@ -72,11 +75,6 @@ which allowed them to beat the world champions, without any human training data 
 the agent should play. PPO goes on to be combined with GPT-3 in 2021 in the InstructGPT paper,
 specifically to tune their "amazing next word predictor" towards tasks using RLHF. That system
 became known as "ChatGPT".
-
-Arguably showcases such as IBM Deep Blue established the major cultural motif of "man vs machine"
-which demonstrates the moment when human inventions best the human mind, of which AlphaGo sort
-to prove that more "intelligent" methods than IBM Deep Blue now work for more complex domains (i.e.
-Go).
 
 Ok so we've seen how game playing AI pursuits can eventually lead to changing public perception,
 re-allocating focus towards newer more promising methods and eventually allowing us to tackle
@@ -116,7 +114,8 @@ And also announced that (most likely) Grok 5 / Digital Optimus is continuing to 
     </div>
 </div>
 
-This may mean that they're not where near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship, who knows?
+This may mean that they're not where near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship?
+I don't believe so just yet which we will get to throughout this post.
 
 Suffice to say, there is now growing interest in League of Legends from at least one frontier lab and more may follow.
 However we haven't seen multiple frontier labs go after the same game at the same time so it is most likely xAI
@@ -145,11 +144,11 @@ vs games like Chess or Go would roughly be:
 | Go | ~10^360 |
 | Chess | ~10^120 |
 
-For a full breakdown of League's state space complexity, refer to its (appendix section)[#estimating-the-observation-and-action-space-of-league-of-legends].
+For a full breakdown of League's game-tree complexity, refer to its [appendix section](#estimating-the-observation-and-action-space-of-league-of-legends).
 
 If you wrote these numbers out digit by digit, chess’s game tree fits on one line, Go’s fills a paragraph, and League’s fills a 100-page book.
 
-Each revolution in AI methods has required fundamentally different approaches.
+Each revolution used different machinery, but they all trace the same lesson.
 
 IBM Deep Blue required hardware accelerated traditional search and pruning algorithms.
 AlphaGo required TPU's (Google's custom AI training and inference chip) and a combination of MCTS, deep learning and other methods.
@@ -158,10 +157,9 @@ OpenAI Five required on-policy optimisation and 100,000s of CPUs and 100s of GPU
 These breakthroughs trace perhaps the most insightful lesson of the history of AI, [The Bitter Lesson](https://www.cs.utexas.edu/~eunsol/courses/data/bitter_lesson.pdf).
 Without doing it injustice, it is simply to say that general purpose methods that scale with computation are ultimately the most
 effective and by a large margin. Each successive generation has consumed more and more computation to tackle more
-and more complex problems.
+and more complex problems. Can we predict *how much* computation?
 
-OpenAI released a [paper](https://arxiv.org/pdf/2301.13442) during the OpenAI Five era which detailed scaling laws relating to reinforcement learning.
-This is not just vibes. In 2023 OpenAI (Hilton, Tang and Schulman — the OpenAI Five / PPO lineage) published scaling laws for reinforcement learning,
+In 2023 OpenAI (Hilton, Tang and Schulman — the OpenAI Five / PPO lineage) published scaling laws for reinforcement learning,
 showing that on 1v1 Dota 2 an agent’s skill rating improves as a smooth power law in compute, just as loss does for language models. The same
 paper shows that the cost of a long-horizon task grows linearly with the horizon, not with the size of the game tree.
 The 10^219,000 figure above is a measure of how much League can surprise you, not of how much compute it takes to beat it.
@@ -171,6 +169,8 @@ We now understand that compute is a crucial component to achieving superhuman pe
 does this mean that only frontier labs can achieve that level of performance?
 It's a reasonable assumption given the history but scientific and engineering limitations aren't gleamed from history
 alone but rather from first principles.
+
+So what is *fundamentally* required to achieve superhuman performance in League of Legends?
 
 ## Appendix
 
