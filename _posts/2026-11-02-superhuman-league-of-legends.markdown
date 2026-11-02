@@ -15,8 +15,9 @@ tags: [""]
 
 ## Overview
 
-We are guaranteed to have super human League of Legends AI game playing agents by the end of
-2027, here is why and what this means for one of the oldest and most enduring e-sports
+We are guaranteed to have superhuman League of Legends AI game playing agents by the end of
+2027.
+Here is why and what this means for one of the oldest and most enduring e-sports
 franchises in the world.
 
 League of Legends is a MOBA franchise developed and published by Riot Games. In 2021, Riot
@@ -114,7 +115,7 @@ And also announced that (most likely) Grok 5 / Digital Optimus is continuing to 
     </div>
 </div>
 
-This may mean that they're not where near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship?
+This may mean that they're nowhere near to performing at superhuman level or Elon is storing us up a treat towards the end of the Worlds 2026 championship?
 I don't believe so just yet which we will get to throughout this post.
 
 Suffice to say, there is now growing interest in League of Legends from at least one frontier lab and more may follow.
@@ -135,7 +136,7 @@ and AI in general?
 League of Legends is a complex co-operative and competitive, partially observable, long-horizon
 game played in real-time with rich strategic and motor execution.
 
-To boil it down to one comparison, the full estimated state-space complexity of League of Legends
+To boil it down to one comparison, the full estimated game-tree complexity of League of Legends
 vs games like Chess or Go would roughly be:
 
 | Game | Estimated Complexity |
@@ -171,6 +172,40 @@ It's a reasonable assumption given the history but scientific and engineering li
 alone but rather from first principles.
 
 So what is *fundamentally* required to achieve superhuman performance in League of Legends?
+
+## Reinforcement Learning and Imitation Learning
+
+I have spent years asking myself this question, what is required to achieve, at least human level,
+if not superhuman level performance in League of Legends?
+For years I believed that imitation learning on League of legends replays could produce competent enough agents.
+
+However I have since questioned these fundamental assumptions, did I truly believe this was the *best*
+way, or was I limited by the technology of my time and making a pragmatic compromise?
+
+Lets analyse what the Bitter Lesson gives us *and* costs us.
+The prevailing notion is that reinforcement learning, given a reward function which fundamentally
+signals how to optimise for some given task can teach agents how to perform that task in some
+given environment.
+
+The other method we have available is imitation learning. Instead this involves training a system
+to respond with certain actions given certain observations.
+
+One signals alignment with the tasks underlying reward structure, another aligns with similarity
+to expert decisions.
+
+Reinforcement allows us to teach agents to operate in environments where the best policy may not
+be known or have data recorded extensively enough to be able to perform at the level required
+to succeed. However reinforcement learning has historically been highly sample inefficient due
+to much of the explorative budget being spent on acquiring the basic "world-model" like intuition
+of interacting with the environment before spending compute on "solving" the underlying problem.
+
+Contrastively, Imitation Learning allows us to train directly on the expert policies which is far
+more sample efficient due to avoiding spending compute on exploration. However, exploration can
+also make agents far more robust by experiencing more of the state-tree for some given task.
+
+RL also allows for something which imitation learning doesn't, which is discovering "novel"
+solutions to problems. We have seen this in Move 37 from AlphaGo vs Lee Sedol, and we more
+actively see this in recent times with ...
 
 ## Appendix
 
