@@ -146,48 +146,31 @@ vs games like Chess or Go would roughly be:
 | Chess | ~10^120 |
 
 For a full breakdown of League's state space complexity, refer to its (appendix section)[#estimating-the-observation-and-action-space-of-league-of-legends].
-<!-- 
 
-To really break this down we
-ought to estimate the state-space complexity of League of Legends.
+If you wrote these numbers out digit by digit, chess’s game tree fits on one line, Go’s fills a paragraph, and League’s fills a 100-page book.
 
-First lets state our assumptions:
+Each revolution in AI methods has required fundamentally different approaches.
 
-Observations:
+IBM Deep Blue required hardware accelerated traditional search and pruning algorithms.
+AlphaGo required TPU's (Google's custom AI training and inference chip) and a combination of MCTS, deep learning and other methods.
+OpenAI Five required on-policy optimisation and 100,000s of CPUs and 100s of GPUs running for months.
 
-| Entity | Count | Notes |
-| - | - | - |
-| Champions | 173 | - |
-| Champion Spells | ~865 | - |
-| Spell Objects | ~4,740 | 865 roots, 1,145 children (missiles, recasts), 552 passive parts, 425 extra/transform, 498 attacks, 207 pet/clone spells, 1,008 other |
-| Missile Specs | ~1,156 | These are spells with related in-game missiles |
-| Summoner Spells | ~9 | - |
-| Buffs | 3,936 BuffData records (1,958 champion + 547 skin variants, 1,164 global, 267 Map11) | These incl buffs, debuffs and virtually all modifiers in the game |
-| Items | ~216 | - |
-| Runes | 61 perks, 7 stat shards | 
-| Lane minions | 4 types (melee, caster, siege, super) | - |
-| Structures | 24 in total | per team: 12 turrets, 3 inhibitors, 1 nexus, 5 plates per turret |
-| Jungle Camps | 18 in total | 9 per team, 14 unique camps |
-| Epic Monsters | 10 | 7 dragon kinds (infernal, ocean, mountain, cloud, hextech, chemtech, elder, herald, baron, voidgrubs + mites) |
-| Plants/Vision | 9 | 3 plants (health, vision, satchel), 6 ward types | 
-| Terrain | 10 | ~7 elemental masks, 3 baron pit layouts |
+These breakthroughs trace perhaps the most insightful lesson of the history of AI, [The Bitter Lesson](https://www.cs.utexas.edu/~eunsol/courses/data/bitter_lesson.pdf).
+Without doing it injustice, it is simply to say that general purpose methods that scale with computation are ultimately the most
+effective and by a large margin. Each successive generation has consumed more and more computation to tackle more
+and more complex problems.
 
-Actions:
+OpenAI released a [paper](https://arxiv.org/pdf/2301.13442) during the OpenAI Five era which detailed scaling laws relating to reinforcement learning.
+This is not just vibes. In 2023 OpenAI (Hilton, Tang and Schulman — the OpenAI Five / PPO lineage) published scaling laws for reinforcement learning,
+showing that on 1v1 Dota 2 an agent’s skill rating improves as a smooth power law in compute, just as loss does for language models. The same
+paper shows that the cost of a long-horizon task grows linearly with the horizon, not with the size of the game tree.
+The 10^219,000 figure above is a measure of how much League can surprise you, not of how much compute it takes to beat it.
+This means that compute is a number a frontier lab can write down and buy.
 
-Assuming discretised action space for sanity...
-
-| Action | Param Space | Notes |
-| - | - | - |
-| Movement | 9 * 9 = 81 | Assuming we discretise X offset to -4 to +4 (9) and Y, in 100s of in-game units. |
-| Recall | 1 | - |
-| Stop | 1 | We'd treat movement at (0, 0) as a no-op and this action specifically as stopping |
-| Spell Usage (Skillshot) | 36 | Assuming 10 degree discrete bins |
-| Spell Usage (Targetted) | 17 | Depends on number of nearby valid units. Rough ceiling at full minion wave + 5 enemy champs? |
-| Summoner Spell (Flash) | 9 * 9 = 81 | Simplifying to same as movement |
-| Summoner Spell (Targetted) | 5 | Exhaust, Ignite, lets say teleport has 5 targets ish to keep this sane, ghost and barrier are self-cast etc. |
-
-There are more still for item actives and other things but this is most of it. -->
-
+We now understand that compute is a crucial component to achieving superhuman performance in complex games, however,
+does this mean that only frontier labs can achieve that level of performance?
+It's a reasonable assumption given the history but scientific and engineering limitations aren't gleamed from history
+alone but rather from first principles.
 
 ## Appendix
 
