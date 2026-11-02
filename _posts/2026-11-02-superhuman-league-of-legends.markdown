@@ -232,30 +232,27 @@ used to drive the agents and train them from feedback. The main limitations here
 relate to the scaling laws discovered throughout the deep learning field from RL, to LLMs to others.
 
 It turns out those two components are not equal. OpenAI Five ran on roughly 128,000 CPU cores
-simulating Dota against only 256 GPUs training the network - the game, not the model, was the bill.
+simulating Dota against only 256 GPUs training the network — the game, not the model, was the bill.
 The scaling-laws paper explains why that’s structural: the compute-optimal RL model is tiny (their
 Dota frontier tops out around two million parameters, versus hundreds of millions for a language
-model at the same budget), and the cost of a game is dominated by the ~15,000 decisions per
-agent the environment has to simulate. They even write the total as (N + Nₑ)·E, with Nₑ the
-cost of the environment per step, and show it’s inefficient to train a model much cheaper than
-your simulator.
+model at the same budget), and the cost of a game is dominated by the ~15,000 decisions per agent
+the environment has to simulate. They even write the total as (N + Nₑ)·E, with Nₑ the cost of the
+environment per step, and show it’s inefficient to train a model much cheaper than your simulator.
 
-They even write the total as (N + Nₑ)·E, with Nₑ the cost of the environment per step, and
-show it’s inefficient to train a model much cheaper than your simulator. When Nₑ is that large
-the only affordable move is to reuse every expensive sample as many times as possible — which
-is exactly what imitation learning on replays is. I wasn’t wrong about the method; I was right
-about the simulator I didn’t have. A real League client is real-time, rendered, one instance
-per machine, and behind anti-cheat. That is an Nₑ nobody outside a lab with a publisher deal
-could afford a real League client which is real-time, rendered, one instance per machine, anti-cheat.
+When Nₑ is that large the only affordable move is to reuse every expensive sample as many times
+as possible — which is exactly what imitation learning on replays is. I wasn’t wrong about the
+method; I was right about the simulator I didn’t have. A real League client is real-time, rendered,
+one instance per machine, and behind anti-cheat. That is an Nₑ nobody outside a lab with a publisher
+deal could afford, and Riot has never offered what Valve and Blizzard offered.
 
 A faithful headless reimplementation that runs faster than real time on commodity CPUs collapses
 that number by orders of magnitude. So the only thing standing between an individual and OpenAI
 Five–scale training is a fast, faithful League simulator.
 
-Looking back, reinforcement learning was the right choice all along; what’s changed is that
-it’s now affordable, and the scaling laws tell us it improves predictably with compute rather than by luck.”
+Looking back, reinforcement learning was the right choice all along; what’s changed is that it’s
+now affordable, and the scaling laws tell us it improves predictably with compute rather than by luck.
 
-Which brings us to to the modern era.
+Which brings us to the modern era.
 
 ## A Brave New World
 
