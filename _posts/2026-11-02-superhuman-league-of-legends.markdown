@@ -257,7 +257,46 @@ Which brings us to the modern era.
 ## A Brave New World
 
 During late 2026, there has been a cambrian explosion of software engineering, particularly
-those focused on reverse engineering games across the board, to name a few:
+those focused on reverse engineering games. For a full exhaustive list look [here](https://github.com/Carter54git/Greates-Games-Decompilations-List).
+
+This has been spurred on by agentic coding LLMs such as Claude Opus 5.5 + Fable 5.1 and GPT Astra
+gaining rapidly improving reverse enginering abilities.
+
+However, this mostly applies to games where the full game binary is present locally on someones
+computer. Or is it? There have been historical game server reverse engineering attempts by
+dedicated fanbases to preserve game servers (some of which have spanned decades).
+
+A few examples include:
+- Ultima Online — UOX / RunUO / ServUO (1998–present). Emulators appeared within a year of the 1997 launch; RunUO (2002) became the standard and is still maintained as ServUO. The original fan-server scene.
+- EverQuest — EQEmu (~2001–present). Classic-era EQ servers run entirely on reverse-engineered code; Project 1999 has had thousands of concurrent players for over a decade.
+- World of Warcraft — MaNGOS (2005), TrinityCore (2008), CMaNGOS, AzerothCore. Twenty years of continuous development, multiple expansions reimplemented from packet captures and client data. The largest and best-engineered emulator lineage; Blizzard’s own Classic was arguably a response to it.
+- Ragnarok Online — eAthena (2004) → rAthena / Hercules. Still updated to track official content.
+- Lineage II — L2J (2004–present). A full Java reimplementation of a Korean MMO’s server.
+- Star Wars Galaxies — SWGEmu (2006–present). Started while the game was still live, became the only way to play after Sony shut it down in 2011.
+- Final Fantasy XI — DarkStar → LandSandBoat. Open-source server for a game that is still officially running.
+- Warhammer Online — Return of Reckoning (2014–present). Shut down 2013, revived by fans the next year.
+- Toontown Online — Toontown Rewritten (2013–present) and Club Penguin — CP Rewritten (2017). Disney shut both down; fans reimplemented the servers from the client and memory.
+- Phantasy Star Online — Sylverant / Tethealla. Dreamcast-era online game, servers reverse-engineered and still up.
+- Diablo II / StarCraft — PvPGN (bnetd lineage, 1998–). Battle.net reimplemented; Blizzard sued over bnetd in 2002 and the project outlived the lawsuit.
+- RuneScape — 2003scape, 2009scape, and the RSPS scene. Hundreds of private servers.
+
+League also has its historic fare-share of game servers which work with the officially launched clients of those patches:
+- [Brokenwings](https://gitgud.io/skelsoft/brokenwings) - Patch 1.0.0.126 game server (a lot of code was implemented as Lua in the game client itself back then)
+- [Riotzed.lol](https://riotzed.lol/progress/) - Patch 4.17 Mac Client de-comp and working game server
+- [LeagueSandbox](https://github.com/leaguesandbox) - Patch 4.20 partially working game server
+- [LeagueOfLegendsV2](https://github.com/Louisdelez/LeagueOfLegendsV2) - Patch 4.20, 7.13 and 16.6 game server attempts (these are the furthest attempts for modern league)
+
+However, is it possible to use LLMs to aide in the process of creating a working
+game server for modern League of Legends to run a simulator at faster than real time?
+
+As it so happens this is entirely possible now!
+But how would we go about proving this? Starting with the full modern game is quite an undertaking, 
+perhaps we should start with an open-source project which has gotten the furthest in implementing the game
+and validate this "fastsim" concept.
+
+## Brokenwings
+
+--
 
 --
 
