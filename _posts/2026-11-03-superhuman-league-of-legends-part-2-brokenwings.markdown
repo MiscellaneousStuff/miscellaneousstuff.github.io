@@ -7,6 +7,7 @@ date:   2026-11-03 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Simulator Enhancement", "fastsim"]
 tags: [""]
 leagueAiYoutubeId: yVUKi63WfDA
+brokenwingsYouTubeId: jLEzHI2Duxo
 ---
 
 ## Table of Contents
@@ -214,3 +215,40 @@ Then nothing for four months. What came back in September was the same fork with
 
 ## Brokenwings (fastsim)
 
+### The fleet, September
+
+*Bottleneck: the engine tick. Lesson: self-play looks flat long before it stops improving.*
+
+September picked up the April fork with a different question. April asked "does it learn"; September asked "how fast". Three engine changes turned the bridge into a proper environment.
+
+**Step mode**: the game loop blocks until the bridge grants a number of ticks, runs exactly those at a fixed 33 ms, emits one observation, and blocks again — with a seeded RNG an episode replays bit-identically, which matters less for science than for debugging, because every engine change can now be A/B tested for frame-identical output. \
+**Headless play** proper, with vision computed only for connected peers. \
+**Lane resets**: three independent lanes per server, each reset teleporting its pair, restoring resources and respawning its creep waves while the rest of the world persists.
+
+On that, 256 servers on one GH200 — 64 cores and one H100 — fed eight actor processes in pipelined groups, with PPO on a 256-unit LSTM behind a unit-set encoder with attention targeting, the OpenAI Five recipe at a thousandth of the budget. Twelve agent-years of experience a day. The April lesson came back on schedule: fleets lost two-thirds of their throughput within an hour, memory grew, a leak was found and fixed — and throughput still decayed, now with flat memory. The cause was a creep wave spawned near the bottom-lane corner whose next waypoint sat on unwalkable ground on the far side of the map, so every such creep ran a map-wide A\* every single tick, and they accumulated for the life of the server. One millisecond per tick each. Then, with waves finally marching correctly, they reached the enemy nexus after six minutes and the game ended, taking the run with it.
+
+What the bot learned, none of it in the reward: last-hitting, riding the wave's edge, animation cancelling, timing the level-two spike, holding its ultimate, blinking in to finish. I played every checkpoint through the real client, 761 episodes in seventeen sessions. My share of the kills went from 42% against the first bot to 18% against the last, and it out-farmed me five to one in every session. Two findings came only from playing it: the bots had learned to fire R on sight, because inside a thirty-second episode there's never a reason to hold a free global poke — an episode-design artefact, not a network one; and the checkpoint the ladder rated *weaker* for declining fights was the first one I couldn't beat, because the scripted bot it was rated against never punished aggression and a human does. The strongest argument in the project for opponents outside the lineage.
+
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.brokenwingsYouTubeId %}
+</div>
+
+The full report is [here](LINK): observation and action design, the reward table, the gradient-noise measurements that set minibatch size (300–800 samples for the MLP, ~17,000 for the LSTM, which is also why Five's batches were a million timesteps), the side-asymmetry fix, and a TrueSkill table over 36,502 games.
+
+### The simulator, September
+
+*Bottleneck: fidelity. Lesson: fidelity is a method, not a property — record, replay, diff to the first divergence.*
+
+The fleet's ceiling was the engine itself: about 23,000 ticks a second box-wide however the servers were arranged. The 1v1 slice — movement on the navgrid, four spells, autos, vision, damage, death — is thin, so it was reimplemented in Python, compiled with numba, and held to the C# server **frame for frame**. Most of two days went on float32: trig from the same C library the runtime calls, the bridge's decimal-text rounding, a squared float that promotes to float64 in numpy exactly as the engine's arithmetic does, no fused multiply-add anywhere. The batched engine runs 22.5 million lane-ticks a second on the box, bit-identical to the reference; the trainer sustains about a million samples a second, fifty times the fleet, three hundred and sixty agent-years a day. A policy trained there for nine minutes, never having seen the C# engine, passed the server-trained reference on the bot ladder when carried back to the real server.
+
+Then the laning version collapsed. It matched the server on every trace we had, and could not reproduce the run. Two bugs in bookkeeping the short clean traces never exercised: the game clock never reset, so creeps had been upgraded 213 times by rollout 3,000; and a reset drawn mid-cast froze a champion forever. The method that found those and ten more was the obvious one in hindsight — have the trained policy play on the real server, replay those traces in the simulator, diff to the first divergent frame, read the rule, fix, repeat. Twelve gaps in three days, among them update order by network id, turret timer phase, and a cast time that winds up to 0.10000001 s because the engine multiplies frames by 1/60 in 32-bit float. After the eleventh, every recorded self-play trace replays frame-exact, and a sim-trained checkpoint's numbers on 24 real servers matched the simulator's own ladder within noise.
+
+And then the recipe still didn't reproduce the run. Six replicas on progressively more exact engines all plateaued 45–60 Elo below the fleet's checkpoint. The gap wasn't fidelity: the fleet's four PPO epochs had been harmless because sixteen asynchronous actors fed it varied batches, and in the simulator's exact on-policy collection the same four epochs overfit each rollout. One epoch closed it. The opponent pool, it turned out, had never worked in any simulator run — every draw was the newest checkpoint at probability 1.00. Both were findable only by rerunning the experiment, and only affordable because a rerun now cost three hours instead of two weeks.
+
+**Where September ended.** The best checkpoints in the project have never seen a server. The unit of experiment is an hour. And the method that makes an old server exact is mechanical enough to point at a new one.
+
+## What it adds up to
+
+Five years to a working loop. Five months, from the April fork, to a simulator that beats its author and predicts the real server within noise. The constraint was never the game tree, and it was never the network — a 256-unit LSTM is enough for a lane. It was the cost of a game step, and that cost is now an engineering number that fell by orders of magnitude in one week of work.
+
+Part 3 runs the same loop against the current patch.
