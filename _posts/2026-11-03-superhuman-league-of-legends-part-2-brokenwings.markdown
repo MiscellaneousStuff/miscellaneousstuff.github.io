@@ -57,7 +57,9 @@ shortly before the infamous [Riot Zed incident](https://www.businessinsider.com/
 After this the RL-based efforts die down and I switch over to imitation learning for years afterwards as I felt that I'd never be able to use the simulator approach due to the sheer
 engineering and harsh fidelity requirements.
 
-[### Voyager](https://github.com/MiscellaneousStuff/pylol-demo/tree/latest)
+### Voyager
+
+[repo](https://github.com/MiscellaneousStuff/pylol-demo/tree/latest)
 
 Many years later, in early 2025, I had more spare time and decided to re-ignite the League RL-style approach based on a different fundamental understanding. Perhaps the RL approach
 is inefficient not because of our simulator, but the sample efficiency of our learning method? What if we could use LLMs with their strong pre-existing world knowledge to learn
@@ -159,16 +161,56 @@ The last policy is the demo build — commit message: "latest policies, far bett
 I thought about scaling this up and then realised, training an RL agent is just more efficient. However, this taught me that LLMs can be highly efficient for diagnosing agent behaviour
 which becomes crucial for the work in brokenwings.
 
-## Brokenwings
+## Brokenwings (First Attempt)
 
-Ok so we now have the history, years of attempts at creating agents in half-baked simulators without any real results to show for it aside from LLM-based python scripts which can
-sort of dodge and agents which maximise their distance from each other.
-So whats different now? Well firstly we have LLMs which heavily automate the programming aspect of experiments and then I saw [Brokenwings](https://gitgud.io/skelsoft/brokenwings)
-released.
+Ok so we now have the history: years of attempts at agents in half-baked simulators with nothing to show for it beyond LLM-written Python that could sort of dodge, and agents that maximised their distance from each other. What's different now?
 
-Brokenwings is a patch 1.0.0.126 (season 1) game server simulator which uses the same framework as LeagueSandbox (C# style project skeleton) and for the most part, faithfully
-reimplements the game as it was back then (sans a few bugs here and there). This was essentially feature matched as close as possible to Chronoshift which I had wanted to get
-years ago!
+Two things. Agentic coding, which turns "expand LeagueSandbox" from a year of evenings into a week. And [Brokenwings](https://gitgud.io/skelsoft/brokenwings): a patch 1.0.0.126 (season 1) game server in the LeagueSandbox C# lineage that, bugs aside, faithfully reimplements the game as it was. It's the Chronoshift I'd wanted since 2021, and in April 2026 it was complete enough to iterate on. A lot of the original game's logic lived in Lua on the client back then, so there was also a lot less server to rebuild.
 
-### Initial Attempts
+### The bridge, 23–24 April
+
+*Bottleneck: none yet. Lesson: a toy that works is the dangerous kind.*
+
+The fork starts on 23 April with `ChildrenOfTheGraveRL`: a TCP server inside the engine speaking newline-delimited JSON. It emits observations at a fixed rate timed by game time rather than loop count, and takes `noop`, `claim`, `teleport`, `move`, `chat` — the last of which exposes the engine's forty-odd `!cheat` commands for free. Three engine hooks make it an RL environment rather than a remote control: a post-tick callback, an `_aiPaused` check in the behaviour tree so `claim` actually silences the scripted bot, and a `HEADLESS` flag with `force_start` so a bots-only game runs with no client attached.
+
+By the end of the second day it also had `attack` (through the same order path a human client uses), `reset` (wipe level, gold and stats, or keep them), `spell` and `level_spell`, and richer observations: buffs, per-slot spell level and cooldown, the full stat line, current target and move order. Two bugs from those two days are worth recording because every reimplementation hits them: casts bypassed the engine's cast-request handler, so champions never turned to face the target and cleanup never ran; and the missile's start and end point were the same, so it deleted itself on its first tick. The fix for the second is the axis rule that haunts every League tool — a ground target is `(x, 0, y)`, with altitude in the middle.
+
+On the Python side: a Gym env with `frame_skip=8`, a reward of HP change plus a kill bonus plus gold as a stand-in for creep score, and the first SB3 PPO run. Thirteen discrete actions (eight move directions, attack, Q/W/E/R), **fourteen** observation numbers, random opponent. Two tasks: *flee*, where it learned to spam Ezreal's E; and *combat*, where it learned to weave auto-attacks between spells — it found Ezreal's passive on its own, in an afternoon, from fourteen numbers.
+
+That's the dangerous moment. It worked, so every problem after it looked like a training problem.
+
+### The engine fights back, 25–27 April
+
+*Bottleneck: everything. Lesson: every throughput number was an engine bug in a performance costume.*
+
+Mirror self-play went in on the 25th — the opponent is the live policy seeing the game from its own side — plus several servers in parallel on threads (fine, because each env mostly waits on a socket), auto-launched servers, action masking with `MaskablePPO`, and missile observations: every live missile's position, velocity, team and whether it's an auto-attack, eight nearest per champion, taking the observation from 14 to 110 numbers. Masking cooldowns and mana ended the "spam R" strategy on the spot.
+
+Then three days of this:
+
+| Symptom | Looked like | Actually was | Fix |
+|---|---|---|---|
+| Self-play results skewed from the first run | the policy | reset set level to 1 but kept the stats from past level-ups: a stat snowball | undo `Stats.LevelUp` on reset; a drift check now shows zero |
+| Respawned opponent dying instantly | the policy | a stale `AttackTo` order surviving reset | reset clears all orders |
+| Throughput capped, servers looked CPU-bound | server CPU (`ObjectManager.Update` at 94% of a core) | Python: `makefile(buffering=0)` read **one byte per syscall**, each fighting the GIL | `buffering=65536` — 117 → 1,139 trial-fps at 8 lanes, 6.5× |
+| Tick rate falling from 30 Hz to 5.7 Hz over fifty minutes | memory | the `.troy` parser read "key missing" (−1) as "lives forever", so particles never died and vision updates grew to 917 ms per second | 30 s particle cap, plus gauges counting objects by type |
+| Long runs dying | nothing in the logs | a spell re-cast while its previous cast was still finishing (navgrid limit → movement stops → cast cancelled → script re-casts) threw inside a reusable awaiter | log and drop the second continuation; also removed an out-of-bounds array access someone had left in `Spell.cs` for debugging |
+| 152k-step model losing to the 40k model 24% of the time, 35% double-KOs | mirror collapse, regression | rock-paper-scissors: against the engine's own bot the 152k model won 80.6% and the 40k 77.8% | evaluate against something outside the lineage |
+
+And one near-miss: the docs briefly recommended `TICK_RATE=120` for a free 1.8× speedup, until someone asked whether anyone had checked the physics at 120. Nobody had. It was reverted, and it's the first appearance of a bug that wasn't properly fixed until the ScaledDeltaTime audit in September.
+
+Every row in that table was first filed as a training problem. The same lesson lands again in September, harder: a minion running a map-wide A\* search every tick, filed for weeks as "throughput decay."
+
+### Scaling out, 27–29 April
+
+*Bottleneck: self-play standoffs. Lesson: the OpenAI Five appendices are a checklist, and you will use all of them.*
+
+The cloud setup went in on the 27th: Graviton spot instances (1,024 approved vCPUs), Linux fixes (the server was launching `powershell.exe` from a monitoring class and crashing), spot-shutdown handling, runs synced to S3, core pinning that knows Graviton has no hyperthreading. The plan was deliberately dumb: each box trains alone, checkpoints go to S3, cross-box tournaments pick winners. No distributed PPO. A Docker image followed, then about eight fixes to the Docker image.
+
+On the training side the problems were now the right kind. Mirror training settled into a defensive standoff where both sides ended every episode on 188 HP. Two fixes, both straight from the OpenAI Five paper: a snapshot pool (Appendix N) so some episodes are played against a past checkpoint, and HP/mana jitter at reset (Appendix O.2) so no two episodes start the same. Head-to-head and sweep evaluation tools, batch size scaling with env count, and the Python tooling split out as [riftgym](https://github.com/MiscellaneousStuff/riftgym) with the image down from 2.18 GB to 444 MB.
+
+**Where April ended.** A working 1v1 PPO stack: auto-launched servers, five lanes a server, both sides trained, masking, missiles, evaluation against checkpoints and the engine bot. Checkpoints beat the engine bot about 80% of the time. Still open: minions ending games; the deeper "a cast can run while it's still running" bug behind the crash (only the crash had been handled); and physics at any timescale other than 1×.
+
+Then nothing for four months. What came back in September was the same fork with a different question: not "does it learn" but "how fast can it learn" — and the answer to that is the [field report](LINK) and the next two sections.
+
+## Brokenwings (fastsim)
 
