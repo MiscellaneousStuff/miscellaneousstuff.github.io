@@ -118,7 +118,7 @@ and even to my own work of training a basic League of Legends agent to
 [avoid another agent](https://github.com/MiscellaneousStuff/pylol).
 
 <div style="text-align: center;">
-{% include youtubePlayer.html id=page.leagueAiYouTubeID %}
+{% include youtubePlayer.html id=page.leagueAiYoutubeID %}
 </div>
 
 Deepmind also had similar reasons for using a similar system when creating AlphaStar,

@@ -6,7 +6,7 @@ excerpt: "This post focuses on the initial attempts to discover what reinforceme
 date:   2026-11-03 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Simulator Enhancement", "fastsim"]
 tags: [""]
-leagueAiYoutubeId: yVUKi63WfDA
+leagueAiYouTubeId: yVUKi63WfDA
 brokenwingsYouTubeId: jLEzHI2Duxo
 ---
 
