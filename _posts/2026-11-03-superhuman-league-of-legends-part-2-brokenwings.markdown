@@ -47,3 +47,23 @@ working training loop!
 </div>
 
 I even got it fully working inside of a sharable Google Colab [here](https://colab.research.google.com/github/MiscellaneousStuff/pylol-demo/blob/68e9f8dbdd54b822d710c879fcfe1e249b55c620/demonstration.ipynb#scrollTo=gA0n7C6sOms2).
+
+Although at this stage I stopped as I felt that continuing required expanding on LeagueSandbox itself and at the time I thought that I didn't have the raw
+compute to achieve intersting results.
+
+I was actually more interested in getting the source code for the infamous [Chronoshift project](https://www.youtube.com/watch?v=8Q5B4pWKFSI) and was active on their discord server
+shortly before the infamous [Riot Zed incident](https://www.businessinsider.com/league-of-legends-developer-riot-games-threatens-chronoshift-project-2021-4).
+
+After this the RL-based efforts die down and I switch over to imitation learning for years afterwards as I felt that I'd never be able to use the simulator approach due to the sheer
+engineering and harsh fidelity requirements.
+
+### Voyager
+
+Many years later, in early 2025, I had more spare time and decided to re-ignite the League RL-style approach based on a different fundamental understanding. Perhaps the RL approach
+is inefficient not because of our simulator, but the sample efficiency of our learning method? What if we could use LLMs with their strong pre-existing world knowledge to learn
+how to play League of Legends?
+
+The main basis of this idea were several RL / game playing LLM based projects from 2023 and my research into agentic coding systems in 2024.
+- Voyager (NVIDIA et al., May 2023): a GPT-4 era agent that played Minecraft open-endedly by proposing its own tasks, writing JavaScript skills against the game’s API, and keeping the ones that worked in a retrievable library with no gradient updates at all. It reached diamond tools 15× faster than ReAct/AutoGPT-style baselines. But it saw the world as text and spent an LLM call per decision.
+- Eureka (NVIDIA et al., October 2023): GPT-4 given an environment’s source code writes reward functions, which are trained in parallel and refined from their own training statistics. It beat human-written rewards on 83% of 29 tasks and taught a simulated hand to spin a pen. It only works because Isaac Gym makes training sixteen candidates at once cheap - using the LLM designs, a fast simulator does the learning.
+
