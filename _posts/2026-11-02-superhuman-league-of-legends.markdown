@@ -294,11 +294,7 @@ But how would we go about proving this? Starting with the full modern game is qu
 perhaps we should start with an open-source project which has gotten the furthest in implementing the game
 and validate this "fastsim" concept.
 
-## Brokenwings
-
---
-
---
+In Part 2 we will explore our work in creating a fast simulator "fastsim" using Brokenwings.
 
 ## Appendix
 
