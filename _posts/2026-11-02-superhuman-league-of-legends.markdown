@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title:  "Superhuman League of Legends AI by 2027 (Part 1 - The Background)"
-excerpt: ""
+excerpt: "This post updates this blogs longstanding project to the agentic era. We explore the why and who of League of Legends AI and crucially the `how` and what has changed since 2023."
 date:   2026-11-02 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Data Scraping"]
 tags: [""]
