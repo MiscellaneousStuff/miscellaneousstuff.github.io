@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Superhuman League of Legends AI by 2027"
+title:  "Superhuman League of Legends AI by 2027 (Part 1 - The Background)"
 excerpt: ""
 date:   2026-11-02 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Data Scraping"]
