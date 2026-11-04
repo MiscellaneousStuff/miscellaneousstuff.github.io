@@ -48,14 +48,14 @@ decrypting the data).
 ## Memory Reading
 
 This means that [memory reading methods](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#replay-scraping) are robust to patch changes (or at least only require re-discovering
-the memory offset locations for specific game objects and their fields which is relatively trivial using signature based
+the memory offset locations for specific game objects and their fields which is relatively routine using signature based
 detection every patch).
 
 However memory reading methods are simulatenously slow and fall victim to sampling noise (*when* you read memory, results
 in inconsistent data output unless you run it at very slow speeds). The other option is capturing the functions which
 the game client itself uses to decode replays.
 
-## Packet Capturing
+## Semantic Packet Decoding and Game Server Oracle
 
 <div class="key-findings" markdown="1">
 For some context, `*.rofl* files contain amongst many things the stream of S2C (server-to-client or in other words
@@ -74,6 +74,18 @@ Our replay scraper took:
 
 His approach instead took 5 seconds per game (although the completeness of the data is also dependent on understanding
 what the decoded packets mean, otherwise you just have seemingly random data).
+
+This means that memory reading is reliable for its exact snapshot in time but is far too slow to scale and Henry's
+packet extraction method is highly efficient and parallelisable but has completeness limitations, so what is the
+solution here?
+
+The real answer is to combine them. You would use the ground truth data from the memory reading to automatically
+discover the purpose of the packets where applicable. Then this can be combined with reading the clients packet
+memory table to increase the coverage of the packets (and related fields) semantic meaning.
+
+Ok so we now have a rough plan for acquiring replay files (based on our previous method), and extracting useful
+data from the replays - which we can still use for imitation learning, and which crucially enables us to create
+an oracle to check a reimplemented server against.
 
 ## Appendix
 
