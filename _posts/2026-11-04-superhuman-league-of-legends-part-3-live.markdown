@@ -163,6 +163,45 @@ If the rules can't be read, they can be fitted: propose a rule, run it against w
 
 That is the method in full: numbers from the client, behaviour fitted from the stream, the stream as the mark. With minion rules inside statistical noise of the server, the Brokenwings recipe could be run again — and this time the thing it was run against was the current game.
 
+## fastduel
+
+The Brokenwings lesson was that the simulator has to be exact to the thing it's standing in for, and that the only way to know is to diff. Here the thing it stands in for is our own live server — the one the client accepts — so exactness is cheap to check and the question is only speed.
+
+**The port.** The live server's rules were made headless, so a clientless engine could run a duel and emit the same messages the client would have received. A call log proved it: 2,653 messages across a 160-second duel against the scripted bot, byte for byte. Then the whole ruleset — movement, A\* on the map's grid, the four spells, Flash and Barrier, autos, damage, respawn — was ported to numba with the same order of operations, and both champions put on one rule set so the scripted bot is just another policy with `observe()` and `act()`. The fidelity gate is a script that replays 26 recorded sessions and requires byte-identical output; a 200-episode soak (135,000 decisions) found zero divergences from the Python rules, and a 100-episode soak zero differences in observations, masks or rewards. Later the lane with minions, then turrets, went in the same way: a line-for-line copy of the live rules with the same random generator, identical every tick in tests.
+
+**Throughput.** The baseline showed the environment, not the learner, was the bottleneck by about twenty times. Then:
+
+| Setup | Samples/s |
+|---|---|
+| Python engine, original trainer | 10k |
+| Python engine, hot-path fixes | 66k |
+| numba, GPU-lockstep, 2 PPO epochs | 292k |
+| numba, 1 epoch, minibatch 16k | 557k |
+| + rollout kept on GPU, threaded collector, CUDA-graphed actor (A10) | 437k with the lane |
+| + parallel collector, compiled learner and actor, fp16 recurrence (A10) | 662k, the box's ceiling |
+| GH200, old recipe | 1.27M |
+| GH200, turret run | 1.65–1.95M |
+
+The main A10 cause was fourteen threads waking per decision and queueing on the GIL; the fix also made parallel and serial stepping bit-identical, so the exactness checks still pass after every one of those rows. At the top of the table one GH200 is producing about forty million decisions a minute, which is the Brokenwings figure on a game eight patches old rather than fifteen years.
+
+**Where the time went instead.** Once the engine was fast, the agent slowed it down. A trained policy issues a move order on about three quarters of its decisions, and every move order is an A\* search; one run's throughput fell from 950k to 157k samples a second as the policy learned to move. Faster routing with identical paths — straight-line shortcut, a route cache — recovered most of it. The simulator's cost is now set by what the policy does, which is a strange and correct place to end up.
+
+## Agents
+
+Everything in this section was trained in fastduel and evaluated either in fastduel or in the real client against our server. "DuelBot" is the scripted Ezreal.
+
+**v1, 9–10 October.** A plain MLP, 160 → 256 → 256, about 231,000 parameters including the value net, decisions every 133 ms, no memory, PPO self-play with an opponent pool. Within a few hours of the first run, checkpoint v2700 beat DuelBot 4–1 in the live client; under fair rules, v3400 won 5–0 on blue and v3600 5–0 on red. On the open map the strong checkpoints mostly drew — kill-draws around 85% in self-play, timeouts at 30 s in the client — because two equal Ezreals can always walk away. A movement-bounded arena (`--arena 1400`, identical in the engine and the live server) took self-play draws from 84% to 3%, and the arena's final checkpoint rated +77 Elo over every earlier agent while tying them on the open map. It fights more, and over-commits when the opponent can retreat. The environment decides what there is to learn.
+
+**The lane, 12–15 October.** Minions in, the Brokenwings unit-set LSTM as the network. In a ten-minute real-client video both lane agents farmed about 11 CS a minute — good dodging, constant animation cancelling, spell combos around W, and the first signs of wave management. The ladder said lane3, trained on the replay-fitted randomness model, beat lane2; it also said lane3 had been flat since about update 1,000. Flat training curves and a moving ladder was the Brokenwings pattern, and it held.
+
+**Turrets, 19–22 October.** With towers in the lane and the rules set to first-to-100-CS-or-a-tower, the policy reached 1,042 Elo on the ladder and never won by killing a turret. Interp (next section) explained why: it had learned a real model of turret danger, pushed from behind its wave 85% of the time, and worked out that ignoring a 9,000 HP tower is close to optimal because 100 CS arrives first. Randomising turret HP at spawn — OpenAI Five's Roshan trick — added about 100 Elo and taught it to finish damaged towers, still not to start on full ones. In my first games against it, playing by hand, I went 2/0 and 8/0 on deaths and 25–55 and 88–193 on last hits. It almost always wins the return trade when autoed, and when I committed a Q trade at low HP it held E and Q and autoed back.
+
+**The league, 22–25 October.** AlphaStar's structure: a main agent, and exploiters trained against frozen copies of it that join the main's opponent pool when they find a hole. The first exploiter passed 50% in ninety minutes and plateaued at 80% by out-farming the main three to one. Each cycle closed the previous hole — main 36,300 beat all three exploiter checkpoints 97–99% — and each fresh exploiter found a new one within four hours. Gains per four-hour block went +100, +40, +40, +28 Elo: a log-compute curve. And the games themselves had a shape the policies couldn't escape: whoever got the first trade off won, because one early trade leaves a champion near 100 of 1,003 HP, and with no recall, no potions and no lifesteal it hides for the rest of the game. That's the environment again.
+
+**Why it stopped.** On 15 October we ported the gradient-noise tool from Brokenwings and ran it on six lane checkpoints. The policy gradient's noise scale came out at 1.1–3.4 million samples — roughly a hundred times the Brokenwings figure and 130 times our 16k minibatch, and already 1.5M after half an hour of training. The value gradient's was far smaller. The reading is simple and uncomfortable: a self-play opponent is always about as strong as you are, so the average "do better" direction is tiny from the start, and bigger batches, more throughput or a cleverer optimiser only harvest the same weak signal faster. Lane3 was gaining about 30 Elo per two hours at that point. We had built a simulator fast enough to make the signal the bottleneck, which is the right problem to have and not one more compute fixes.
+
+So we tried humans.
+
 ## Appendix
 
 <!-- add section explaining openai five comparison training throughput wise -->
