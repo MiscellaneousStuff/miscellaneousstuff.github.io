@@ -87,6 +87,39 @@ Ok so we now have a rough plan for acquiring replay files (based on our previous
 data from the replays - which we can still use for imitation learning, and which crucially enables us to create
 an oracle to check a reimplemented server against.
 
+## Game Client
+
+That's all well and good, but how do we *actually* play the game?
+
+In Brokenwings the answer was easy: the server was ours, so we attached the bridge to it and the client was optional. On 26.19 the server is Riot's, the client is the only part we have, and the client is also the only thing in the world that can tell us whether a server is speaking League.
+
+That makes it the first oracle and not for the *rules*, which it mostly just renders, but for the *protocol*.
+If the client connects, loads a world and plays what it's sent, you have a server the game accepts.
+
+The way in was replays. A replay is the server's half of a conversation, and the client already knows how to listen to it. Loading one into the client through our own process, rather than through Riot's replay mode, was the first thing that worked, and it worked in an afternoon.
+
+Standing on the shoulders of everyone who'd decoded the format before us (Henry's write-up, the earlier ROFL projects, the 16.6-era attempt at loading one into the game). From there the question was whether the client would accept *new* messages, not just recorded ones. It would.
+
+**The live duel.** By 3 October our Python server was running an Ezreal-versus-Ezreal in the installed client: server-owned movement and pathing on the map's real navigation grid, auto-attacks with windup, release and impact as separate stages, all four spells with their costs, cast locks, missiles and interactions (W marks detonated by Q, autos, E and R; E's blink and homing bolt; R's piercing wave), Flash and Barrier, regen, gold and XP, kills with the kill feed and scoreboard, death and a ten-second respawn that returns both champions to mid. Both start at level 6 with Q3/W1/E1/R1 and the level's real base stats. The opponent was a scripted Ezreal. The client played all of it: health bars, damage text, first blood, the 1v1 ace announcement.
+
+**What that proves and what it doesn't.** It proves the client accepts and presents our simulation. It does not prove our simulation reproduces every rule of Riot's server; the client is not checking the arithmetic, it's displaying it. That gap is the subject of the rest of the post.
+
+**Bugs found by playing it**, because the client is also the fastest bug report there is:
+
+| What I saw | What it was |
+|---|---|
+| Orb-walking showed the missile but the hit never landed | windup cancellation and released-projectile lifetime were one flag |
+| Gold appeared on screen for kills that weren't mine | private economy messages sent to whichever connection was listening |
+| The enemy's hit effects played on the enemy | effect templates still carried the recorded victim from the bootstrap replay |
+| The bot walked through walls | movement used straight lines, not the navgrid |
+| Kills happened and the client said nothing | rewards existed; the death notification and KDA packets didn't |
+
+**How it was checked.** 137 unit tests on the live rules; native-decoder checks on every kill, effect and ownership message; captures of several thousand datagrams validated field by field across both kill directions, three deaths and revivals, and 965 bot positions that all stay walkable and reach their routed endpoint. Screenshots of the kill feed, score and KDA reviewed by hand. That's integration evidence: strong evidence that the game accepts us, and none at all that we're right.
+
+**Timing.** A League server runs at 30 Hz. Ours answers the client's clock and keeps cast completion, movement locks, missile release and collision on one server timeline: Q is a 0.25 s cast and a 2,000 u/s projectile, as it should be — but the event loop is a 10 ms socket timeout, not a guaranteed tick, and the server-to-client offset is set once at startup with no drift correction. A prototype, in the honest sense.
+
+Two things worth saying plainly. All of this ran against our own server on our own machines; nothing in this post connects to Riot's live service, and the client was read only for interoperability with a server we wrote. And the entire thing — the client, the protocol knowledge, the replay format — sits on a decade of public work by other people, from LeagueSandbox through to the projects that decoded 16.x. We added a server that plays.
+
 ## Appendix
 
 <!-- add section explaining openai five comparison training throughput wise -->
