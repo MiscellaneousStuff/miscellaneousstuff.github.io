@@ -298,8 +298,8 @@ In part 2 we'll explore how we turned a 2010-era League server turned into an RL
 one machine, the OpenAI Five recipe at a thousandth of the budget, twelve agent-years a day,
 then the server replaced by a simulator that matches it frame for frame and runs fifty times faster.
 Policies trained only in the simulator that transfer to the real server within noise, and a bot
-that went from taking 42% of the kills off its developer to 82%. It ends with the plan for
-the current patch: the same validation loop with modern replays.
+that went from taking 42% of the kills off its developer to 82%.
+<!-- It ends with the plan for the current patch: the same validation loop with modern replays. -->
 
 ## Appendix
 
