@@ -120,6 +120,33 @@ Standing on the shoulders of everyone who'd decoded the format before us (Henry'
 
 Two things worth saying plainly. All of this ran against our own server on our own machines; nothing in this post connects to Riot's live service, and the client was read only for interoperability with a server we wrote. And the entire thing — the client, the protocol knowledge, the replay format — sits on a decade of public work by other people, from LeagueSandbox through to the projects that decoded 16.x. We added a server that plays.
 
+## Replays as the second oracle
+
+The client tells you whether the game accepts you. It cannot tell you whether you're right. For that you need a record of what Riot's server actually did, and that is exactly what a replay is: the server's output stream, every message it sent to a spectator, at tick resolution, for the whole game.
+
+There's a trap in that, and it's worth naming before using the data for anything. If you take a replay and stream it through your own server to the client, the client plays the game back, and nothing has been tested except your transport. *Replaying server outputs verifies playback. Reconstruction means predicting the outputs from an earlier state and the inputs you can establish.* The oracle is only an oracle if the simulator is made to guess what comes next and is marked against the stream afterwards.
+
+**What a replay rebuilds to.** The first thing was to establish what the stream contains, with no client running. Each keyframe of a ranked game was rebuilt from the previous keyframe plus the packets between them, and compared to the keyframe the server actually sent:
+
+| Object class | Bit-exact |
+|---|---|
+| Turrets | 99.8% |
+| Minions | 97.4% |
+| Heroes, replicated block | 91.9% as recorded; 99%+ allowing for the server's own transmission lag |
+| Buffs | 92.8% |
+
+Hold-out games give the same numbers. The misses that remain are server timer phases that never appear in the stream: regeneration ticks, rune ticks. So about 92% on those classes is the ceiling by construction, not a decoder gap. At roughly two CPU-minutes a game, the whole corpus is recoverable to that standard in days on one box. A reader who followed TLoL will recognise this as the thing we were doing by hand in 2021, now exact and three orders of magnitude cheaper.
+
+**What a replay doesn't contain.**
+
+Two absences shape everything after this point.
+
+The first is inputs. A replay is server-to-client only. It holds the server's *response* to every click — a waypoint group after a move order, a cast answer after a cast request — and not the click. For imitation learning that means action labels are inferred from responses, with a tick of uncertainty and no record of the rejected or redundant inputs a human actually issued. For reconstruction it means the harness has to tolerate that same tick.
+
+The second is the rules themselves. The client ships the numbers: base damage, ratios, cast times, missile speeds, collision radii, the navigation grid — in its data files, and the replay shows those numbers being applied. But the logic that applies them lives on the server. Buff lifecycles, stack caps, internal cooldowns, spell control flow, minion aggro and retargeting, camp timers, turret priority: none of that is in the client's data, and the replay records only its *effects*. We counted 4,316 distinct buff names across 66 games, still arriving at about six new ones per game, against 3,936 buff records in the client. The client's records say what a buff is called, not what it does.
+
+So the stream will mark the simulator's answers, and the client will display them, and neither will hand over the function that produces them. The rules have to be fitted.
+
 ## Appendix
 
 <!-- add section explaining openai five comparison training throughput wise -->
