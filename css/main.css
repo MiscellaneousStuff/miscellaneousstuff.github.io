@@ -389,43 +389,69 @@ a:hover { text-decoration: underline; }
 /* sticky sidebar copy, built by the script in _layouts/post.html */
 .side-toc { display: none; }
 
-@media (min-width: 1280px) {
+@media (min-width: 1340px) {
   .side-toc {
     display: block;
     position: fixed;
     top: 40px;
-    left: calc(50% - var(--text-width) / 2 - var(--gutter) - 252px);
-    width: 220px;
+    left: calc(50% - var(--text-width) / 2 - var(--gutter) - 282px);
+    width: 250px;
     max-height: calc(100vh - 80px);
     overflow-y: auto;
-    font-size: 13px;
-    line-height: 1.45;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    line-height: 1.4;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
   }
-  /* only reveal once the reader has scrolled past the title band */
+  /* only reveal once the reader has scrolled past the inline contents */
   .side-toc.visible { opacity: 1; pointer-events: auto; }
   .side-toc h3 {
-    margin: 0 0 10px;
+    margin: 0 0 10px 14px;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-faint);
   }
-  .side-toc ul { list-style: none; margin: 0; padding: 0; }
-  .side-toc ul ul { display: none; }
-  .side-toc li { margin: 0; }
+
+  /* same hierarchical numbering as the inline contents (3, 3.1, 3.1.1).
+     Indentation lives in each link's padding rather than the lists, so
+     the left rail stays one continuous line down every level. */
+  .side-toc ul { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .side-toc li { margin: 0; counter-increment: toc; }
   .side-toc a {
-    display: block;
-    padding: 4px 0 4px 12px;
+    --indent: 14px;
+    --num: 24px;
+    display: flex;
+    align-items: baseline;
+    padding: 4px 8px 4px var(--indent);
     border-left: 2px solid var(--rule);
-    color: var(--text-faint);
+    font-size: 13px;
+    color: var(--text-muted);
     text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .side-toc a:hover { color: var(--text); }
-  .side-toc a.active { color: rgba(0, 0, 0, 0.85); border-left-color: rgba(0, 0, 0, 0.6); }
+  .side-toc a::before {
+    content: counters(toc, ".");
+    flex: 0 0 var(--num);
+    font-size: 11.5px;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .side-toc > ul > li > a { padding-top: 6px; font-weight: 500; color: rgba(0, 0, 0, 0.7); }
+  .side-toc ul ul a { --indent: 38px; --num: 32px; padding-top: 3px; padding-bottom: 3px; font-size: 12.5px; color: var(--text-faint); }
+  .side-toc ul ul ul a { --indent: 70px; --num: 40px; font-size: 12px; }
+
+  .side-toc a:hover { color: rgba(0, 0, 0, 0.85); }
+  .side-toc a.within { color: rgba(0, 0, 0, 0.85); }
+  .side-toc a.active {
+    color: rgba(0, 0, 0, 0.9);
+    border-left-color: rgba(0, 0, 0, 0.7);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.035), transparent);
+  }
+  .side-toc a.active::before { color: rgba(0, 0, 0, 0.55); }
 }
 
 /* ------------------------------------------------------------------

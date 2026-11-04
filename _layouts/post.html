@@ -80,8 +80,19 @@ layout: default
           if (targets[i].el.getBoundingClientRect().top < 120) current = targets[i];
         }
         side.classList.toggle('visible', toc.getBoundingClientRect().bottom < 0);
-        links.forEach(function (a) { a.classList.remove('active'); });
-        if (current) current.link.classList.add('active');
+        links.forEach(function (a) { a.classList.remove('active', 'within'); });
+        if (!current) return;
+        current.link.classList.add('active');
+        // highlight the parent sections of the one being read
+        var li = current.link.parentElement.parentElement.closest('li');
+        while (li && side.contains(li)) {
+          li.firstElementChild.classList.add('within');
+          li = li.parentElement.closest('li');
+        }
+        // keep the active entry visible when the sidebar itself scrolls
+        var a = current.link, top = a.offsetTop, bottom = top + a.offsetHeight;
+        if (top < side.scrollTop + 40) side.scrollTop = top - 40;
+        else if (bottom > side.scrollTop + side.clientHeight - 40) side.scrollTop = bottom - side.clientHeight + 40;
       }
       window.addEventListener('scroll', function () {
         if (!ticking) { ticking = true; requestAnimationFrame(update); }
