@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title:  "Superhuman League of Legends AI by 2027 (Part 2 - Brokenwings: 1v1)"
-excerpt: "This post focuses on the initial attempts to discover what reinforcement learning methods are required to train superhuman level League of Legends agents."
+excerpt: "This post explains the discovery of the fastsim idea, and its performance in an older version of League."
 date:   2026-11-03 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Simulator Enhancement", "fastsim"]
 tags: [""]
@@ -44,7 +44,7 @@ I copied enough of the pysc2 lib (Starcraft II lib from Deepmind x Blizzard) whi
 working training loop!
 
 <div style="text-align: center;">
-{% include youtubePlayer.html id=page.leagueAiYouTubeID %}
+{% include youtubePlayer.html id=page.leagueAiYouTubeId %}
 </div>
 
 I even got it fully working inside of a sharable Google Colab [here](https://colab.research.google.com/github/MiscellaneousStuff/pylol-demo/blob/68e9f8dbdd54b822d710c879fcfe1e249b55c620/demonstration.ipynb#scrollTo=gA0n7C6sOms2).
