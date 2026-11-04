@@ -307,6 +307,17 @@ Four interpretability passes ran in October, and each one changed a decision. Th
 
 The pattern across the four is the one from Part 2's anatomy page: these networks are not mysterious. They are HP-difference machines with a few well-labelled circuits on top, and the circuits they lack: objectives, the jungler, anything beyond a few seconds, are the ones the environment never paid for.
 
+## So where do we go from here?
+
+We now have a crude Ezreal 1v1 simulation environment. Ideally we want to build out a system which can
+automatically implement game objects and modifiers to re-create the game with enough fidelity to run
+full on 5v5 games. However we also want to *realistically* understand the how much our `fastsim` approach
+has bought us in terms of reducing our compute requirements *and* enabling novel methods for gaining more signal
+during our training process.
+
+In Part 4 we will return back to Brokenwings and focus on scaling up our RL training to full on 5v5 games before
+scaling up the re-implementation of the entire game.
+
 ## Appendix
 
 <!-- add section explaining openai five comparison training throughput wise -->
