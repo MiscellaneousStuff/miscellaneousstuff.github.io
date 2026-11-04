@@ -200,7 +200,63 @@ Everything in this section was trained in fastduel and evaluated either in fastd
 
 **Why it stopped.** On 15 October we ported the gradient-noise tool from Brokenwings and ran it on six lane checkpoints. The policy gradient's noise scale came out at 1.1–3.4 million samples — roughly a hundred times the Brokenwings figure and 130 times our 16k minibatch, and already 1.5M after half an hour of training. The value gradient's was far smaller. The reading is simple and uncomfortable: a self-play opponent is always about as strong as you are, so the average "do better" direction is tiny from the start, and bigger batches, more throughput or a cleverer optimiser only harvest the same weak signal faster. Lane3 was gaining about 30 Elo per two hours at that point. We had built a simulator fast enough to make the signal the bottleneck, which is the right problem to have and not one more compute fixes.
 
-So we tried humans.
+So we trained on human data.
+
+## Imitation
+
+We downloaded a 16.19 corpus of replays, just over 200,000 ranked games. This is the same scale that JueWu-SL reported for Honor of Kings and every human action in it is recoverable from the stream as the server's response: a path, an attack, a cast. If self-play can't find the signal, the humans already have.
+
+**The pipeline.** Of 18,934 archived games with an Ezreal, 16,886 were on the exact build and at least fifteen minutes long. One pinned pipeline takes a game from download through decode, tick export, action labels and observation rows to a packed training file, deleting intermediates as it goes; a golden check reproduces three reference games to about 2,400 hashes each, on x86 and on the ARM boxes. Two GH200s pulling from a shared lease queue extracted 15,881 games in a little over three and a half hours at about 4,800 games an hour — 242 GB, 117.5 million rows. Five games failed for reasons a retry can't fix: two whose end-of-game stats are literally empty, three with a sub-millisecond timestamp step backwards at a chunk boundary.
+
+**The first model.** A 2.5M-parameter feed-forward network on 900 games, trained in 43 minutes. On 50 held-out games against the best baseline: action-type accuracy 62.5% vs 54.5%, attack F1 .465 vs .030, attack-target top-1 84.8% vs 63.7%, cast slot 88.0% vs 72.8%. Weak on timing inside the 200 ms window and on precise movement. The JueWu-SL additions — grids, intent heads, attack weighting — moved it by about a point; validation bottomed out at epoch 12 of 30. At 900 games, more data matters more than technique.
+
+**Scaling, 900 → 15,881.** Nested training sets, one recipe, 500 validation games, the same 50 test games:
+
+| Training games | Best val loss | Action-type acc / F1 | Aim median | Fastsim vs DuelBot, 20 eps |
+|---|---|---|---|---|
+| 900 | 5.352 | .570 / .248 | 9.66° | 12 W / 8 D |
+| 2,000 | 4.999 | .597 / .274 | 7.89° | 9 / 11 |
+| 4,000 | 4.811 | .608 / .284 | 7.19° | 7 / 13 |
+| 8,000 | 4.705 | .616 / .290 | 6.75° | 6 / 14 |
+| 15,881 | 4.675 | .614 / .292 | 6.6° | 7 / 13 |
+
+Every offline metric improves with data, each doubling by less, and every 95% interval excludes zero. And the win column goes the other way. On a thousand-episode fastsim ladder the full model sat at −5 Elo to DuelBot while the 900-game model sat at +297. In one live-client game the full model went 0/4/0 with 0 CS and idled on 40% of its decisions.
+
+**More data, worse duelist.** The interpretability work in the next section found most of it. The observation builder used by fastsim and the live server cleared the can-cast bits while a spell was on cooldown; in replays, those bits track spell *rank*, so Q's bit is set on 100% of training rows and only 28% of simulator rows. The full model had learned that a cleared Q bit means do nothing; the 900-game model never saw enough rows to learn it. A swap test — set the four bits to their replay values — predicted P(none) would fall from .41 to .25, and twenty episodes landed within .02 of that. Then the same six arms on 3,999 paired seeds:
+
+| Model | Builder | Win rate (Wilson 95%) | P(none) |
+|---|---|---|---|
+| full | as deployed | .348 [.334, .363] | .411 |
+| full | can-cast fix | .339 | .282 |
+| full | + action-state bit | .438 [.423, .454] | .237 |
+| 900 | as deployed | .788 [.775, .800] | .238 |
+| 900 | both fixes | .704 | .228 |
+
+The can-cast fix removes the idling and not the losing; a second control-state bit is what moves wins, by ten points with p < 10⁻⁴. With the fixes verified as loaded inside the client's own Python, the full model went 2/1/0 against DuelBot with turrets and idled 29% of the time, in line with fastsim. The 25 and 27 October live losses had both been on the unfixed builder.
+
+And the gap survives: 44% against 70% in fastsim with both fixes. After them the two models idle and attack at the same rates; what's left is a move-share difference and the damage trade. Whether that is a second adapter mismatch — two input columns shift between replay and simulator rows — or a real behavioural difference is the open question carried into November. The honest reading of the whole thread: a bigger imitator of ranked play is a better imitator and, so far, a worse duelist, and the reason is at least half plumbing.
+
+Against our own RL agents the BC models lose almost every game — 1–6% — because they don't farm this 1v1 the way a self-play policy does: they play like a ranked player dropped into a drill that isn't the game. Which is also, from the other side, an argument that the RL agents have overfit a drill.
+
+## What the agents compute
+
+Four interpretability passes ran in October, and each one changed a decision. That's the claim this section makes for the method: in a game, every neuron can be traced to an observation, and the result is usually actionable within the day.
+
+**The lane agent, audited.** All 2,208 neurons of lane3 rated across eleven layers; 90% got one clear description — 54% doing one job, 36% two related ones. About eight ideas recur in every layer: the attack cycle, kill windows, own danger, incoming skillshots with a dodge direction, last-hit windows, minion aggro, the W mark, the episode clock. And last-hit circuitry, which the Brokenwings policies never developed: switch off ten encoder units labelled "killable minion" and CS falls 13% and Q casts by a third, nothing else moves; switch off one and nothing happens, because every feature has copies.
+
+**What the LSTM remembers.** Linear probes on the hidden state, held-out R² over 60k decisions: the only thing memory reads better than the current frame is the attack rhythm (.62 vs .50). Swapping memory states between low-HP and full-HP moments shows retreat is decided by the frame; the actor's memory adds a mild lean to engage, the critic's holds more. Why: training had taught about 4.3 s of memory, episodes were 30 s, and there was no fog, so there was nothing to remember past the attack cycle
+
+*Decision:* lane4, an 8× longer memory window with 120-second episodes, which became the reference checkpoint and topped both ladders.
+
+**The turret policy.** It fast-pushes from cover — behind its wave 85% of the time, a minion between it and the opponent 79% (parent: 61% / 31%) — opens 74% of trades with an auto, lands 73% of its champion damage with autos, and has an LSTM memory of turret shots its parent lacks. Future-event probes in the OpenAI Five style decode its own Q, E and last-hit intents two to three seconds ahead; disengages can't be (AUC .71). Branched rollouts from exact simulator state reproduce observations and rewards bit for bit.
+
+*Decision:* randomise turret HP at spawn, and treat "doesn't attack full towers" as a reward problem rather than a capacity one.
+
+**The BC model.** A faithful single-frame copy of human conditional rates. Short-horizon anticipation is at RL level — death within 5 s, AUC .95–.97 — but with a 1.1 s lead against RL's 3.6. It has no distance cap; vision is its only limit. It reads every "who is this targeting" input as "is it targeting me." Flipping "drake up" changes almost nothing; it doesn't track the jungler; it over-recalls eight times the human rate and reads gold, not HP, to decide. The trunk discards minion *counts* (R² .83 → .31) and keeps exactly what the next action needs: killable minion in range .98, last hit coming .95.
+
+*Decision:* the can-cast investigation above, which it found.
+
+The pattern across the four is the one from Part 2's anatomy page: these networks are not mysterious. They are HP-difference machines with a few well-labelled circuits on top, and the circuits they lack: objectives, the jungler, anything beyond a few seconds, are the ones the environment never paid for.
 
 ## Appendix
 
