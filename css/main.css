@@ -588,6 +588,7 @@ a:hover { text-decoration: underline; }
 .viz-stack { display: flex; flex-direction: column; gap: 28px; }
 .viz-cell-title { margin-bottom: 6px; font-size: 13px; font-weight: 600; color: rgba(0, 0, 0, 0.8); }
 .viz-axis-label { margin-top: 2px; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+.viz-axis-label.viz-left { margin-top: 8px; text-align: left; }
 
 .viz-grid-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .viz-grid-head { margin-bottom: 2px; }
@@ -637,6 +638,127 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
 .viz-data summary:hover { color: var(--text); }
 .post-content .viz-data table { margin: 10px 0 0; font-size: 12.5px; max-height: 320px; overflow-y: auto; }
 .post-content .viz-data td, .post-content .viz-data th { padding: 4px 14px 4px 0; }
+
+/* row-per-item dot charts (Part 3 figures) */
+.viz-ref { stroke: rgba(0, 0, 0, 0.35); stroke-dasharray: 3 3; }
+.viz-ref-label { font-size: 10.5px; fill: var(--text-muted); }
+.viz-row-header { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; fill: var(--text-faint); }
+.viz-interval { stroke-width: 2.5; stroke-linecap: round; opacity: 0.55; }
+.viz-cap { stroke-width: 1.5; opacity: 0.55; }
+.viz-note { font-size: 11.5px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+.viz-seg-label { font-size: 12px; font-weight: 600; fill: rgba(0, 0, 0, 0.7); }
+.viz-seg-label.on-dark { fill: #fff; }
+.viz-seg { cursor: default; }
+.viz-dot-swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--c);
+  border: 2px solid var(--c);
+  vertical-align: -1px;
+}
+.viz-dot-swatch.hollow { background: #fff; }
+.viz-panels { display: grid; gap: 18px; }
+.viz-cell-title span { font-weight: 400; color: var(--text-faint); }
+.viz-pair-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
+.viz-pair-cols > .viz-legend { grid-column: 1 / -1; margin-bottom: 4px; }
+@media (max-width: 640px) { .viz-pair-cols { grid-template-columns: 1fr; } }
+
+/* "two oracles" system diagram (Part 3), plain HTML so it reflows */
+.oracles {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: "replays server client" ". fast .";
+  gap: 26px 34px;
+}
+.oracles > div {
+  position: relative;
+  padding: 12px 14px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.oracles b { display: block; margin-bottom: 3px; font-size: 15px; color: rgba(0, 0, 0, 0.85); }
+.oracles .tag {
+  display: inline-block;
+  margin-bottom: 7px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.oracles .o-replays { grid-area: replays; border-top: 3px solid #eb6834; }
+.oracles .o-server { grid-area: server; border-top: 3px solid rgba(0, 0, 0, 0.6); }
+.oracles .o-client { grid-area: client; border-top: 3px solid #2a78d6; }
+.oracles .o-fast { grid-area: fast; border-style: dashed; }
+.oracles .o-replays .tag { background: rgba(235, 104, 52, 0.12); color: #b8461a; }
+.oracles .o-client .tag { background: rgba(42, 120, 214, 0.1); color: #1c5cab; }
+.oracles .o-server .tag, .oracles .o-fast .tag { background: rgba(0, 0, 0, 0.05); color: var(--text-muted); }
+/* arrows: replays -> server -> client, server -> fastduel */
+.oracles .o-replays::after,
+.oracles .o-server::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -24px;
+  width: 14px;
+  height: 0;
+  border-top: 1.5px solid var(--text-faint);
+}
+.oracles .o-replays::before,
+.oracles .o-server::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -25px;
+  width: 6px;
+  height: 6px;
+  border-top: 1.5px solid var(--text-faint);
+  border-right: 1.5px solid var(--text-faint);
+  transform: translateY(-50%) rotate(45deg);
+  margin-top: 0.75px;
+}
+.oracles .o-fast::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  height: 18px;
+  border-left: 1.5px dashed var(--text-faint);
+}
+.oracles-caption-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--text-faint); }
+@media (max-width: 640px) {
+  .oracles { grid-template-columns: 1fr; grid-template-areas: "replays" "server" "client" "fast"; gap: 22px; }
+  .oracles .o-replays::after, .oracles .o-server::after { top: auto; bottom: -18px; right: auto; left: 50%; width: 0; height: 12px; border-top: 0; border-left: 1.5px solid var(--text-faint); }
+  .oracles .o-replays::before, .oracles .o-server::before { top: auto; bottom: -19px; right: auto; left: calc(50% - 3px); transform: rotate(135deg); }
+  .oracles .o-fast::before { display: none; }
+}
+
+/* "Decision:" lines after each interpretability finding */
+.post-content p.decision {
+  margin: -0.3em 0 1.6em;
+  padding: 8px 12px;
+  border-left: 3px solid hsla(145, 45%, 38%, 0.7);
+  background: hsla(145, 45%, 40%, 0.06);
+  border-radius: 0 3px 3px 0;
+  font-size: 15.5px;
+}
+.post-content p.decision em:first-child {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(145, 40%, 30%);
+  margin-right: 6px;
+}
 
 /* footnotes (kramdown [^1]) */
 .post-content .footnotes {
