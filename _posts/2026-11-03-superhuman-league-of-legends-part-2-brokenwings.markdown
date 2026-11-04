@@ -321,4 +321,8 @@ What came out of it was a to-do list rather than a conclusion: activation patchi
 
 Five years to a working loop. Five months, from the April fork, to a simulator that beats its author and predicts the real server within noise. The constraint was never the game tree, and it was never the network — a 256-unit LSTM is enough for a lane. It was the cost of a game step, and that cost is now an engineering number that fell by orders of magnitude in one week of work.
 
+So now we have a method for massively accelerating simulation throughput, however, what if we don't have the game
+servers source code?
+In Part 3, we will run the same loop against the modern version of the game, with a twist.
+
 <!-- Part 3 runs the same loop against the current patch. -->
