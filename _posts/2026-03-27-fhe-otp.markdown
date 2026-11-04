@@ -6,6 +6,7 @@ excerpt: "What is Fully Homomorphic Encryption, One-Time Pads and why does any o
 date:   2026-03-27 00:00:00
 categories: [Project]
 tags: ["Fully Homomorphic Encryption"]
+math_dollars: true
 ---
 
 ## Table of Contents
@@ -24,8 +25,8 @@ There is also a real possibility that these tools could be compromised in the fu
 discussion refer to [this](https://miscellaneousstuff.github.io/project/2026/03/13/trusting-trust.html) post.
 
 So our options are currently to either run local models which are less capable
-and still require $1000s of dollars in hardware (either Macs with at least 32GB RAM, or GPUs with 24GB RAM+ running quantized models) or to purchase hardware
-in the $10,000+ range to run open-source frontier models (e.g. high-end Mac Studio
+and still require \\$1000s of dollars in hardware (either Macs with at least 32GB RAM, or GPUs with 24GB RAM+ running quantized models) or to purchase hardware
+in the \\$10,000+ range to run open-source frontier models (e.g. high-end Mac Studio
 which can run GPT OSS 120B or Kimi k2.5, etc.).
 
 Or we go with the default option of using Claude, GPT, Gemini and other frontier
@@ -352,7 +353,7 @@ sometimes, dedicated hardware random number generators.
 For our toy numeric setting, the main difference from the Caesar cipher is that
 we no longer use one fixed shift for every value. Instead, each value gets its
 own fresh random pad. If we are working modulo $q$, we encrypt a plaintext
-value $a$ by sampling a random key $k_a \in \{0, 1, \dots, q-1\}$ and computing:
+value $a$ by sampling a random key $k_a \in \\{0, 1, \dots, q-1\\}$ and computing:
 
 $$c_a = a + k_a \bmod q$$
 

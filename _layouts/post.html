@@ -3,23 +3,109 @@ layout: default
 ---
 <div class="post">
 
-  <header class="post-header">
-    <h1>{{ page.title }}</h1>
-    <p class="meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
+  <header class="post-hero">
+    <div class="l-text">
+      {% if page.categories.size > 0 %}<p class="post-kicker">{{ page.categories | join: " · " }}</p>{% endif %}
+      <h1>{{ page.title }}</h1>
+      {% if page.excerpt %}<p class="post-dek">{{ page.excerpt | strip_html }}</p>{% endif %}
+    </div>
   </header>
+
+  <div class="post-byline">
+    <div class="l-text">
+      <div>
+        <h3>Published</h3>
+        <p>{{ page.date | date: "%B %-d, %Y" }}</p>
+      </div>
+      {% if page.author %}
+      <div>
+        <h3>Author</h3>
+        <p>{{ page.author }}</p>
+      </div>
+      {% endif %}
+      <div>
+        <h3>Reading time</h3>
+        {% assign minutes = content | number_of_words | divided_by: 220 | at_least: 1 %}
+        <p>{{ minutes }} min</p>
+      </div>
+      {% if page.meta %}
+      <div>
+        <h3>Notes</h3>
+        <p>{{ page.meta }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 
   <article class="post-content">
   {{ content }}
   </article>
 
+  <nav class="post-pager">
+    <div class="l-text">
+      {% if page.previous %}
+      <a class="prev" href="{{ page.previous.url | prepend: site.baseurl }}"><span>Previous</span>{{ page.previous.title }}</a>
+      {% else %}<span></span>{% endif %}
+      {% if page.next %}
+      <a class="next" href="{{ page.next.url | prepend: site.baseurl }}"><span>Next</span>{{ page.next.title }}</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <script>
+    // On wide screens, mirror the inline table of contents into a sticky
+    // sidebar and highlight the section currently being read.
+    (function () {
+      var toc = document.getElementById('markdown-toc');
+      if (!toc) return;
+      var side = document.createElement('nav');
+      side.className = 'side-toc';
+      side.innerHTML = '<h3>Contents</h3>';
+      var list = toc.cloneNode(true);
+      list.removeAttribute('id');
+      side.appendChild(list);
+      document.body.appendChild(side);
+
+      var links = side.querySelectorAll('a');
+      var targets = [];
+      links.forEach(function (a) {
+        var el = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+        if (el) targets.push({ el: el, link: a });
+      });
+      var ticking = false;
+      function update() {
+        ticking = false;
+        var current = null;
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i].el.getBoundingClientRect().top < 120) current = targets[i];
+        }
+        side.classList.toggle('visible', toc.getBoundingClientRect().bottom < 0);
+        links.forEach(function (a) { a.classList.remove('active'); });
+        if (current) current.link.classList.add('active');
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      update();
+    })();
+  </script>
+
   <!-- mathjax -->
-  {% if page.mathjax or content contains '\(' or content contains '\[' %}
+  {% if page.mathjax or page.math_dollars or content contains '\(' or content contains '\[' %}
+  {% if page.math_dollars %}
+  <!-- opt-in: also treat $...$ as inline math (write a literal dollar as \\$) -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  {% endif %}
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   {% endif %}
-  
+
   <!-- disqus comments -->
- {% if page.comments %}
- <div id="disqus_thread"></div>
+  {% if page.comments %}
+  <div class="comments">
+    <div id="disqus_thread"></div>
+  </div>
   <script type="text/javascript">
       /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
       var disqus_shortname = 'https-miscellaneousstuff-github-io'; // required: replace example with your forum shortname
@@ -32,7 +118,6 @@ layout: default
       })();
   </script>
   <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
   {% endif %}
-  
+
 </div>

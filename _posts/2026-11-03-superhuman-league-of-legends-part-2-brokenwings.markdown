@@ -251,4 +251,4 @@ And then the recipe still didn't reproduce the run. Six replicas on progressivel
 
 Five years to a working loop. Five months, from the April fork, to a simulator that beats its author and predicts the real server within noise. The constraint was never the game tree, and it was never the network — a 256-unit LSTM is enough for a lane. It was the cost of a game step, and that cost is now an engineering number that fell by orders of magnitude in one week of work.
 
-Part 3 runs the same loop against the current patch.
+<!-- Part 3 runs the same loop against the current patch. -->

@@ -3,17 +3,19 @@ layout: default
 ---
 <div class="post">
 
-  <header class="post-header">
-    <h1>{{ page.title }}</h1>
+  <header class="post-hero">
+    <div class="l-text">
+      <h1>{{ page.title }}</h1>
+    </div>
   </header>
 
-  <article class="container post-content">
+  <article class="post-content">
   {{ content }}
   </article>
 
   <!-- disqus comments -->
  {% if page.comments %}
- <div id="disqus_thread"></div>
+ <div id="disqus_thread" class="comments"></div>
   <script>
   /**
   *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
@@ -36,5 +38,5 @@ layout: default
 
 <!-- mathjax -->
 {% if page.mathjax %}
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 {% endif %}
