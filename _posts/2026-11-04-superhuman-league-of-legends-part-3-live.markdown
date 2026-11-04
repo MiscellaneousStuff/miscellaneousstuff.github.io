@@ -307,6 +307,29 @@ Four interpretability passes ran in October, and each one changed a decision. Th
 
 The pattern across the four is the one from Part 2's anatomy page: these networks are not mysterious. They are HP-difference machines with a few well-labelled circuits on top, and the circuits they lack: objectives, the jungler, anything beyond a few seconds, are the ones the environment never paid for.
 
+### Camera in, human out
+
+The agents above see the server's state and act through the server. The challenge Part 1 opened with allows neither: a camera on the monitor, human reaction time, human click rate. How far is that from what we have?
+
+We measured it where the ground truth existed — the trained v1 agent playing our 16.19 client against our server on the same box, reading the screen and acting through synthetic mouse and keyboard, with the server's full state logged beside every frame. Calibration was 7 px RMS on a click grid; health bars read within 0.01 of the server; cooldowns 100%; own minimap position to about 50 units. What the screen can't supply at all: opponent cooldowns and mana, missiles in flight, the agent's own attack phase. 173 of the policy's 625 inputs are always zero.
+
+| Observation path, acting through real clicks | Win rate vs DuelBot |
+|---|---|
+| Server state | 100% (35/35, 0 deaths) |
+| Server state, held back 150 ms | 80% |
+| Server state with the measured CV errors, no delay | 85% |
+| Screen, unseen inputs zeroed | 69% |
+| Screen, unseen inputs filled from our own orders | 64% |
+
+The click path itself costs nothing. Latency alone costs a fifth; observation error alone a sixth; together, a third — and the two don't add, because about one death in six is pure latency (under turret) and the rest is the combination of missing inputs, no single one of which costs more than an episode when zeroed on its own.
+
+Then the obvious experiment: fine-tune under the same corruption. The live transform — never-seen inputs always zero, sometimes-seen ones dropped at the measured miss rates, observation and action delay — went inside the training collector, and v36300 trained for one billion samples in 15.5 minutes.
+
+In fastsim with the transform on, the parent won 0/10 and the fine-tuned policy 10/10; through the camera, 74% against the parent's 64%, 25/25 on server state still.
+And against its own parent playing with full state, it lost every fight, 0–15 over three games.
+
+That is the number the title is waiting on. Under the fair-play interface, on a drill the agent was trained for, with the oracle beside it, a quarter-hour of adaptation recovers about ten points of a thirty-point gap, and a privileged version of the same network beats it every time. A short attempt to read the current patch's client the same way got as far as calibration and input-latency measurement before being parked; nothing played.
+
 ## So where do we go from here?
 
 We now have a crude Ezreal 1v1 simulation environment. Ideally we want to build out a system which can
