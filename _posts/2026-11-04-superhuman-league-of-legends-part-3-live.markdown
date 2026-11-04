@@ -147,6 +147,22 @@ The second is the rules themselves. The client ships the numbers: base damage, r
 
 So the stream will mark the simulator's answers, and the client will display them, and neither will hand over the function that produces them. The rules have to be fitted.
 
+## Fitting the rules
+
+If the rules can't be read, they can be fitted: propose a rule, run it against what the server did in thousands of recorded situations, and keep the version that agrees most often. Minions were the first subsystem to go through this, because they're the thing a laning agent interacts with most and the thing the client's data says least about.
+
+**The scoreboard.** At every real minion decision in a held-out replay — a target chosen, a retarget, a call for help answered — the simulator is reset to the replay's exact state, asked what it would do, and compared with what the server did. That gives a per-decision accuracy per rule, on data the rule was never fitted to. By 11 October target choice was 77–80% exact (from 58–61% on the hand-written spec), caster first hit 61–67% (from 16–20%), and retarget timing still weak at 24–36%.
+
+**Randomness, modelled.** Real targeting is partly random — a custom game with no players in it ends differently every time — so a rule that always picks the same creep will be "wrong" on a fraction of decisions no matter how good it is. The fix was to fit a distribution rather than a rule and sample from it. Measured against held-out games, the real outcome falls inside the simulator's range 67% of the time for HP, 77% for death time and 88% for the killer, up from 50 / 63 / 74 with the deterministic rule.
+
+**De-aggro, from 17,279 episodes.** When does a minion stop chasing a champion? The spec said thirty ticks and a 1,000-unit leash. Seventeen thousand real minion-on-champion episodes said otherwise: a minion holds the target for about ninety ticks after the latest call for help, and drops it mainly when an enemy minion hits a nearby ally, when the champion leaves vision, or when the champion dies, with a loose leash around 1,200 units. The replaced rules went into both the live server and the simulator the same day, and a client run under them scored 27–27 on last hits with none of 2,110 actions rejected.
+
+**Numbers from data, behaviour from replays.** Where the client's data files do carry a value, they usually beat the fitted one: siege missile speed, the siege and super minion radius, siege gold and its per-upgrade increment, and minion damage to champions at 55% rather than the wiki's 60% (77.9% of 41,532 recorded hits agree). Windups, ranges and approach stops stayed fitted, because the fits scored the same or better. All of the measurable gain came from one number — the radius.
+
+**How big is the rest?** The 15 October estimate for the champion layer was grim: 173 champions, about 800 spell slots, 3,181 champion buff scripts and 936 missile scripts, at three days for a simple champion and two weeks for the hardest — 700 to 900 agent-days, parallelisable, plus a per-patch tax. Two days later a census of the client's data files cut that in half: 82% of the 865 core spells carry their damage, heal or shield formula in the data (also 82% weighted by ranked pick rate); 9% are partial; 9% are pure script — Garen R, Fiora E and the like. Sixty-one champions have all five core spells fully in data. The work is now targeting and side effects for spells whose numbers are known, plus about eighty hand-scripted ones. The map's minion configuration, read the same way, agreed with the replay-fitted spec on 18 of 19 quantities.
+
+That is the method in full: numbers from the client, behaviour fitted from the stream, the stream as the mark. With minion rules inside statistical noise of the server, the Brokenwings recipe could be run again — and this time the thing it was run against was the current game.
+
 ## Appendix
 
 <!-- add section explaining openai five comparison training throughput wise -->
