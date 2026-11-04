@@ -204,7 +204,7 @@ So we trained on human data.
 
 ## Imitation
 
-We downloaded a 16.19 corpus of replays, just over 200,000 ranked games. This is the same scale that JueWu-SL reported for Honor of Kings and every human action in it is recoverable from the stream as the server's response: a path, an attack, a cast. If self-play can't find the signal, the humans already have.
+We downloaded a 26.19 corpus of replays, just over 200,000 ranked games. This is the same scale that JueWu-SL reported for Honor of Kings and every human action in it is recoverable from the stream as the server's response: a path, an attack, a cast. If self-play can't find the signal, the humans already have.
 
 **The pipeline.** Of 18,934 archived games with an Ezreal, 16,886 were on the exact build and at least fifteen minutes long. One pinned pipeline takes a game from download through decode, tick export, action labels and observation rows to a packed training file, deleting intermediates as it goes; a golden check reproduces three reference games to about 2,400 hashes each, on x86 and on the ARM boxes. Two GH200s pulling from a shared lease queue extracted 15,881 games in a little over three and a half hours at about 4,800 games an hour — 242 GB, 117.5 million rows. Five games failed for reasons a retry can't fix: two whose end-of-game stats are literally empty, three with a sub-millisecond timestamp step backwards at a chunk boundary.
 
