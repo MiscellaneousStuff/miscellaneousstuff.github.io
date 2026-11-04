@@ -284,29 +284,6 @@ Against our own RL agents the BC models lose almost every game — 1–6% — be
 {% include youtubePlayer.html id=page.imitationYoutubeId %}
 </div>
 
-## What the agents compute
-
-Four interpretability passes ran in October, and each one changed a decision. That's the claim this section makes for the method: in a game, every neuron can be traced to an observation, and the result is usually actionable within the day.
-
-**The lane agent, audited.** All 2,208 neurons of lane3 rated across eleven layers; 90% got one clear description — 54% doing one job, 36% two related ones. About eight ideas recur in every layer: the attack cycle, kill windows, own danger, incoming skillshots with a dodge direction, last-hit windows, minion aggro, the W mark, the episode clock. And last-hit circuitry, which the Brokenwings policies never developed: switch off ten encoder units labelled "killable minion" and CS falls 13% and Q casts by a third, nothing else moves; switch off one and nothing happens, because every feature has copies.
-
-**What the LSTM remembers.** Linear probes on the hidden state, held-out R² over 60k decisions: the only thing memory reads better than the current frame is the attack rhythm (.62 vs .50). Swapping memory states between low-HP and full-HP moments shows retreat is decided by the frame; the actor's memory adds a mild lean to engage, the critic's holds more. Why: training had taught about 4.3 s of memory, episodes were 30 s, and there was no fog, so there was nothing to remember past the attack cycle
-
-*Decision:* lane4, an 8× longer memory window with 120-second episodes, which became the reference checkpoint and topped both ladders.
-{: .decision}
-
-**The turret policy.** It fast-pushes from cover — behind its wave 85% of the time, a minion between it and the opponent 79% (parent: 61% / 31%) — opens 74% of trades with an auto, lands 73% of its champion damage with autos, and has an LSTM memory of turret shots its parent lacks. Future-event probes in the OpenAI Five style decode its own Q, E and last-hit intents two to three seconds ahead; disengages can't be (AUC .71). Branched rollouts from exact simulator state reproduce observations and rewards bit for bit.
-
-*Decision:* randomise turret HP at spawn, and treat "doesn't attack full towers" as a reward problem rather than a capacity one.
-{: .decision}
-
-**The BC model.** A faithful single-frame copy of human conditional rates. Short-horizon anticipation is at RL level — death within 5 s, AUC .95–.97 — but with a 1.1 s lead against RL's 3.6. It has no distance cap; vision is its only limit. It reads every "who is this targeting" input as "is it targeting me." Flipping "drake up" changes almost nothing; it doesn't track the jungler; it over-recalls eight times the human rate and reads gold, not HP, to decide. The trunk discards minion *counts* (R² .83 → .31) and keeps exactly what the next action needs: killable minion in range .98, last hit coming .95.
-
-*Decision:* the can-cast investigation above, which it found.
-{: .decision}
-
-The pattern across the four is the one from Part 2's anatomy page: these networks are not mysterious. They are HP-difference machines with a few well-labelled circuits on top, and the circuits they lack: objectives, the jungler, anything beyond a few seconds, are the ones the environment never paid for.
-
 ### Camera in, human out
 
 The agents above see the server's state and act through the server. The challenge Part 1 opened with allows neither: a camera on the monitor, human reaction time, human click rate. How far is that from what we have?
@@ -329,6 +306,29 @@ In fastsim with the transform on, the parent won 0/10 and the fine-tuned policy 
 And against its own parent playing with full state, it lost every fight, 0–15 over three games.
 
 That is the number the title is waiting on. Under the fair-play interface, on a drill the agent was trained for, with the oracle beside it, a quarter-hour of adaptation recovers about ten points of a thirty-point gap, and a privileged version of the same network beats it every time. A short attempt to read the current patch's client the same way got as far as calibration and input-latency measurement before being parked; nothing played.
+
+## What the agents compute
+
+Four interpretability passes ran in October, and each one changed a decision. That's the claim this section makes for the method: in a game, every neuron can be traced to an observation, and the result is usually actionable within the day.
+
+**The lane agent, audited.** All 2,208 neurons of lane3 rated across eleven layers; 90% got one clear description — 54% doing one job, 36% two related ones. About eight ideas recur in every layer: the attack cycle, kill windows, own danger, incoming skillshots with a dodge direction, last-hit windows, minion aggro, the W mark, the episode clock. And last-hit circuitry, which the Brokenwings policies never developed: switch off ten encoder units labelled "killable minion" and CS falls 13% and Q casts by a third, nothing else moves; switch off one and nothing happens, because every feature has copies.
+
+**What the LSTM remembers.** Linear probes on the hidden state, held-out R² over 60k decisions: the only thing memory reads better than the current frame is the attack rhythm (.62 vs .50). Swapping memory states between low-HP and full-HP moments shows retreat is decided by the frame; the actor's memory adds a mild lean to engage, the critic's holds more. Why: training had taught about 4.3 s of memory, episodes were 30 s, and there was no fog, so there was nothing to remember past the attack cycle
+
+*Decision:* lane4, an 8× longer memory window with 120-second episodes, which became the reference checkpoint and topped both ladders.
+{: .decision}
+
+**The turret policy.** It fast-pushes from cover — behind its wave 85% of the time, a minion between it and the opponent 79% (parent: 61% / 31%) — opens 74% of trades with an auto, lands 73% of its champion damage with autos, and has an LSTM memory of turret shots its parent lacks. Future-event probes in the OpenAI Five style decode its own Q, E and last-hit intents two to three seconds ahead; disengages can't be (AUC .71). Branched rollouts from exact simulator state reproduce observations and rewards bit for bit.
+
+*Decision:* randomise turret HP at spawn, and treat "doesn't attack full towers" as a reward problem rather than a capacity one.
+{: .decision}
+
+**The BC model.** A faithful single-frame copy of human conditional rates. Short-horizon anticipation is at RL level — death within 5 s, AUC .95–.97 — but with a 1.1 s lead against RL's 3.6. It has no distance cap; vision is its only limit. It reads every "who is this targeting" input as "is it targeting me." Flipping "drake up" changes almost nothing; it doesn't track the jungler; it over-recalls eight times the human rate and reads gold, not HP, to decide. The trunk discards minion *counts* (R² .83 → .31) and keeps exactly what the next action needs: killable minion in range .98, last hit coming .95.
+
+*Decision:* the can-cast investigation above, which it found.
+{: .decision}
+
+The pattern across the four is the one from Part 2's anatomy page: these networks are not mysterious. They are HP-difference machines with a few well-labelled circuits on top, and the circuits they lack: objectives, the jungler, anything beyond a few seconds, are the ones the environment never paid for.
 
 ## So where do we go from here?
 
