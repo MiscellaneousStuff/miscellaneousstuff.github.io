@@ -429,6 +429,206 @@ a:hover { text-decoration: underline; }
 }
 
 /* ------------------------------------------------------------------
+   Figures, callouts and interactive charts
+   Figures are numbered automatically; charts are rendered by per-post
+   scripts (e.g. assets/brokenwings/interp-figures.js) into .viz nodes.
+   ------------------------------------------------------------------ */
+
+.post-content { counter-reset: figure; }
+
+.post-content figure.fig {
+  margin: 2.4em 0;
+  padding: 0;
+}
+.post-content figure.fig figcaption {
+  counter-increment: figure;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.post-content figure.fig figcaption::before {
+  content: "Figure " counter(figure) ". ";
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+/* method diagram as plain HTML so it reflows on phones */
+.method-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.post-content .method-steps li {
+  position: relative;
+  margin: 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid rgba(0, 0, 0, 0.55);
+  border-radius: 3px;
+  background: #fff;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  counter-increment: step;
+}
+.method-steps li::before {
+  content: counter(step);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+.method-steps li b { display: block; margin-bottom: 4px; color: rgba(0, 0, 0, 0.85); font-size: 14.5px; font-weight: 600; }
+.method-steps li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -16px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--text-faint);
+  border-right: 1.5px solid var(--text-faint);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* tinted asides */
+.post-content .callout,
+.post-content .key-findings {
+  margin: 2em 0;
+  padding: 16px 20px 4px;
+  border-radius: 3px;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.post-content .key-findings {
+  background: hsla(206, 70%, 40%, 0.05);
+  border-left: 3px solid hsla(206, 70%, 40%, 0.55);
+}
+.post-content .callout {
+  background: hsla(40, 70%, 50%, 0.08);
+  border-left: 3px solid hsla(40, 60%, 45%, 0.6);
+}
+.post-content .callout > p:first-child,
+.post-content .key-findings > p:first-child {
+  margin-bottom: 0.6em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.post-content .key-findings ul { padding-left: 1.1em; }
+
+/* chart chrome */
+.viz {
+  --viz-surface: #fff;
+  position: relative;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.viz:not(.ready) { min-height: 220px; background: var(--band); border-radius: 3px; }
+.viz svg { display: block; overflow: visible; max-width: 100%; height: auto; }
+.viz-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 12px; font-size: 13px; color: var(--text); }
+.viz-legend-item { display: inline-flex; align-items: center; }
+.viz-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 0;
+  margin-right: 7px;
+  border-top: 2.5px solid var(--c);
+  vertical-align: middle;
+}
+.viz-swatch.dashed { border-top-style: dashed; }
+.viz-controls { display: inline-flex; margin-bottom: 12px; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.viz-controls button {
+  font: inherit;
+  font-size: 12.5px;
+  padding: 4px 12px;
+  border: 0;
+  background: #fff;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.viz-controls button + button { border-left: 1px solid var(--rule); }
+.viz-controls button[aria-pressed="true"] { background: rgba(0, 0, 0, 0.06); color: rgba(0, 0, 0, 0.85); font-weight: 500; }
+.viz-pair { display: flex; flex-wrap: wrap; gap: 24px; }
+.viz-stack { display: flex; flex-direction: column; gap: 28px; }
+.viz-cell-title { margin-bottom: 6px; font-size: 13px; font-weight: 600; color: rgba(0, 0, 0, 0.8); }
+.viz-axis-label { margin-top: 2px; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+
+.viz-grid-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.viz-grid-head { margin-bottom: 2px; }
+.viz-col-title { font-size: 12.5px; font-weight: 600; color: rgba(0, 0, 0, 0.8); }
+.viz-col-title span { font-weight: 400; color: var(--text-faint); }
+.viz-row-title { margin: 12px 0 2px; font-size: 12.5px; color: rgba(0, 0, 0, 0.8); }
+.viz-row-title span { color: var(--text-faint); }
+
+.viz-grid, .viz-zero, .viz-axis, .viz-cross, .viz-connector { fill: none; }
+line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
+.viz-zero { stroke: rgba(0, 0, 0, 0.35); }
+.viz-axis { stroke: rgba(0, 0, 0, 0.25); }
+.viz-cross { stroke: rgba(0, 0, 0, 0.35); stroke-dasharray: 2 2; }
+.viz-connector { stroke: rgba(0, 0, 0, 0.18); stroke-width: 2; }
+.viz-tick { font-size: 10.5px; fill: var(--text-faint); font-variant-numeric: tabular-nums; }
+.viz-label { font-size: 12px; fill: var(--text); }
+.viz-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.viz-band { fill: rgba(0, 0, 0, 0.035); }
+.viz-band.q { fill: rgba(0, 0, 0, 0.018); }
+.viz-band-label { font-size: 9.5px; fill: var(--text-faint); letter-spacing: 0.04em; }
+.viz-bar { transition: opacity 0.1s; }
+.viz-target:hover .viz-bar { opacity: 0.55; }
+.viz-target .viz-bar.on { opacity: 1; }
+
+.viz-tip {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: nowrap;
+}
+.viz-tip b { color: rgba(0, 0, 0, 0.88); font-weight: 600; }
+.post-content .viz-tip table { display: table; margin: 4px 0 0; font-size: 12px; }
+.post-content .viz-tip td { padding: 1px 10px 1px 0; border: 0; }
+.post-content .viz-tip tr:first-child td { color: var(--text-faint); }
+
+.viz-data { margin-top: 12px; font-size: 13px; }
+.viz-data summary { cursor: pointer; color: var(--text-faint); }
+.viz-data summary:hover { color: var(--text); }
+.post-content .viz-data table { margin: 10px 0 0; font-size: 12.5px; max-height: 320px; overflow-y: auto; }
+.post-content .viz-data td, .post-content .viz-data th { padding: 4px 14px 4px 0; }
+
+/* footnotes (kramdown [^1]) */
+.post-content .footnotes {
+  margin-top: 3em;
+  padding-top: 1em;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.post-content sup a.footnote { text-decoration: none; font-weight: 600; padding: 0 1px; }
+
+@media (max-width: 640px) {
+  .method-steps { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .method-steps li::after { display: none; }
+  .viz-grid-row { gap: 6px; }
+}
+
+/* ------------------------------------------------------------------
    Post footer: prev/next and comments
    ------------------------------------------------------------------ */
 

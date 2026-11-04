@@ -251,11 +251,36 @@ And then the recipe still didn't reproduce the run. Six replicas on progressivel
 
 *Bottleneck: we knew what they did, not why. Lesson: probe grouped features, not columns — the policy reads redundancy as one signal.*
 
+<div class="key-findings" markdown="1">
+In short
+
+- **Both policies are HP-difference machines.** Own HP is the retreat signal, and the critic is almost a linear function of the HP gap.
+- **Same information, different heads.** league5 is burst-when-ahead: its aggression lives in the ability head. league6 moved it into movement, holding the edge of auto range and kiting.
+- **Distance is read as range flags, not a number.**
+- **Neither reads the race.** Elapsed time and CS move no head by more than .01.
+- **Method:** perturb every column that encodes a quantity together; a single column reads as noise to the policy.
+</div>
+
 Two checkpoints, probed the same way: league5 v40000, the best kill-game agent (.771 on the real server against canon), and league6 v64400, the laning farmer (lane-win .826). Each played 512 mirror lanes against itself in the simulator, 1,500 decisions a lane, and every fourth decision of one side was recorded in full: the 496-column observation, both LSTM states, the 256-d latent, every head's logits, the value, the action, the mask. 384k decisions per checkpoint.
 
 Then **response curves**: replay 4,096 of those decisions with the LSTM context held fixed while one input is swept across its range, and watch what each head does.
 
+<figure class="fig">
+<ol class="method-steps">
+  <li><b>Record</b>384k decisions per checkpoint from 512 mirror lanes: observation, LSTM state, latent, logits, value.</li>
+  <li><b>Freeze</b>Sample 4,096 decisions and hold each one's LSTM context fixed.</li>
+  <li><b>Sweep</b>Write one quantity across 9 values into every column that encodes it.</li>
+  <li><b>Read</b>Average every head over the 4,096 replays: P(attack), expected move, value.</li>
+</ol>
+<figcaption>How a response curve is measured. The same recorded decisions are replayed at each sweep value, so any change in the output is caused by the swept input alone, with everything the memory carries held constant.</figcaption>
+</figure>
+
 The first thing the sweeps taught was how to sweep. Changing a single column — `rel.dist`, or `opp.hp_frac` — does nothing; a flat line. Change every column that encodes the same quantity together (opponent HP also moves the HP difference and the opponent's unit-set slot; distance rescales the bearing, the in-range flags and the slot) and the policy wakes up. The network has learned that these inputs agree and reads them as one signal, so a single-column perturbation is just noise it ignores. The grouped curves are the ones to trust.
+
+<figure class="fig">
+<div class="viz" data-viz="grouped-vs-single" data-src="/assets/brokenwings/interp.json"></div>
+<figcaption>Sweeping one column vs sweeping the group. Changing only <code>opp.hp_frac</code> or <code>rel.dist</code> leaves P(attack) flat. Writing the same value into every column that encodes it (the HP difference, the opponent's unit slot, the range flags) makes the policy respond. Shaded: inside auto-attack range (600 u) and Q range (1,150 u). Switch checkpoints with the buttons; hover for values.</figcaption>
+</figure>
 
 **What they read.**
 
@@ -267,13 +292,30 @@ The first thing the sweeps taught was how to sweep. Changing a single column —
 - *R is priced by the critic and ignored by the actor.* Own R off cooldown: value .19 vs .07. Opponent R up: .03 vs .09. The value head knows what the ultimate is worth; the policy head never acts on it at these decision points.
 - *The race features are inert.* Elapsed time, CS difference, own CS: none moves any head by more than .01. These checkpoints were trained on kill-decided fights and never learnt to read the race — which is exactly the farming-drift problem from the other side.
 
-**The target head.** The fourth head picks a unit slot by attention over the unit-set keys; it's consulted on about a quarter of decisions, usually with one legal target. A linear readout of the creep logit on the twelve slot fields puts the largest weight on **HP per auto-attack** (−3.3 / −4.5): fewer autos to kill, higher logit. The argmax agrees with "lowest HP fraction" on ~60% of creep attacks and with "nearest" on only 40–44%. league6 adds recency — a creep that just lost HP is preferred (weight +3.7 vs league5's +0.4), so it keeps hitting what its wave is hitting, which is closer to real last-hitting. Neither *times* last hits: only 15–17% of creep attacks land on a creep that dies to one auto, and the mean HP/AD of the pick is 0.8 — several hits away. They farm by attacking low creeps early, not by finishing them.
+<figure class="fig">
+<div class="viz" data-viz="response-grid" data-src="/assets/brokenwings/interp.json"></div>
+<figcaption>Response curves for both checkpoints. Rows are the swept input, columns are the head being read, and each column shares one y-axis. Every point averages 4,096 replayed decisions; nine points per curve. Own HP, opponent HP and distance are grouped sweeps; Q cooldown and elapsed time sweep a single column. Hover a panel to read the whole row.</figcaption>
+</figure>
+
+**The target head.** The fourth head picks a unit slot by attention over the unit-set keys; it's consulted on about a quarter of decisions, usually with one legal target. A linear readout of the creep logit on the twelve slot fields puts the largest weight on **HP per auto-attack** (−3.3 / −4.5): fewer autos to kill, higher logit. The argmax agrees with "lowest HP fraction" on ~60% of creep attacks and with "nearest" on only 40–44%. <!-- CHECK: dhp1 is (current HP - previous HP) / max HP, i.e. negative when a creep has just been hit, so a positive weight lowers the logit for a just-damaged creep. Recency agreement is also ~0.47-0.48 for both checkpoints. -->
+league6 adds recency — a creep that just lost HP is preferred (weight +3.7 vs league5's +0.4), so it keeps hitting what its wave is hitting, which is closer to real last-hitting. Neither *times* last hits: only 15–17% of creep attacks land on a creep that dies to one auto, and the mean HP/AD of the pick is 0.8 — several hits away. They farm by attacking low creeps early, not by finishing them.
+
+<figure class="fig">
+<div class="viz" data-viz="target-head" data-src="/assets/brokenwings/interp.json"></div>
+<figcaption>What the target head attends to. <b>Top:</b> weights of a linear fit of the creep-slot logit on that slot's fields (R² 0.15 for league5, 0.12 for league6; fields that are constant over these rows are omitted). HP change is current minus previous HP as a fraction of max HP, so a creep that has just been hit has a negative value. <b>Bottom:</b> share of creep attacks on which a simple rule picks the same creep as the head.</figcaption>
+</figure>
 
 **What it says about the two policies.** Both are HP-difference machines, and the critic is almost a linear function of it. league5 is burst-when-ahead: its aggression lives in the ability head. league6 moved its aggression into the move heads: lower, flatter attack rate, movement responses two to three times larger — it fights by holding the edge of auto range and kiting, which is why it finishes fewer episodes and wins more of them. Spells are nearly vestigial in the mirror; W, E and R sit below 1% everywhere.
 
-**Caveats, because they matter.** The LSTM state is frozen during a sweep, so anything the memory decides over several decisions is invisible here, and the grouped sweeps can set the features consistently but can't rewrite what the context remembers. The dataset is mirror play from lane start. And the target-head fit is linear over a bilinear attention, so a low R² is expected.
+<div class="callout" markdown="1">
+Caveats
+
+The LSTM state is frozen during a sweep, so anything the memory decides over several decisions is invisible here, and the grouped sweeps can set the features consistently but can't rewrite what the context remembers. The dataset is mirror play from lane start. And the target-head fit is linear over a bilinear attention, so a low R² is expected.
+</div>
 
 What came out of it was a to-do list rather than a conclusion: activation patching between low-HP and full-HP decisions to locate the retreat circuit; linear probes on the LSTM for "time since I last attacked"; a sparse autoencoder over the 768k latents. All three ran in October on the modern-patch agents, and that's Part 3's story.
+
+<script src="/assets/brokenwings/interp-figures.js" defer></script>
 
 ## What it adds up to
 
