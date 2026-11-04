@@ -48,10 +48,10 @@ decrypting the data).
 ## Memory Reading
 
 This means that [memory reading methods](https://miscellaneousstuff.github.io/project/2021/11/19/tlol-part-6-dataset-generation.html#replay-scraping) are robust to patch changes (or at least only require re-discovering
-the memory offset locations of for specific game objects and their fields which is relatively trivial using signature based
+the memory offset locations for specific game objects and their fields which is relatively trivial using signature based
 detection every patch).
 
-However memory reading methods are simulatenously slow and fall victim to sampling noise (when you read memory results
+However memory reading methods are simulatenously slow and fall victim to sampling noise (*when* you read memory, results
 in inconsistent data output unless you run it at very slow speeds). The other option is capturing the functions which
 the game client itself uses to decode replays.
 
