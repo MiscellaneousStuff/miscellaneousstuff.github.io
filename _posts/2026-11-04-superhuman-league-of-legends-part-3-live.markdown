@@ -244,6 +244,10 @@ Everything in this section was trained in fastduel and evaluated either in fastd
 <figcaption>Why self-play stopped: the policy gradient's noise scale against the batch actually used, log scale. Brokenwings' LSTM needed batches of about 17k; the lane agents needed 1.1–3.4 million, about 130× the 16k minibatch.</figcaption>
 </figure>
 
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.rlYoutubeId %}
+</div>
+
 So we trained on human data.
 
 ### Imitation
