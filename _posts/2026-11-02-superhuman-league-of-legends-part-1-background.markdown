@@ -280,7 +280,7 @@ A few examples include:
 - Diablo II / StarCraft — PvPGN (bnetd lineage, 1998–). Battle.net reimplemented; Blizzard sued over bnetd in 2002 and the project outlived the lawsuit.
 - RuneScape — 2003scape, 2009scape, and the RSPS scene. Hundreds of private servers.
 
-League also has its historic fare-share of game servers which work with the officially launched clients of those patches:
+League also has its historic fair share of game servers which work with the officially launched clients of those patches:
 - [Brokenwings](https://gitgud.io/skelsoft/brokenwings) - Patch 1.0.0.126 game server (a lot of code was implemented as Lua in the game client itself back then)
 - [Riotzed.lol](https://riotzed.lol/progress/) - Patch 4.17 Mac Client de-comp and working game server
 - [LeagueSandbox](https://github.com/leaguesandbox) - Patch 4.20 partially working game server
