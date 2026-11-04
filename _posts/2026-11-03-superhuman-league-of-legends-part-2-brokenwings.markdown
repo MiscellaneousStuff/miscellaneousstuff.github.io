@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Superhuman League of Legends AI by 2027 (Part 2 - Brokenwings)"
+title:  "Superhuman League of Legends AI by 2027 (Part 2 - Brokenwings: 1v1)"
 excerpt: "This post focuses on the initial attempts to discover what reinforcement learning methods are required to train superhuman level League of Legends agents."
 date:   2026-11-03 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "Simulator Enhancement", "fastsim"]
@@ -246,6 +246,34 @@ Then the laning version collapsed. It matched the server on every trace we had, 
 And then the recipe still didn't reproduce the run. Six replicas on progressively more exact engines all plateaued 45–60 Elo below the fleet's checkpoint. The gap wasn't fidelity: the fleet's four PPO epochs had been harmless because sixteen asynchronous actors fed it varied batches, and in the simulator's exact on-policy collection the same four epochs overfit each rollout. One epoch closed it. The opponent pool, it turned out, had never worked in any simulator run — every draw was the newest checkpoint at probability 1.00. Both were findable only by rerunning the experiment, and only affordable because a rerun now cost three hours instead of two weeks.
 
 **Where September ended.** The best checkpoints in the project have never seen a server. The unit of experiment is an hour. And the method that makes an old server exact is mechanical enough to point at a new one.
+
+### What the policies actually compute, 29 September
+
+*Bottleneck: we knew what they did, not why. Lesson: probe grouped features, not columns — the policy reads redundancy as one signal.*
+
+Two checkpoints, probed the same way: league5 v40000, the best kill-game agent (.771 on the real server against canon), and league6 v64400, the laning farmer (lane-win .826). Each played 512 mirror lanes against itself in the simulator, 1,500 decisions a lane, and every fourth decision of one side was recorded in full: the 496-column observation, both LSTM states, the 256-d latent, every head's logits, the value, the action, the mask. 384k decisions per checkpoint.
+
+Then **response curves**: replay 4,096 of those decisions with the LSTM context held fixed while one input is swept across its range, and watch what each head does.
+
+The first thing the sweeps taught was how to sweep. Changing a single column — `rel.dist`, or `opp.hp_frac` — does nothing; a flat line. Change every column that encodes the same quantity together (opponent HP also moves the HP difference and the opponent's unit-set slot; distance rescales the bearing, the in-range flags and the slot) and the policy wakes up. The network has learned that these inputs agree and reads them as one signal, so a single-column perturbation is just noise it ignores. The grouped curves are the ones to trust.
+
+**What they read.**
+
+- *Own HP is the retreat signal.* Set it to zero and P(attack) falls from .27 to .08 (league5) and .20 to .05 (league6); the expected move swings from −45 u/decision to −265 u, and from −25 to −368 u, away from the opponent. The value head is nearly linear in it, +0.6 at full to −2.7 / −3.4 at zero.
+- *Opponent HP turns league5 into an executioner.* P(attack) .17 at full opponent HP → .69 at zero, with the move flipping toward them. league6 answers the same signal with positioning — the move goes −103 u → +86 u — and barely changes its attack rate (.15 → .23). Same information, different head.
+- *Distance is read as range flags, not a number.* Inside auto-attack range league5 attacks at .33–.39, league6 at .13–.15. Just outside AA range and inside Q range, both go quiet. Far away, P(attack) rises again to .30 — because an attack order on a distant target is a walk-in: the engine chases, so "attack" is "move".
+- *league6 kites harder.* At point-blank its expected move is −308 u against league5's −119 u: attack order, step back while the timer runs. This is the kiting loop that was visible on screen, now in numbers.
+- *A Q on cooldown makes league5 attack more* — .23 → .42. The policy has learnt that Q and autos compete for the same window; when Q is gone it commits to autos. W likewise (.23 → .34). E and R cooldowns move nothing on the ability head.
+- *R is priced by the critic and ignored by the actor.* Own R off cooldown: value .19 vs .07. Opponent R up: .03 vs .09. The value head knows what the ultimate is worth; the policy head never acts on it at these decision points.
+- *The race features are inert.* Elapsed time, CS difference, own CS: none moves any head by more than .01. These checkpoints were trained on kill-decided fights and never learnt to read the race — which is exactly the farming-drift problem from the other side.
+
+**The target head.** The fourth head picks a unit slot by attention over the unit-set keys; it's consulted on about a quarter of decisions, usually with one legal target. A linear readout of the creep logit on the twelve slot fields puts the largest weight on **HP per auto-attack** (−3.3 / −4.5): fewer autos to kill, higher logit. The argmax agrees with "lowest HP fraction" on ~60% of creep attacks and with "nearest" on only 40–44%. league6 adds recency — a creep that just lost HP is preferred (weight +3.7 vs league5's +0.4), so it keeps hitting what its wave is hitting, which is closer to real last-hitting. Neither *times* last hits: only 15–17% of creep attacks land on a creep that dies to one auto, and the mean HP/AD of the pick is 0.8 — several hits away. They farm by attacking low creeps early, not by finishing them.
+
+**What it says about the two policies.** Both are HP-difference machines, and the critic is almost a linear function of it. league5 is burst-when-ahead: its aggression lives in the ability head. league6 moved its aggression into the move heads: lower, flatter attack rate, movement responses two to three times larger — it fights by holding the edge of auto range and kiting, which is why it finishes fewer episodes and wins more of them. Spells are nearly vestigial in the mirror; W, E and R sit below 1% everywhere.
+
+**Caveats, because they matter.** The LSTM state is frozen during a sweep, so anything the memory decides over several decisions is invisible here, and the grouped sweeps can set the features consistently but can't rewrite what the context remembers. The dataset is mirror play from lane start. And the target-head fit is linear over a bilinear attention, so a low R² is expected.
+
+What came out of it was a to-do list rather than a conclusion: activation patching between low-HP and full-HP decisions to locate the retreat circuit; linear probes on the LSTM for "time since I last attacked"; a sparse autoencoder over the 768k latents. All three ran in October on the modern-patch agents, and that's Part 3's story.
 
 ## What it adds up to
 
