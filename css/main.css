@@ -760,6 +760,108 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
   margin-right: 6px;
 }
 
+/* ------------------------------------------------------------------
+   Narrative components (plain HTML in posts, no script)
+   ------------------------------------------------------------------ */
+
+/* timeline: horizontal rail on desktop, vertical on phones */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 6), 1fr);
+  gap: 0 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 27px;
+  border-top: 2px solid var(--rule);
+}
+.post-content .timeline li { position: relative; margin: 0; padding-top: 42px; font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  top: 21px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.35);
+}
+.timeline li.now::before { background: #2a78d6; border-color: #2a78d6; }
+.timeline .when { position: absolute; top: 0; left: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-faint); white-space: nowrap; }
+.timeline b { display: block; margin-bottom: 2px; font-size: 14px; font-weight: 600; color: rgba(0, 0, 0, 0.85); }
+.post-content .timeline a { color: inherit; }
+@media (max-width: 640px) {
+  .timeline { grid-template-columns: 1fr; gap: 14px; padding-left: 22px; }
+  .timeline::before { left: 4px; right: auto; top: 6px; bottom: 6px; border-top: 0; border-left: 2px solid var(--rule); }
+  .post-content .timeline li { padding-top: 0; }
+  .timeline li::before { top: 3px; left: -22px; }
+  .timeline .when { position: static; display: block; margin-bottom: 1px; }
+}
+
+/* "Bottleneck / Lesson" banner at the top of a chapter */
+.post-content .lesson {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0 0 1.5em;
+  padding: 10px 14px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.lesson dt {
+  padding-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.lesson dd { margin: 0; color: var(--text); }
+.lesson dt.l + dd { font-style: italic; color: rgba(0, 0, 0, 0.85); }
+
+/* stat tiles: a row of headline numbers */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.stat-row > div { padding: 14px 16px 13px; background: #fff; }
+.stat-row .num { display: block; font-size: 26px; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; color: rgba(0, 0, 0, 0.88); font-variant-numeric: tabular-nums; }
+.stat-row .lbl { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.4; color: var(--text-muted); }
+
+/* simple linear comparison bars, zero-anchored */
+.barlist { display: grid; grid-template-columns: max-content 1fr; gap: 9px 14px; align-items: center; font-size: 13.5px; }
+.barlist .name { color: var(--text); text-align: right; }
+.barlist .name span { display: block; font-size: 11.5px; color: var(--text-faint); }
+.barlist .track { position: relative; height: 22px; margin-right: 56px; }
+.barlist .bar {
+  height: 100%;
+  width: var(--w);
+  min-width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--c, #2a78d6);
+}
+.barlist .val { position: absolute; top: 50%; transform: translateY(-50%); line-height: 1; left: calc(var(--w) + 8px); font-size: 13px; font-weight: 600; color: rgba(0, 0, 0, 0.8); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 640px) {
+  .barlist { grid-template-columns: 1fr; gap: 3px; }
+  .barlist .name { text-align: left; margin-top: 6px; }
+}
+
 /* footnotes (kramdown [^1]) */
 .post-content .footnotes {
   margin-top: 3em;

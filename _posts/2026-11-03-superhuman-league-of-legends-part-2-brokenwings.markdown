@@ -17,6 +17,15 @@ brokenwingsYouTubeId: jLEzHI2Duxo
 
 ## Overview
 
+<div class="key-findings" markdown="1">
+In short
+
+- **Five years to a working loop.** A LeagueSandbox fork in 2020, LLM-written policies in 2025, then Brokenwings, a season-1 server complete enough to train on, in April 2026.
+- **April:** a PPO stack that beats the engine bot about 80% of the time, and the lesson that every "throughput" problem was an engine bug.
+- **September:** fastsim, a numba reimplementation held frame for frame to the server: about a million samples a second, 360 agent-years of experience a day.
+- **The best checkpoints have never seen a server**, and probing them shows HP-difference machines.
+</div>
+
 Following on from part 1, we now move towards our first step. Implementing our methodology for creating superhuman League of Legends AI agents by simulating the game server at orders of magnitude faster than realtime to then dedicate all of
 our compute away from simulation and towards the actor/trainer.
 
@@ -25,6 +34,18 @@ our compute away from simulation and towards the actor/trainer.
 First it would be good to introduce the entire history of my attempts at RL agents and League of Legends before arriving at how it was implemented for the
 brokenwings project. If you want to understand other peoples methods then refer to [part 1](https://miscellaneousstuff.github.io/project/2021/09/01/tlol-part-1-existing-solutions.html)
 which still remains a good starting point.
+
+<figure class="fig">
+<ol class="timeline" style="--n: 6">
+  <li><span class="when">Late 2019</span><b>OpenAI Five</b>Beats the Dota 2 world champions from self-play.</li>
+  <li><span class="when">Late 2020</span><b>pylol</b>A LeagueSandbox fork with a pysc2-style env on the patch 4.20 client.</li>
+  <li><span class="when">2021–2023</span><b><a href="/project/2021/09/01/tlol-part-1-existing-solutions.html">TLoL</a></b>Imitation learning from replays, via memory reading.</li>
+  <li><span class="when">Early 2025</span><b>Voyager-style</b>An LLM rewrites a Python policy from its own episodes.</li>
+  <li><span class="when">Apr 2026</span><b>Brokenwings</b>PPO on a season-1 server; beats the engine bot ~80%.</li>
+  <li class="now"><span class="when">Sep 2026</span><b>fastsim</b>A frame-exact simulator at about a million samples a second.</li>
+</ol>
+<figcaption>Six attempts at the same idea. Everything before April 2026 stalled on the environment rather than the learning.</figcaption>
+</figure>
 
 ### OpenAI Five
 
@@ -170,7 +191,7 @@ Two things. Agentic coding, which turns "expand LeagueSandbox" from a year of ev
 
 ### The bridge, 23–24 April
 
-*Bottleneck: none yet. Lesson: a toy that works is the dangerous kind.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>none yet</dd><dt class="l">Lesson</dt><dd>a toy that works is the dangerous kind.</dd></dl>
 
 The fork starts on 23 April with `ChildrenOfTheGraveRL`: a TCP server inside the engine speaking newline-delimited JSON. It emits observations at a fixed rate timed by game time rather than loop count, and takes `noop`, `claim`, `teleport`, `move`, `chat` — the last of which exposes the engine's forty-odd `!cheat` commands for free. Three engine hooks make it an RL environment rather than a remote control: a post-tick callback, an `_aiPaused` check in the behaviour tree so `claim` actually silences the scripted bot, and a `HEADLESS` flag with `force_start` so a bots-only game runs with no client attached.
 
@@ -182,7 +203,7 @@ That's the dangerous moment. It worked, so every problem after it looked like a 
 
 ### The engine fights back, 25–27 April
 
-*Bottleneck: everything. Lesson: every throughput number was an engine bug in a performance costume.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>everything</dd><dt class="l">Lesson</dt><dd>every throughput number was an engine bug in a performance costume.</dd></dl>
 
 Mirror self-play went in on the 25th — the opponent is the live policy seeing the game from its own side — plus several servers in parallel on threads (fine, because each env mostly waits on a socket), auto-launched servers, action masking with `MaskablePPO`, and missile observations: every live missile's position, velocity, team and whether it's an auto-attack, eight nearest per champion, taking the observation from 14 to 110 numbers. Masking cooldowns and mana ended the "spam R" strategy on the spot.
 
@@ -203,13 +224,17 @@ Every row in that table was first filed as a training problem. The same lesson l
 
 ### Scaling out, 27–29 April
 
-*Bottleneck: self-play standoffs. Lesson: the OpenAI Five appendices are a checklist, and you will use all of them.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>self-play standoffs</dd><dt class="l">Lesson</dt><dd>the OpenAI Five appendices are a checklist, and you will use all of them.</dd></dl>
 
 The cloud setup went in on the 27th: Graviton spot instances (1,024 approved vCPUs), Linux fixes (the server was launching `powershell.exe` from a monitoring class and crashing), spot-shutdown handling, runs synced to S3, core pinning that knows Graviton has no hyperthreading. The plan was deliberately dumb: each box trains alone, checkpoints go to S3, cross-box tournaments pick winners. No distributed PPO. A Docker image followed, then about eight fixes to the Docker image.
 
 On the training side the problems were now the right kind. Mirror training settled into a defensive standoff where both sides ended every episode on 188 HP. Two fixes, both straight from the OpenAI Five paper: a snapshot pool (Appendix N) so some episodes are played against a past checkpoint, and HP/mana jitter at reset (Appendix O.2) so no two episodes start the same. Head-to-head and sweep evaluation tools, batch size scaling with env count, and the Python tooling split out as [riftgym](https://github.com/MiscellaneousStuff/riftgym) with the image down from 2.18 GB to 444 MB.
 
-**Where April ended.** A working 1v1 PPO stack: auto-launched servers, five lanes a server, both sides trained, masking, missiles, evaluation against checkpoints and the engine bot. Checkpoints beat the engine bot about 80% of the time. Still open: minions ending games; the deeper "a cast can run while it's still running" bug behind the crash (only the crash had been handled); and physics at any timescale other than 1×.
+<div class="callout" markdown="1">
+Where April ended
+
+A working 1v1 PPO stack: auto-launched servers, five lanes a server, both sides trained, masking, missiles, evaluation against checkpoints and the engine bot. Checkpoints beat the engine bot about 80% of the time. Still open: minions ending games; the deeper "a cast can run while it's still running" bug behind the crash (only the crash had been handled); and physics at any timescale other than 1×.
+</div>
 
 Then nothing for four months. What came back in September was the same fork with a different question: not "does it learn" but "how fast can it learn" — and the answer to that is the [field report](LINK) and the next two sections.
 
@@ -217,7 +242,7 @@ Then nothing for four months. What came back in September was the same fork with
 
 ### The fleet, September
 
-*Bottleneck: the engine tick. Lesson: self-play looks flat long before it stops improving.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>the engine tick</dd><dt class="l">Lesson</dt><dd>self-play looks flat long before it stops improving.</dd></dl>
 
 September picked up the April fork with a different question. April asked "does it learn"; September asked "how fast". Three engine changes turned the bridge into a proper environment.
 
@@ -237,19 +262,45 @@ The full report is [here](LINK): observation and action design, the reward table
 
 ### The simulator, September
 
-*Bottleneck: fidelity. Lesson: fidelity is a method, not a property — record, replay, diff to the first divergence.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>fidelity</dd><dt class="l">Lesson</dt><dd>fidelity is a method, not a property — record, replay, diff to the first divergence.</dd></dl>
 
 The fleet's ceiling was the engine itself: about 23,000 ticks a second box-wide however the servers were arranged. The 1v1 slice — movement on the navgrid, four spells, autos, vision, damage, death — is thin, so it was reimplemented in Python, compiled with numba, and held to the C# server **frame for frame**. Most of two days went on float32: trig from the same C library the runtime calls, the bridge's decimal-text rounding, a squared float that promotes to float64 in numpy exactly as the engine's arithmetic does, no fused multiply-add anywhere. The batched engine runs 22.5 million lane-ticks a second on the box, bit-identical to the reference; the trainer sustains about a million samples a second, fifty times the fleet, three hundred and sixty agent-years a day. A policy trained there for nine minutes, never having seen the C# engine, passed the server-trained reference on the bot ladder when carried back to the real server.
+
+<figure class="fig">
+<div class="stat-row">
+  <div><span class="num">22.5M</span><span class="lbl">lane-ticks a second on one box, bit-identical to the C# reference</span></div>
+  <div><span class="num">~1M</span><span class="lbl">training samples a second, fifty times the fleet</span></div>
+  <div><span class="num">360</span><span class="lbl">agent-years of experience a day</span></div>
+  <div><span class="num">9 min</span><span class="lbl">of simulator training to pass the server-trained reference</span></div>
+</div>
+<figcaption>fastsim on one GH200.</figcaption>
+</figure>
+
+<figure class="fig">
+<div class="barlist">
+  <div class="name">The fleet<span>256 servers, one GH200</span></div>
+  <div class="track"><div class="bar" style="--w: 3.33%; --c: #a8a69e"></div><span class="val" style="--w: 3.33%">12</span></div>
+  <div class="name">OpenAI Five<span>2018, self-play</span></div>
+  <div class="track"><div class="bar" style="--w: 50%; --c: #86b6ef"></div><span class="val" style="--w: 50%">180</span></div>
+  <div class="name">fastsim<span>one GH200</span></div>
+  <div class="track"><div class="bar" style="--w: 100%"></div><span class="val" style="--w: 100%">360</span></div>
+</div>
+<figcaption>Years of game experience per day of training. One box running the simulator out-collects OpenAI Five's <a href="https://openai.com/index/openai-five/">2018 figure</a> for a much smaller game slice: a 1v1 lane rather than full 5v5 Dota.</figcaption>
+</figure>
 
 Then the laning version collapsed. It matched the server on every trace we had, and could not reproduce the run. Two bugs in bookkeeping the short clean traces never exercised: the game clock never reset, so creeps had been upgraded 213 times by rollout 3,000; and a reset drawn mid-cast froze a champion forever. The method that found those and ten more was the obvious one in hindsight — have the trained policy play on the real server, replay those traces in the simulator, diff to the first divergent frame, read the rule, fix, repeat. Twelve gaps in three days, among them update order by network id, turret timer phase, and a cast time that winds up to 0.10000001 s because the engine multiplies frames by 1/60 in 32-bit float. After the eleventh, every recorded self-play trace replays frame-exact, and a sim-trained checkpoint's numbers on 24 real servers matched the simulator's own ladder within noise.
 
 And then the recipe still didn't reproduce the run. Six replicas on progressively more exact engines all plateaued 45–60 Elo below the fleet's checkpoint. The gap wasn't fidelity: the fleet's four PPO epochs had been harmless because sixteen asynchronous actors fed it varied batches, and in the simulator's exact on-policy collection the same four epochs overfit each rollout. One epoch closed it. The opponent pool, it turned out, had never worked in any simulator run — every draw was the newest checkpoint at probability 1.00. Both were findable only by rerunning the experiment, and only affordable because a rerun now cost three hours instead of two weeks.
 
-**Where September ended.** The best checkpoints in the project have never seen a server. The unit of experiment is an hour. And the method that makes an old server exact is mechanical enough to point at a new one.
+<div class="callout" markdown="1">
+Where September ended
+
+The best checkpoints in the project have never seen a server. The unit of experiment is an hour. And the method that makes an old server exact is mechanical enough to point at a new one.
+</div>
 
 ### What the policies actually compute, 29 September
 
-*Bottleneck: we knew what they did, not why. Lesson: probe grouped features, not columns — the policy reads redundancy as one signal.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>we knew what they did, not why</dd><dt class="l">Lesson</dt><dd>probe grouped features, not columns — the policy reads redundancy as one signal.</dd></dl>
 
 <div class="key-findings" markdown="1">
 In short
