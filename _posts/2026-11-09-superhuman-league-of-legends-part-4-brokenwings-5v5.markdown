@@ -3,7 +3,7 @@ layout: post
 comments: true
 title:  "Superhuman League of Legends AI by 2027 (Part 4 - Brokenwings: Initial 5v5)"
 excerpt: "Now we train 5v5 agents on a restricted version of Brokenwings - no items or summoner spells"
-date:   2026-11-04 00:00:00
+date:   2026-11-09 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "fastsim", "mech interp"]
 ---
 
