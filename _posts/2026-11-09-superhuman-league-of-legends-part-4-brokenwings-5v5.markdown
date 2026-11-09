@@ -24,6 +24,19 @@ gameserver, we instead want to validate two things: \
 2. Determining if our current RL methods can handle the full 5v5 game mode given that its game-tree complexity
 is far higher than a simple mid lane Ezreal 1v1
 
+## Why are we going back to Brokenwings?
+
+At this stage we're confident we can train 1v1 agents, it's just a matter of compute and time. However, have
+we actually tested our core hypothesis yet? Do we have any idea how much compute is required to train 5v5 agents
+for League of Legends and do we know if our fastsim throughput gains hold for the full game, not just a 1v1
+minigame involving a few minion waves, two champions and two towers?
+
+To answer this, we're going back to brokenwings as it is a *faithful enough* implementation of the modern game
+and helps us answer our fundamental questions. Unlike the modern game server where we don't have the source
+code, brokenwings is open source which means we don't have to worry about the additional overhead of validating
+the fidelity of our game servers implementation, we only have to worry that we transpiled the existing game
+server faithfully into a more efficient implementation.
+
 ## So where do we go from here?
 
 As we're now able to train 5v5 agents on modest hardware, in the next part we will work on fully porting
