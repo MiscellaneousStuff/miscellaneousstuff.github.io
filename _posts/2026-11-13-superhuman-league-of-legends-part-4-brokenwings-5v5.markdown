@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title:  "Superhuman League of Legends AI by 2027 (Part 4 - Brokenwings: Initial 5v5)"
+title:  "Superhuman League of Legends AI by 2027 (Part 4 - Brokenwings: 5v5)"
 excerpt: "Now we train 5v5 agents Brokenwings"
 date:   2026-11-13 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "fastsim", "mech interp"]
@@ -203,12 +203,52 @@ On the same 64-core GH200, the real C# game server manages about 2,500 decisions
 
 ## Phase 2: Training 5v5 agents
 
-Now we have a fast and faithful simulator of the game server, but how do we train agents that can play the full game of 
-League of Legends?
+<dl class="lesson"><dt>Bottleneck</dt><dd>what ends an episode, and what pays</dd><dt class="l">Lesson</dt><dd>self-play finds the cheapest equilibrium in your reward, not the game you had in mind.</dd></dl>
 
-<div style="text-align: center;">
-{% include youtubePlayer.html id=page.first5v5youtubeid %}
-</div>
+The setup is deliberately close to OpenAI Five's in June 2018, restrictions included. Two fixed teams of five
+(Ezreal, Garen, Ashe, Veigar, Malphite against Caitlyn, Warwick, Nunu, Master Yi, Ryze), no summoner spells, no
+wards. One network drives all ten heroes, told apart by a champion one-hot. Each hero sees about 2,900 numbers per
+decision under fog of war and acts every 133 ms - 7.5 Hz. Training is PPO with an LSTM: 4,096 games at once, 64 decisions
+per rollout, 2.6 million agent-steps per update, the two teams swapping sides every 1,200 rollouts.
+
+<!--
+### The first thing they learned was not to fight
+
+We started small: both teams dropped near each other in mid lane with a 40-second cap. Within about 100 rollouts
+every game was a draw. Games reaching the cap went from 2% to 47% to 100% by rollout 150, and kills per game from
+six to zero. Early recordings show a team wiped inside 20 seconds, every round. Later ones show one straggler picked
+off, then ten heroes standing apart until the clock runs out.
+
+Running out the clock is worth exactly zero to both sides. A fight is worth about −1.3 per hero to the weaker
+composition. Not fighting is a Nash equilibrium of that reward, and PPO found it. A draw penalty moved the draw rate
+from 100% to 88%; doubling the penalty moved it back to 93%. So we stopped trying to price the draw and switched to
+the thing that makes avoidance expensive by construction: the full game, with minions, towers and farm.
+
+### Full games
+
+Full games ran ten times slower than the benchmark, for a reason that had nothing to do with the engine. A path
+across the map costs about 100 times a local one, and an untrained policy orders them constantly. Limiting move
+targets to 1,500 units, on the agent's side, fixed it without touching a rule.
+
+Six-minute games from level 1 never saw a turret fall, so most games start mid-game instead: heroes pre-levelled
+and in lane, towers already damaged. On the evening of 8 November the first games ended with a nexus kill.
+
+### What 128 billion agent-steps bought
+
+Four days later the run was at rollout 49,200: 128 billion agent-steps, about 54 game-years, on one rented box at
+$2.29 an hour.
+
+- **A jungle nobody asked for.** OpenAI's 2v2 bot found creep blocking by itself after four weeks. Ours found the
+  jungle. Monster kills went from almost none to about ten per hero every ten minutes, and lane last hits roughly
+  doubled. Nothing in the reward mentions camps.
+- **Recall, on the fourth attempt.** Going home to shop only worked once the environment held the channel and a
+  small reward paid for gold spent while alive. After that, agents went home about every two minutes and spent 84%
+  of their gold on live trips.
+- **The scripted bots, early.** By rollout 5,875 the policy took 55 of 64 games from the server's own bots.
+
+And one thing it did not buy. On our ladder, 94.5% of games between trained checkpoints hit the 18-minute cap. With
+the cap removed, the median game ran over an hour, and one in five never ended at all.
+-->
 
 ## So where do we go from here?
 
