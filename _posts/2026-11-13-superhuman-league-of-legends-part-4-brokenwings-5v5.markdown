@@ -259,6 +259,15 @@ As we're now able to train 5v5 agents on modest hardware, in the next part we wi
 
 ### Training Log
 
+Training used the same model weights from the start until the last checkpoint. The model architecture was extended to provide
+the agents with additional inputs relating to items and allowing them to recall.
+
+Neural network surgery used zero-padding to extend observations and action heads using the same method from [OpenAI Five](https://arxiv.org/pdf/1912.06719).
+
+<!--
+add surgery context
+-->
+
 | # | When (GMT) | From ckpt | Change | Why | Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 0 | Sun 8 Nov 11:26 | v000000 | Fight task: both teams mid, levels 6–11, 40 s cap | smoke the port | Cap rate 2% (r50) → 47% (r100) → 100% (r150); kills 6 → 0; value loss → 0.001. Not fighting = Nash equilibrium of zero-sum + HP shaping (fight ≈ −1.3/hero). Also: 3 h 50 min idle gap (segment 2 never launched), OOM at nseq 4096 |
