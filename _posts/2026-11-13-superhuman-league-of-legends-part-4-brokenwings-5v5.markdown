@@ -5,6 +5,7 @@ title:  "Superhuman League of Legends AI by 2027 (Part 4 - Brokenwings: Initial 
 excerpt: "Now we train 5v5 agents Brokenwings"
 date:   2026-11-13 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "fastsim", "mech interp"]
+first5v5youtubeid: gVDy2AMqbe4
 ---
 
 ## Table of Contents
@@ -145,6 +146,15 @@ The speedup is larger than the 2.3× that removing reference counting alone woul
 the compiler could finally optimise the code around them. A rebuild after a change takes minutes rather than half an hour,
 and an overnight tuning pass on the trainer took end-to-end training from 0.33M to about 1.2M agent-steps a second.
 Now we could run 40–44 game-years a day on one box, against roughly 80 for OpenAI Five's Rerun on 51,200 cores.
+
+## Phase 2: Training 5v5 agents
+
+Now we have a fast and faithful simulator of the game server, but how do we train agents that can play the full game of 
+League of Legends?
+
+<div style="text-align: center;">
+{% include youtubePlayer.html id=page.first5v5youtubeid %}
+</div>
 
 ## So where do we go from here?
 
