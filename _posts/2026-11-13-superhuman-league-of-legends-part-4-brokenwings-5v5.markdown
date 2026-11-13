@@ -79,6 +79,37 @@ In total we simulate 29 years worth of game play per day in contrast to OpenAI F
 means that we're ~6.2x off. However, they use 128,000 CPU cores (likely vCPUs) whereas we use 64 GH200
 neoverse v2 CPU cores.
 
+### Profiling Numba and long compilation times
+
+At this stage our simulator already achieved high throughput but we ran into new problems. Every time
+we wanted to add new functionality to our Numba simulator, we were forced to re-compile the *entire* simulator
+because Numba is a just-in-time compiler. Numba does support caching, however, our port contained a lot of
+recursive code which broke the cache. Cold compilation took between 20-40 minutes per each change. During this
+we also profiled the bottlenecks within the Numba fastsim itself:
+
+| Level | Component | Share |
+|---|---|---:|
+| Environment | Engine | 94.8% |
+| | Building observations | 4.8% |
+| | Decoding actions | 0.4% |
+| | Python glue | 0.15% |
+| Inside the engine | **Numba reference counting** | **58.7%** |
+| | Vision (turret bubbles the largest part) | 12.6% |
+| | Collision and movement | 7.8% |
+| | Pathfinding | 3.3% |
+| | Spell scripts and buffs | 3.1% |
+| | Minion AI | 2.6% |
+
+One major step stands out, reference counting. This is used to track if arrays are still in use for garbage
+collection. The issue with our fastsim is that the entire game state lives within a single array whereby
+individual functions then get a hold of the array which blocks further optimsation techniques. Admittedly
+this may not be the best way of implementing this within Numba but the aggregating issues of slow compilation
+times and obvious optimisation targets motivated the port to Rust.
+
+### Rewrite it in Rust
+
+
+
 ## So where do we go from here?
 
 As we're now able to train 5v5 agents on modest hardware, in the next part we will work on fully porting
