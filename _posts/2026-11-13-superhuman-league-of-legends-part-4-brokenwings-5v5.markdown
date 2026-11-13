@@ -574,6 +574,40 @@ November, with ten heroes and sixty-minute games.
 
 ### Before and after
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>none, for once</dd><dt class="l">Lesson</dt><dd>fix the world before you retrain the agent: the same weights, on a correct game, were a different result.</dd></dl>
+
+The fixes were small. The nexus re-opens when an inhibitor dies again. A minion that has tried to escape the same
+spot twenty times stops trying and walks on. A full minion pool evicts its oldest minion, which no longer happens
+now that nothing piles up. A reused slot releases what the last unit left behind. The first two went into the C#
+server as well, in two files, so that the simulator and the game it copies agree again.
+
+We changed nothing about the agents. Same checkpoint, same weights, played again:
+
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">23% → 0</span><span class="lbl">games still running after two hours</span></div>
+<div><span class="num">10 h → 89 min</span><span class="lbl">longest game, of 1,024 before and 512 after</span></div>
+<div><span class="num">22% → 58%</span><span class="lbl">win rate of the Ezreal, Garen, Ashe, Veigar, Malphite side</span></div>
+<div><span class="num">64% → 0</span><span class="lbl">training games in which buffs were being dropped</span></div>
+</div>
+<figcaption>Checkpoint v049200 against itself from a fresh start with no cap, before and after the engine fixes. The first three tiles are full games; the last is measured on training-style episodes.</figcaption>
+</figure>
+
+Every game ends. Against ten heroes that never move, the policy used to win nine games in ten and spend three
+hours on the tenth; now it wins all ten in 14 to 18 minutes. The lock still happens, as it should, and now it
+opens: in one recorded game a nexus opens, locks again when the last inhibitor respawns at 1:10, opens when an
+inhibitor falls, and dies at 1:16.
+
+<!-- EMBED: one fixed-engine game in the viewer (game 10 of the fixed-engine set shows the re-lock and re-open). -->
+
+The roster number is the one that stings. For four days one team had been losing its item auras, shields and crowd
+control a quarter of an hour into most games, and the agents had learned to play around a handicap we did not know
+was there. Everything we concluded about which champions are strong came from that.
+
+And the agents are not acquitted of everything. The median game still takes 59 minutes. In two of ten recorded
+games the winner killed eight and eleven inhibitors before finishing. They are slow to close, for the reasons the
+suspects section gave. But it is a slow game now, not an endless one, and that is a problem training can fix.
+
 ### The payoff
 
 ## So where do we go from here?
