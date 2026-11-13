@@ -610,6 +610,53 @@ suspects section gave. But it is a slow game now, not an endless one, and that i
 
 ### The payoff
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>finally, the agents</dd><dt class="l">Lesson</dt><dd>rate on wins, in games that end, against something from outside the lineage.</dd></dl>
+
+With games that end, we could at last ask the question from Phase 2 properly. We took seventeen entrants: fourteen
+checkpoints from across the run, the server's own scripted bots, a policy that acts at random and one that does
+nothing. A win is a dead nexus. There is no tiebreak, because there is nothing to break: of 10,752 games, not one
+reached the two-hour cap.
+
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">10,752</span><span class="lbl">games, every one ended by a nexus kill</span></div>
+<div><span class="num">2,966</span><span class="lbl">Elo of the best checkpoint, with an untrained network at 0</span></div>
+<div><span class="num">725</span><span class="lbl">Elo of the game's scripted bots, on intermediate difficulty</span></div>
+<div><span class="num">64–0</span><span class="lbl">the best checkpoint against the bots, median game 18 minutes</span></div>
+</div>
+</figure>
+
+<!-- CHART: Elo against rollouts (the hero chart from the ladder page): lineage line with intervals, bots as an orange line, eras as bands. -->
+
+Two things in that chart were invisible a week ago.
+
+**The run never plateaued.** The capped ladder had said the agents stopped improving around rollout 9,600 and
+that the whole run was worth 66 Elo in wins. Counted properly, strength climbs all the way: 1,251 at rollout 2,400,
+1,840 at 9,600, 2,625 at 32,400, 2,966 at 46,575. The plateau was the cap.
+
+**The bots were passed almost at once.** They sit between rollout 600 and rollout 1,350, about two to three
+billion agent-steps, or the first 3% of training. A checkpoint from the first evening beats them four games in
+five. Everything since is a climb with no outside reference, which is its own problem for another post.
+
+| Against the bots | Result | Median game |
+|---|---|---:|
+| Does nothing | 0–64 | 26 min |
+| Random actions | 0–64 | 26 min |
+| Rollout 600 | 0–128 | 29 min |
+| Rollout 1,350 | 103–25 | 33 min |
+| Rollout 2,400 | 128–0 | 23 min |
+| Rollout 46,575 | 64–0 | 18 min |
+
+The bot games ran on the real C# server, the rest in the simulator, and the one pairing we played on both agreed:
+98.4% on the server, 98.0% in fastsim. It also made the case for the whole exercise one more time. The 10,000
+simulator games took 35 minutes. The 704 server games took an hour.
+
+Not everything on the ladder flatters us. The checkpoint we had spent the week dissecting turns out to be 292 Elo
+weaker than the one saved 25 rollouts later, and we do not yet know why. Every one of these agents was trained on
+the broken game and is being rated on the fixed one. And the answer to Phase 3's question is both: the simulator
+was stopping the games from ending, and the agents are slow to end them. We had the order of blame the wrong way
+round.
+
 ## So where do we go from here?
 
 As we're now able to train 5v5 agents on modest hardware, in the next part we will work on fully porting
