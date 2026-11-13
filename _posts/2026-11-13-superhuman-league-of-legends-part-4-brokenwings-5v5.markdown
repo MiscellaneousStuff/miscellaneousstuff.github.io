@@ -507,14 +507,14 @@ The fourth study had a second question: why do some games never end? To answer i
 The fourth study had taken 256 games, found the 50 that were still running after two hours, and sorted them into
 two kinds. In 23, one team was camped in the enemy base, killing inhibitors as they respawned and never touching
 the nexus. In the other 27, nothing was happening at all: both teams had most of their turrets, nobody died, and
-the ten heroes spent three quarters of their time in the jungle with the nearest enemy five kilometres away. The
+the ten heroes spent three quarters of their time in the jungle with the nearest enemy 5,000 units away. The
 write-up called the second kind a standoff and described it as an equilibrium: two teams that had each decided the
 other was not worth attacking.
 
 It was a good story. It matched everything we had just learned about agents that farm because farming is paid, and
-it was the fight task's stalemate again at full scale. I had the launch script open.
+it was the fight task's stalemate again at full scale. We had the launch script open.
 
-The study came with a viewer, so I opened one of the standoff games and scrubbed to the two-hour mark, to watch
+The study came with a viewer, so we opened one of the standoff games and scrubbed to the two-hour mark, to watch
 what an equilibrium looks like.
 
 There were no minions on the map.
