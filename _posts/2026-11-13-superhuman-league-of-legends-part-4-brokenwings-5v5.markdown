@@ -147,6 +147,60 @@ the compiler could finally optimise the code around them. A rebuild after a chan
 and an overnight tuning pass on the trainer took end-to-end training from 0.33M to about 1.2M agent-steps a second.
 Now we could run 40–44 game-years a day on one box, against roughly 80 for OpenAI Five's Rerun on 51,200 cores.
 
+### Why the simulator is fast
+
+On the same 64-core GH200, the real C# game server manages about 2,500 decisions a second across the whole box, while fastsim, the Rust engine, sustains about 125,000 in training. Most of that gap is not faster arithmetic: the server gives every game its own process and talks to the policy in text, while fastsim keeps every game as rows in shared arrays and makes one call and one forward pass per decision for all of them.
+
+<figure class="fig">
+<div class="arch">
+<div class="arch-server">
+<div class="arch-name">Game server<span>one process per game, one conversation per decision</span></div>
+<div class="arch-row">
+<div class="arch-card many"><span class="tag">× 55 processes</span><b>C# game server</b>Every unit, buff and script is a heap object. Runs 4 ticks, then blocks.</div>
+<div class="arch-link"><span>JSON text over TCP</span></div>
+<div class="arch-card many"><span class="tag">× 55 clients</span><b>Python client</b>Parses the text into an observation, writes the actions back as text.</div>
+<div class="arch-link"></div>
+<div class="arch-card many"><span class="tag">CPU · 10 rows</span><b>Forward pass</b>One per game: the ten heroes of that game and nothing else.</div>
+</div>
+<div class="arch-foot"><span><b>≈ 22 ms</b> per decision, per game</span><span>≈ 2,500 decisions/s for the box</span></div>
+</div>
+<div class="arch-fast">
+<div class="arch-name">Fastsim<span>every game is a row, one call steps them all</span></div>
+<div class="arch-row">
+<div class="arch-card"><span class="tag">× 4,096 games</span><b>Shared arrays</b>Games × units × fields, allocated once. Nothing allocated per tick.</div>
+<div class="arch-link"><span>written in place</span></div>
+<div class="arch-card"><span class="tag">× 60 threads</span><b>One Rust call</b>Per thread, per decision: decode actions, 4 ticks, write observations.</div>
+<div class="arch-link"><span>one copy, 470 MB</span></div>
+<div class="arch-card"><span class="tag">GPU · 40,960 rows</span><b>One forward pass</b>Every hero in every game at once, half precision, CUDA graph.</div>
+</div>
+<div class="arch-foot"><span><b>0.43 ms</b> engine time per decision, per game</span><span>≈ 125,000 decisions/s for the box</span></div>
+</div>
+</div>
+<figcaption>One decision (four 33 ms engine ticks, all ten heroes acting) in each architecture, on the same 64-core GH200. <b>Game server:</b> each game is its own C# process, 55 of which fill the box; it allocates 0.7–2.1 MB of new objects a tick for the garbage collector and takes 3.1 ms a tick with the box full, 12.3 ms a decision. The state then goes as JSON text over a socket to one Python client per game, which spends 2.1 ms parsing it into an observation, 6.6 ms running the policy for ten heroes on a CPU core and 0.4 ms writing the actions back. Measured on 384 bot-benchmark games on 13 November. <b>Fastsim:</b> 4,096 games live as rows in flat arrays with fixed-size pools for minions and buffs, and each of 60 threads owns about 70 of them, so no game is shared. Observations land directly in one pinned buffer of 40,960 heroes × 2,914 values, go to the GPU in one copy, and come back as one action array of games × 10 × 4; the PPO update overlaps with the next rollout.</figcaption>
+</figure>
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">12.3 ms</span><span class="lbl">server engine time per decision, per game; 22 ms with the Python client</span></div>
+<div><span class="num">0.43 ms</span><span class="lbl">fastsim engine time per decision, per game, all threads busy</span></div>
+<div><span class="num">~50×</span><span class="lbl">decisions a second on the same box: 2,500 for the server, 125,000 for fastsim</span></div>
+<div><span class="num">40,960</span><span class="lbl">rows in fastsim's one forward pass, against 10 per game on the server</span></div>
+</div>
+<figcaption>The same box, both ways. Server numbers are from 384 bot-benchmark games on 13 November with the policy on a CPU core; fastsim's are from training, where a rollout of 4,096 games × 64 decisions (262,144 decisions) takes about 2.1 s and the trainer logs 1.27M agent-steps a second. On an idle core fastsim's engine time drops to 0.24 ms.</figcaption>
+</figure>
+<figure class="fig">
+<div class="barlist">
+<div class="name">Real time<span>one game, 7.5 decisions/s</span></div>
+<div class="track"><div class="bar" style="--w: 0.18%; --c: #a8a69e"></div><span class="val" style="--w: 0.18%">1×</span></div>
+<div class="name">C# game server<span>one core</span></div>
+<div class="track"><div class="bar" style="--w: 4.24%; --c: #eb6834"></div><span class="val" style="--w: 4.24%">24×</span></div>
+<div class="name">numba simulator<span>one core</span></div>
+<div class="track"><div class="bar" style="--w: 25.44%; --c: #86b6ef"></div><span class="val" style="--w: 25.44%">144×</span></div>
+<div class="name">Rust fastsim<span>one core</span></div>
+<div class="track"><div class="bar" style="--w: 100%"></div><span class="val" style="--w: 100%">566×</span></div>
+</div>
+<figcaption>Simulation speed on one core, as a multiple of real time for one game. Engine only, no policy. Measured whole-box numbers are wider apart, because the server's figure also pays for its Python client and text round trip: about 2,500 decisions a second with the policy in the loop, against 78,000 for the numba simulator (engine only; 64 threads, 4,096 games, an earlier version of the game without items) and 125,000 for the Rust engine in training (140,000 engine only, measured at 2,048 games).</figcaption>
+</figure>
+
 ## Phase 2: Training 5v5 agents
 
 Now we have a fast and faithful simulator of the game server, but how do we train agents that can play the full game of 
