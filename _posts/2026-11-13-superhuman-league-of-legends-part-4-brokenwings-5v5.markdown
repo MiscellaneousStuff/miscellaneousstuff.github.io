@@ -276,8 +276,7 @@ add surgery context
 | 6 | 13:00 | v027600 | 8 s lockout after a cancelled recall (env mask, v1.8) | Three options (reward item value, hold the channel, a lockout after a cancel). Picked the lockout: the cheapest change, no engine edit, env mask only. Restarted at 13:00. | Spam 1.4%, **0 completions** (v036000: 0/19,178) |
 | 7 | 21:08 | v036000 | **Env holds the channel** (--sr-recall-hold) | The lockout cut the spam and taught nothing: 0 of 19,178 recalls completed at v036000. The environment holds the channel once it starts. | Recalls complete, but policy stops pressing it (~0.00%); purchases while dead |
 | 8 | 23:31 | v043200 | **Gold-spent reward 0.0015** (alive only), recall bias reset −1.5, counters in log | Held recall worked and the policy stopped using it. OpenAI Five's 'no courier' trick -  and a second, milder recall bias reset.  | Recall works (81–88% complete, 83% gold spent alive, ~1 trip per 1.8 hero-min); nexus endings 49% → 27–30%; **stronger on the ladder** (v044400 0.62 vs v043200) |
-<!-- | — | Thu 12 Nov 01:46–03:11 | v046575 | Pause: first lineage **tiebreak Elo ladder** (22 ckpts, 43,264 games, 94.5% capped) | — | 1249 (v009600) → plateau → 1370 → dip 1300 (v043200) → **1465 ± 55 (v046575)**; jungling 0.4 → 67 monster kills/game | -->
-<!-- | 9? | 04:07 decision | v048000 | γ 0.999 + team spirit 0.5 | your "do 2 first" | **Unclear it ever ran**: the log's chain reads v043200 → v046575 → v049225 (~04:54, stop) with no mention of it; a relaunch at γ 0.99926 from v049225 was denied by the permission system at ~04:52 | -->
+| — | Thu 12 Nov 01:46–03:11 | v046575 | Pause: first lineage **tiebreak Elo ladder** (22 ckpts, 43,264 games, 94.5% capped) | — | 1249 (v009600) → plateau → 1370 → dip 1300 (v043200) → **1465 ± 55 (v046575)**; jungling 0.4 → 67 monster kills/game |
 
 <!-- ### OpenAI Five game-years per day -->
 
