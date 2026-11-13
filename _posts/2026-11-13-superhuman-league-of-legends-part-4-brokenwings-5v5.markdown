@@ -299,6 +299,44 @@ More time, more finished games. It looked like a problem we could keep solving t
 
 ### It farms, just as it was asked to...
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>the reward pays for farming three times over</dd><dt class="l">Lesson</dt><dd>you get what you pay for, including the parts you forgot you were paying for.</dd></dl>
+
+When we paused at rollout 7,350 the agents barely farmed. They took 38% of the available last hits, touched the
+blue buff in 7 games out of 100, and spent 1.9% of their time grouped as five. Forty thousand rollouts later they
+were different animals:
+
+| Per hero, per 10 minutes | Rollout 2,400 | Rollout 49,200 |
+|---|---:|---:|
+| Lane minion last hits | 26 | 49 |
+| Jungle monster kills | 0.4 | 10 |
+| Deaths | 1.6 | 1.3 |
+| Net worth at the end of the game | 6.0k | 12k |
+
+The jungle is the striking one. By the end a game has about 67 monster kills in it, with the first camp taken
+around two and a half minutes in. Nobody told the agents who should jungle or when, and their answer is not the
+one a player would give. The two champions we picked as junglers mostly stay in lane. The camps go to the ranged
+and caster heroes, who step out of an empty lane to the nearest one and step back:
+
+| Monster last hits per 10 minutes alive | |
+|---|---:|
+| Ryze | 25.7 |
+| Caitlyn | 20.2 |
+| Ezreal | 19.8 |
+| Garen | 9.6 |
+| Warwick | 6.5 |
+
+Lanes are just as unorthodox. There is no one-one-two split: in the first four minutes Ezreal, Ashe, Veigar,
+Caitlyn and Ryze each spend about half their time mid, while Malphite goes top and Warwick goes bottom.
+
+It would be nice to call this emergent, but it is closer to obedience. The reward pays 0.16 for a last hit on a
+lane minion and the same for a jungle monster, and has done since the first run. It also pays for gold and for XP,
+and a last hit gives both. So one minion is paid three times. A kill is paid the same way: +1, plus its gold, plus
+its XP. OpenAI Five's reward has the same terms with the opposite sign, −0.16 for a last hit and −0.6 for a kill,
+precisely to cancel the gold and XP that come with them. Ours stacks where theirs subtracts.
+
+Watching the long games, the result looks like low-ranked human play: ten players who have learned that farming
+is safe and fighting is risky, who do attempt to group, and who rarely turn a lead into a win.
+
 ### Recalling
 
 ### So how good are they?
