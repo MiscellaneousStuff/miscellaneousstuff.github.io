@@ -49,10 +49,13 @@ In the end, here is how much each method improved environment throughput.
 | Real time, 30 Hz, one game | 30 | 7.5 | 75 | 0.003 |
 | C# server, step mode, one game | 735 | 184 | 1.8k | 0.07 |
 | C# server, step mode, 64 games | 18.8k | 4.7k | 47k | 1.7 |
-| Numba simulator, 4,096 games | 313k | 78k | 783k | 29 |
-| Rust engine, 2,048 games | 560k | 140k | 1.4 M | 51 |
+| Numba simulator (64 threads), 4,096 games | 313k | 78k | 783k | 29 |
+| Rust engine (60 threads), 2,048 games | 560k | 140k | 1.4 M | 51 |
 
-Along with the single-core counts:
+Note: The Rust row includes building observations and runs the later, heavier
+game with items; like for like it is 4.3x Numba, as in the core table.
+
+Per core (the simulators step 64 games on that core; the server runs one):
 
 | One core, one 5v5 game | Ticks/s | Versus real time |
 |---|---:|---:|
@@ -62,11 +65,11 @@ Along with the single-core counts:
 | Rust | 17.0k | 566× |
 
 To start with, our fully working Brokenwings game server with our custom RL bridge could already run full games.
-At that stage we were already at parity with OpenAI Five for being able to simulate games and hook them, however
+Using the same approach as OpenAI Five we were able to simulate games and hook them. However
 this means our only speedup was running the game on more CPU cores, which to reach the same throughput as OpenAI
 Five or AlphaStar would be incredibly expensive.
 
-Earlier in April, we focused on speeding up the game server by stepping each game tick instead of running at 30hz.
+Earlier in September, we focused on speeding up the game server by stepping each game tick instead of running at 30hz.
 This involved finding every line of code in the C# engine which relied on wall-clock time and instead setting it
 to use the game server's per step provided time.
 
@@ -83,8 +86,8 @@ directly transpiling functions from the C# game server and validating behaviour.
 
 For context, Numba is a Python package which wraps Python source code and compiles it just-in-time (JIT)
 into machine code using [LLVM](https://en.wikipedia.org/wiki/LLVM). This allows you to greatly improve
-the performance of your Python code without fully translating it into another language. We finally achieved
-a 10,400x speedup vs running a single-game in realtime.
+the performance of your Python code without fully translating it into another language.
+Now the box simulates 10,400 seconds (~2:53 hrs) for one wall-clock second.
 
 <!-- check refs and update appendix -->
 In total we simulate 12 years worth of game play per day (during training) in contrast to OpenAI
@@ -95,7 +98,9 @@ Five's 180 years a day which means that we're ~15x off. However, they use 128,00
 
 At this stage our simulator already achieved high throughput but we ran into new problems. Every time
 we wanted to add new functionality to our Numba simulator, we were forced to re-compile the *entire* simulator
-because recursion broke our cache. Cold compilation took between 20-40 minutes per each change. During this
+because recursion broke our cache. We fixed the cache by breaking recursion, which took a restart from 30 minutes
+to 11 seconds but any big engine change still cost a full recompile.
+Cold compilation took between 20-40 minutes per each change. During this
 we also profiled the bottlenecks within the Numba fastsim itself:
 
 | Level | Component | Share |
@@ -112,11 +117,11 @@ we also profiled the bottlenecks within the Numba fastsim itself:
 | | Minion AI | 2.6% |
 
 One major step stands out, reference counting. This is used to track if arrays are still in use for garbage
-collection. The issue with our fastsim is that the entire game state lives within a single state object which
-contains many array.
-Individual functions then get a hold of the array which blocks further optimisation techniques. Admittedly
-this may not be the best way of implementing this within Numba but the aggregating issues of slow compilation
-times and obvious optimisation targets motivated the port to Rust.
+collection. The issue with our fastsim is that the  whole game state lives in one
+state object holding many arrays. Every time a function reads an array out of that object,
+Numba increments a counter, and decrements it
+when the function returns. Our hot helpers are tiny and called thousands of times a tick, so
+the counting cost more than the work. And nothing was ever freed: the arrays live for the whole run.
 
 ### Rewrite it in Rust
 
