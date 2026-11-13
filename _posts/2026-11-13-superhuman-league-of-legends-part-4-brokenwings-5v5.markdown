@@ -213,15 +213,15 @@ per rollout, 2.6 million agent-steps per update, the two teams swapping sides ev
 
 <!-- ### Model and Training Setup -->
 
-### Round 1: It won't fight
+### It won't fight
 
-### Round 2: It won't end
+### It won't end
 
-### Round 3: It farms, just as it was asked to...
+### It farms, just as it was asked to...
 
-### Round 4: Recalling
+### Recalling
 
-### Round 5: So how good are they?
+### So how good are they?
 
 ## Phase 3: Why won't they end the game?
 
