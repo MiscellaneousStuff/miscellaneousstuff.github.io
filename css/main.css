@@ -1078,3 +1078,100 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
   .arch-link span { bottom: auto; top: 50%; left: calc(50% + 12px); right: 0; transform: translateY(-50%); text-align: left; }
   .arch-name span { display: block; margin: 2px 0 0; }
 }
+/* ------------------------------------------------------------------
+   Stalemate replay figure (Part 4, "The turn"), built by
+   assets/part4/turn-viewer.js into .viz[data-viz="turn-viewer"].
+   ------------------------------------------------------------------ */
+
+.tv { outline: none; font-size: 12.5px; }
+.tv .o { color: #2a78d6; }
+.tv .c { color: #eb6834; }
+.tv-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 12px; }
+.tv-bar .viz-controls { margin-bottom: 0; flex: none; }
+.tv-blurb { flex: 1 1 260px; font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+
+.tv-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; }
+.tv-mapbox { position: relative; aspect-ratio: 1 / 1; border-radius: 3px; overflow: hidden; background: #e7e5df; cursor: pointer; }
+.tv-mapbox canvas { display: block; width: 100%; height: 100%; }
+.tv-overlay {
+  position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+  padding: 16px; text-align: center; font-size: 13px; color: var(--text-muted);
+  background: rgba(251, 250, 247, 0.8);
+}
+.tv-overlay.on { display: flex; }
+.tv-pending .tv-side, .tv-pending .tv-controls { opacity: 0.4; pointer-events: none; }
+
+/* the side panel takes the map's height (contain: size) and scrolls its event list */
+.tv-side { contain: size; display: flex; flex-direction: column; gap: 12px; min-width: 0; font-variant-numeric: tabular-nums; }
+.tv-team-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  margin-bottom: 3px; padding-bottom: 3px; border-bottom: 2px solid var(--c);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c);
+}
+.tv-team-sum { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--text-faint); }
+.tv-row { display: grid; grid-template-columns: minmax(0, 1fr) 20px 40px 58px; align-items: center; gap: 6px; line-height: 1.6; color: var(--text); }
+.tv-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tv-lvl { text-align: right; color: var(--text-faint); }
+.tv-hp { height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.1); overflow: hidden; }
+.tv-hp i { display: block; height: 100%; background: #2e9e44; }
+.tv-kda { text-align: right; color: var(--text-muted); }
+.tv-row.dead { color: var(--text-faint); }
+.tv-row.dead .tv-name { text-decoration: line-through; text-decoration-color: rgba(0, 0, 0, 0.25); }
+.tv-structs { font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.tv-structs b { font-weight: 600; color: rgba(0, 0, 0, 0.8); }
+.tv-structs b.o { color: #2a78d6; }
+.tv-structs b.c { color: #eb6834; }
+.tv-side-title {
+  margin-bottom: -6px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.tv-events { position: relative; flex: 1 1 0; min-height: 0; overflow-y: auto; font-size: 12px; line-height: 1.45; border-top: 1px solid var(--rule); }
+.tv-ev { display: flex; gap: 8px; padding: 3px 4px 3px 8px; border-left: 2px solid var(--c); margin-top: 3px; cursor: pointer; color: var(--text); }
+.tv-ev:hover { background: rgba(0, 0, 0, 0.035); }
+.tv-ev.future { color: var(--text-faint); border-left-color: rgba(0, 0, 0, 0.12); }
+.tv-ev.rc { font-size: 11.5px; color: var(--text-muted); }
+.tv-ev.cur { background: rgba(0, 0, 0, 0.05); font-weight: 500; }
+.tv-ev-t { flex: none; min-width: 4.4em; color: var(--text-faint); }
+
+.tv-controls { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.tv-controls .viz-controls { margin-bottom: 0; flex: none; }
+.tv-play {
+  flex: none; width: 30px; height: 30px; padding: 0; border: 1px solid var(--rule); border-radius: 50%;
+  background: #fff; color: rgba(0, 0, 0, 0.75); font-size: 10px; line-height: 1; cursor: pointer;
+}
+.tv-play:hover { background: rgba(0, 0, 0, 0.04); }
+.tv-clock { flex: none; min-width: 4.6em; font-variant-numeric: tabular-nums; font-weight: 600; color: rgba(0, 0, 0, 0.8); }
+.tv-track { position: relative; flex: 1 1 auto; height: 28px; cursor: pointer; touch-action: none; }
+.tv-track:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 3px; }
+.tv-rail { position: absolute; left: 0; right: 0; top: 17px; height: 3px; border-radius: 2px; background: rgba(0, 0, 0, 0.1); }
+.tv-fill { height: 100%; border-radius: 2px; background: rgba(0, 0, 0, 0.5); }
+.tv-thumb {
+  position: absolute; top: 12.5px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%;
+  background: #fff; border: 2px solid rgba(0, 0, 0, 0.7); pointer-events: none;
+}
+.tv-tick { position: absolute; top: 4px; width: 2px; height: 8px; margin-left: -1px; border-radius: 1px; background: var(--c); opacity: 0.8; }
+.tv-tick.big { top: 2px; height: 10px; width: 3px; margin-left: -1.5px; }
+
+.tv-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px; font-size: 12px; color: var(--text-faint); }
+.tv-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tv-legend i { display: inline-block; flex: none; }
+.tv-lg-hero { width: 12px; height: 12px; border-radius: 50%; background: #2a78d6; }
+.tv-lg-min { width: 6px; height: 6px; background: #eb6834; outline: 1px solid rgba(0, 0, 0, 0.6); }
+.tv-lg-mon { width: 8px; height: 8px; border-radius: 50%; background: #a8a69e; border: 1px solid rgba(0, 0, 0, 0.6); }
+.tv-lg-tur { width: 10px; height: 10px; background: #2a78d6; border: 1.5px solid rgba(0, 0, 0, 0.6); box-shadow: 0 0 0 3px rgba(42, 120, 214, 0.15); }
+.tv-lg-inh { width: 9px; height: 9px; margin: 0 1px; background: #eb6834; border: 1.5px solid rgba(0, 0, 0, 0.6); transform: rotate(45deg); }
+.tv-lg-rc { width: 12px; height: 12px; border-radius: 50%; border: 2px dashed #8a3ffc; }
+.tv-lg-x {
+  width: 10px; height: 10px; border: 1.5px solid #bdbbb4;
+  background: linear-gradient(45deg, transparent 43%, #bdbbb4 43%, #bdbbb4 57%, transparent 57%),
+              linear-gradient(-45deg, transparent 43%, #bdbbb4 43%, #bdbbb4 57%, transparent 57%);
+}
+
+@media (max-width: 640px) {
+  .tv-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .tv-side { contain: none; }
+  .tv-events { flex: none; max-height: 150px; }
+  .tv-controls { flex-wrap: wrap; gap: 6px 10px; }
+  .tv-track { order: 5; flex-basis: 100%; }
+  .tv-controls .viz-controls { margin-left: auto; }
+}

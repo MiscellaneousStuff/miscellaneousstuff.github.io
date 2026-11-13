@@ -504,6 +504,34 @@ The fourth study had a second question: why do some games never end? To answer i
 
 ### The turn
 
+The fourth study had taken 256 games, found the 50 that were still running after two hours, and sorted them into
+two kinds. In 23, one team was camped in the enemy base, killing inhibitors as they respawned and never touching
+the nexus. In the other 27, nothing was happening at all: both teams had most of their turrets, nobody died, and
+the ten heroes spent three quarters of their time in the jungle with the nearest enemy five kilometres away. The
+write-up called the second kind a standoff and described it as an equilibrium: two teams that had each decided the
+other was not worth attacking.
+
+It was a good story. It matched everything we had just learned about agents that farm because farming is paid, and
+it was the fight task's stalemate again at full scale. I had the launch script open.
+
+The study came with a viewer, so I opened one of the standoff games and scrubbed to the two-hour mark, to watch
+what an equilibrium looks like.
+
+There were no minions on the map.
+
+Not few. None, in any lane, for either team. Ten heroes on an empty Summoner's Rift, clearing jungle camps because
+the camps were the only things left that respawned. This meant either our visualiser was broken or fastsim itself
+was broken.
+
+Turns out the artifact was fine...
+
+<figure class="fig">
+<div class="viz" data-viz="turn-viewer" data-src="/assets/part4/turn/"></div>
+<figcaption>Two of the games that were still running after two hours, as fastsim played them: checkpoint v049200 against itself, six minutes of each from the 2:00:00 mark. The policy plays under fog; the replay shows every unit. Press play or click the map, drag the timeline (ticks are kills and structures), or click an event to jump to it. Each game is about 2.5 MB and loads when you reach it.</figcaption>
+</figure>
+
+<script src="/assets/part4/turn-viewer.js" defer></script>
+
 ### The culprits
 
 ### Before and after
