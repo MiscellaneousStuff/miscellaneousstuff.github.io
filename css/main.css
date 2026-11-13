@@ -1167,7 +1167,26 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
               linear-gradient(-45deg, transparent 43%, #bdbbb4 43%, #bdbbb4 57%, transparent 57%);
 }
 
+/* side-by-side pair (Part 4, "Before and after") */
+.tv-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.tv-panel-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 8px;
+  margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--rule);
+}
+.tv-panel-title { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(0, 0, 0, 0.7); }
+.tv-panel-sum { font-size: 12px; color: var(--text-faint); }
+.tv-compact .tv-controls { gap: 8px; margin-top: 10px; }
+.tv-compact .tv-play { width: 26px; height: 26px; }
+.tv-compact .tv-clock { min-width: 3.6em; font-size: 12px; }
+.tv-structs-line { margin-top: 2px; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.tv-pending .tv-structs-line { opacity: 0.4; }
+.tv-pair-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 12px; font-size: 12px; color: var(--text-faint); }
+.tv-pair-foot .viz-controls { margin-bottom: 0; }
+
 @media (max-width: 640px) {
+  .tv-pair { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .tv-compact .tv-controls { flex-wrap: nowrap; }
+  .tv-compact .tv-track { order: 0; flex-basis: auto; }
   .tv-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .tv-side { contain: none; }
   .tv-events { flex: none; max-height: 150px; }

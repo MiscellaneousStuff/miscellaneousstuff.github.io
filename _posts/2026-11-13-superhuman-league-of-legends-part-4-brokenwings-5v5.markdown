@@ -598,7 +598,10 @@ hours on the tenth; now it wins all ten in 14 to 18 minutes. The lock still happ
 opens: in one recorded game a nexus opens, locks again when the last inhibitor respawns at 1:10, opens when an
 inhibitor falls, and dies at 1:16.
 
-<!-- EMBED: one fixed-engine game in the viewer (game 10 of the fixed-engine set shows the re-lock and re-open). -->
+<figure class="fig">
+<div class="viz" data-viz="turn-pair" data-src="/assets/part4/turn/"></div>
+<figcaption>The same checkpoint and the same seed, before and after the fixes. Left: the engine as it was on 12 November, recorded from the two-hour mark. Right: the fixed engine, the whole game. The fixes change the game within its first ten minutes, so this is not one game splitting at a single moment, only two very different endings from the same start. Each side has its own timeline; the speed buttons drive both. About 5 MB per seed, loaded when you reach it.</figcaption>
+</figure>
 
 The roster number is the one that stings. For four days one team had been losing its item auras, shields and crowd
 control a quarter of an hour into most games, and the agents had learned to play around a handicap we did not know
