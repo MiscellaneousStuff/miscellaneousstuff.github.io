@@ -211,44 +211,31 @@ wards. One network drives all ten heroes, told apart by a champion one-hot. Each
 decision under fog of war and acts every 133 ms - 7.5 Hz. Training is PPO with an LSTM: 4,096 games at once, 64 decisions
 per rollout, 2.6 million agent-steps per update, the two teams swapping sides every 1,200 rollouts.
 
-<!--
-### The first thing they learned was not to fight
+<!-- ### Model and Training Setup -->
 
-We started small: both teams dropped near each other in mid lane with a 40-second cap. Within about 100 rollouts
-every game was a draw. Games reaching the cap went from 2% to 47% to 100% by rollout 150, and kills per game from
-six to zero. Early recordings show a team wiped inside 20 seconds, every round. Later ones show one straggler picked
-off, then ten heroes standing apart until the clock runs out.
+### Round 1: It won't fight
 
-Running out the clock is worth exactly zero to both sides. A fight is worth about −1.3 per hero to the weaker
-composition. Not fighting is a Nash equilibrium of that reward, and PPO found it. A draw penalty moved the draw rate
-from 100% to 88%; doubling the penalty moved it back to 93%. So we stopped trying to price the draw and switched to
-the thing that makes avoidance expensive by construction: the full game, with minions, towers and farm.
+### Round 2: It won't end
 
-### Full games
+### Round 3: It farms, just as it was asked to...
 
-Full games ran ten times slower than the benchmark, for a reason that had nothing to do with the engine. A path
-across the map costs about 100 times a local one, and an untrained policy orders them constantly. Limiting move
-targets to 1,500 units, on the agent's side, fixed it without touching a rule.
+### Round 4: Recalling
 
-Six-minute games from level 1 never saw a turret fall, so most games start mid-game instead: heroes pre-levelled
-and in lane, towers already damaged. On the evening of 8 November the first games ended with a nexus kill.
+### Round 5: So how good are they?
 
-### What 128 billion agent-steps bought
+## Phase 3: Why won't they end the game?
 
-Four days later the run was at rollout 49,200: 128 billion agent-steps, about 54 game-years, on one rented box at
-$2.29 an hour.
+### The suspects
 
-- **A jungle nobody asked for.** OpenAI's 2v2 bot found creep blocking by itself after four weeks. Ours found the
-  jungle. Monster kills went from almost none to about ten per hero every ten minutes, and lane last hits roughly
-  doubled. Nothing in the reward mentions camps.
-- **Recall, on the fourth attempt.** Going home to shop only worked once the environment held the channel and a
-  small reward paid for gold spent while alive. After that, agents went home about every two minutes and spent 84%
-  of their gold on live trips.
-- **The scripted bots, early.** By rollout 5,875 the policy took 55 of 64 games from the server's own bots.
+### Peering inside the agents
 
-And one thing it did not buy. On our ladder, 94.5% of games between trained checkpoints hit the 18-minute cap. With
-the cap removed, the median game ran over an hour, and one in five never ended at all.
--->
+### The turn
+
+### The culprits
+
+### Before and after
+
+### The payoff
 
 ## So where do we go from here?
 
@@ -292,4 +279,6 @@ add surgery context
 <!-- | — | Thu 12 Nov 01:46–03:11 | v046575 | Pause: first lineage **tiebreak Elo ladder** (22 ckpts, 43,264 games, 94.5% capped) | — | 1249 (v009600) → plateau → 1370 → dip 1300 (v043200) → **1465 ± 55 (v046575)**; jungling 0.4 → 67 monster kills/game | -->
 <!-- | 9? | 04:07 decision | v048000 | γ 0.999 + team spirit 0.5 | your "do 2 first" | **Unclear it ever ran**: the log's chain reads v043200 → v046575 → v049225 (~04:54, stop) with no mention of it; a relaunch at γ 0.99926 from v049225 was denied by the permission system at ~04:52 | -->
 
-### OpenAI Five game-years per day
+<!-- ### OpenAI Five game-years per day -->
+
+<!-- https://news.ycombinator.com/item?id=17392455 - openai five primary source costing -->
