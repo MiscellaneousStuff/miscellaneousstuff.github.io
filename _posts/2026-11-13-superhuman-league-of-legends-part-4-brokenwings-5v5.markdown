@@ -523,7 +523,29 @@ Not few. None, in any lane, for either team. Ten heroes on an empty Summoner's R
 the camps were the only things left that respawned. This meant either our visualiser was broken or fastsim itself
 was broken.
 
-Turns out the artifact was fine...
+### The culprits
+
+<dl class="lesson"><dt>Bottleneck</dt><dd>fidelity past the seventh minute</dd><dt class="l">Lesson</dt><dd>a diff against the oracle cannot find a bug the oracle shares, or one that needs longer than your traces.</dd></dl>
+
+There were four, and between them they explain every game that would not end.
+
+| What we saw | What it looked like | What it was | Whose bug |
+|---|---|---|---|
+| A team camped in the enemy base, killing inhibitors, never touching the nexus | A policy that prefers a repeatable reward to a risky one | Once both nexus turrets are dead and all three inhibitors respawn, the nexus is locked for the rest of the game | The 2011 server's. We copied it faithfully |
+| Empty lanes | A standoff | 150 minions stuck in a pile beside their own inhibitor | The server's again |
+| No new waves, for either team | The same standoff | The pile filled all 192 minion slots, and new spawns were silently dropped | Ours. The server has no limit |
+| One team winning 80% of long games | An unbalanced pair of rosters | After about 15 minutes, new buffs stopped being applied | Ours. A leak in the Rust port |
+
+**The nexus that never re-opens.** The original map script has a branch to re-open the nexus when an inhibitor
+dies again. It can never run, because it looks up the nexus turrets in a list that dead turrets are never removed
+from. In 24 games that ended with one side locked, the locked side won all 24. When we emulated the intended rule,
+11 of 11 locked games ended within seconds.
+
+**The pile.** One corner of the minion path, next to the inhibitor, is walkable but too narrow for a minion's body.
+If anything is standing there, usually a hero, minions collide, get pushed back out, walk back in, and repeat for
+ever, while every later wave joins them. Put a hero on that corner and 82 minions are stuck within eight minutes.
+The original server does the same, and the proof was in our own files: the recorded server traces we had certified
+against contain the same loop, up to 475 times in a row.
 
 <figure class="fig">
 <div class="viz" data-viz="turn-viewer" data-src="/assets/part4/turn/"></div>
@@ -532,7 +554,23 @@ Turns out the artifact was fine...
 
 <script src="/assets/part4/turn-viewer.js" defer></script>
 
-### The culprits
+**The pool.** This one we added. The fast engine keeps minions in a fixed pool of 192. A pile fills it, and from
+then on no wave spawns anywhere. By minute 60 that had happened in a quarter of games, and by minute 90 in nearly
+nine out of ten.
+
+**The leak.** We found the last one while checking the fixes, in a counter that had been ticking the whole time
+and that nobody read. When a minion dies its slot is reused, but the Rust port never released the dead unit's
+buffs. The buff pool filled about fifteen minutes into every game, and after that new buffs were dropped: item
+auras, shields, slows, silences, jungle buffs, even the one that lets damage interrupt a Recall. It was not
+symmetric. Veigar alone held 41 dead copies of one buff. It was happening in 64% of training games.
+
+None of this could have been caught the way we catch everything else. The simulator was bit-identical to the
+server on 354 traces out of 354, and the longest was under seven minutes. Two of the four bugs are in the server,
+so the diff was clean by construction. The other two need a long game.
+
+Part 2 told this story once already, about a lane simulator that "matched the server on every trace we had" and
+hid two bugs "the short clean traces never exercised". We wrote that down in September and walked into it again in
+November, with ten heroes and sixty-minute games.
 
 ### Before and after
 
