@@ -459,6 +459,49 @@ Before launching, we stopped to look inside the agents we already had.
 
 ### Peering inside the agents
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>we knew what they did, not why</dd><dt class="l">Lesson</dt><dd>ask the network before you change it.</dd></dl>
+
+Then four studies ran in parallel on the latest checkpoint, each with one question and each ending, as in
+Part 3, in a decision.
+
+**How much memory does it use?** We wiped one team's actor memory every N seconds and let it play the other team,
+about 590 games per setting. Wiped every decision, it loses 94% of games. Wiped every second it scores 0.21; every
+five seconds, 0.41; every ten seconds, 0.46, which is the same as never. The actor uses the last five to ten
+seconds and nothing more, and 97 of its 512 memory units never fire. The critic is different: wiping it every two
+minutes nearly halves how well it predicts returns.
+
+<p class="decision"><em>Decision:</em> a bigger LSTM is not worth doing. Memory length, not size, is what the actor lacks.</p>
+
+**What does it know that it cannot see?** Very little. We trained probes to read a hidden enemy's position from
+the LSTM state. Adding the state to a plain record of "last seen here, this long ago" makes the guess worse. It
+does not track enemy cooldowns in the fog, and it does not know its own previous action. Worse, it loses what it
+can see: an enemy hero's position can be read from that unit's encoding with R² 0.92, from the pooled heroes with
+0.70, and from the LSTM state with 0.37. The max-pool that makes the network indifferent to unit order also makes
+it forget which hero was which.
+
+<p class="decision"><em>Decision:</em> pass the nine other heroes to the LSTM unpooled, feed back the previous action, and stop capping the "last seen" timer at ten seconds.</p>
+
+**What does the critic believe?** At its own 67-second horizon it explains 44% of the variance in returns. It is
+a poor judge of who is winning: the sign of its value predicts the winner with AUC 0.71–0.78, while the two
+team line-ups alone give 0.80. But a linear readout of its state predicts 180-second returns as well as it
+predicts 67-second ones, so the information for a longer horizon is already there. Returns at 180 seconds have
+nearly twice the spread.
+
+<p class="decision"><em>Decision:</em> the 180-second horizon is safe to switch on, with return normalisation added alongside it.</p>
+
+**What triggers what?** Roles come from the champion label. Give a hero its own abilities but another champion's
+one-hot, and its jungle farming moves 93% of the way to the other champion's habits. The game clock matters in one
+odd way: past the range seen in training, it switches Recall off. Clamping the clock changes nothing about how
+long games last.
+
+<p class="decision"><em>Decision:</em> rescale the clock input before lifting the cap, or the agents will stop going home in long games (by minute 60 the chance of a Recall is a hundredth of what it is early on).</p>
+
+The picture is the one from Parts 2 and 3 at larger scale. These are reactive agents with a few seconds of memory
+and a local view, and the things they lack (a plan, a map, a sense of the enemy) are the things neither the
+network nor the reward ever gave them. It explained a lot. It did not explain a game that lasts ten hours.
+
+The fourth study had a second question: why do some games never end? To answer it, it built a viewer.
+
 ### The turn
 
 ### The culprits
