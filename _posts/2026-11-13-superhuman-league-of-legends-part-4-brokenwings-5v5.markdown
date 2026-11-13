@@ -377,6 +377,43 @@ first, and both taught nothing. What the agent needed was for the commitment to 
 
 ### So how good are they?
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>a ladder can only rank what its games decide</dd><dt class="l">Lesson</dt><dd>when 95% of your games are draws, the number you are tracking is not the one you care about.</dd></dl>
+
+There are three ways to ask, and by Thursday morning they gave three different answers.
+
+**Against the game's own bots: very.** On Monday, at rollout 5,875 and before it had ever bought an item, the
+policy played 64 games against the server's scripted bots and won 55, drew 8 and lost 1, with 45 kills to 3. Two
+days later, with items, a checkpoint played a full game on the real client and took the nexus in under half an hour.
+This was the first time the agents met anything from outside their own lineage, and it was not close.
+
+**Against their earlier selves: it depends how you count.** On Thursday we paused training and played 22
+checkpoints from across the run against each other: 43,264 games, each from the start, with the 18-minute cap the
+agents trained under. 94.5% of those games hit the cap. Count a capped game as a draw, and the whole run from
+rollout 2,400 to rollout 46,575, about 115 billion agent-steps, is worth 66 Elo. Break the ties by structures
+destroyed and then net worth, and the same games show a steady climb to 1,465. Both are true. One says the agents
+kept getting better at being ahead after 18 minutes. The other says they almost never beat each other.
+
+<!-- CHART: the two Elo curves against rollout, same games: draws-as-half (flat) and tiebreak (rising). -->
+
+**Watching them: they do not finish.** We took the best checkpoint and let ten games run to an hour. Six were
+still undecided at 60:00. The earliest ended at 29:08. In one, a team killed inhibitors eleven times and never took
+the nexus. On the real server, a 45-minute game ended with both nexuses at full health. It looks like low-ranked
+human play: farming is safe, fighting is risky, and nobody knows how to group and close.
+
+So we removed the cap altogether and ran 1,024 games to see how long they would go.
+
+| | |
+|---|---:|
+| Median game length | 64 minutes |
+| Still running after 2 hours | 23% |
+| Still running after 10 hours, when we stopped them | 11% |
+
+For comparison, we ran the same thing with ten heroes that never move. The minion waves alone end that game in
+36 minutes. Our agents, after 128 billion agent-steps of practice, take nearly twice as long as nobody at all, and
+one game in ten they prevent it from ending.
+
+That is not a weak agent. A weak agent loses. This is something else, and Phase 3 is the story of finding out what.
+
 ## Phase 3: Why won't they end the game?
 
 ### The suspects
