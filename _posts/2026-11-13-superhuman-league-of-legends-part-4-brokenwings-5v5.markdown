@@ -629,7 +629,12 @@ reached the two-hour cap.
 </div>
 </figure>
 
-<!-- CHART: Elo against rollouts (the hero chart from the ladder page): lineage line with intervals, bots as an orange line, eras as bands. -->
+<figure class="fig">
+<div class="viz" data-viz="elo-ladder"></div>
+<figcaption>Elo of every checkpoint in the 5v5 lineage against how long it had trained, with the game's scripted bots as the orange dashed line. Seventeen entrants played 10,752 games; ratings come from wins alone, on the chess scale, with an untrained network fixed at 0, and the bars and the orange band are 95% bootstrap intervals. The bot games ran on the real C# server and the rest in the simulator. The two floor policies, one acting at random and one doing nothing, sit in their own column, and the shaded bands are the versions of the environment each checkpoint was trained under. The rollout axis is square-root by default so the early checkpoints, where the bots are passed, do not sit on top of each other; switch to linear to see training time in proportion, or to training hours to see it in time: the run took 88.9 hours on the clock, about 50 of them spent training, and the lineage passed the bots between 1.5 and 4.2 hours in. Absolute values depend on the prior used in the fit; the gaps between trained checkpoints do not.</figcaption>
+</figure>
+
+<script src="/assets/part4/elo-ladder.js" defer></script>
 
 Two things in that chart were invisible a week ago.
 
