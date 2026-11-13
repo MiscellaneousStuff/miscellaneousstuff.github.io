@@ -219,6 +219,42 @@ per rollout, 2.6 million agent-steps per update, the two teams swapping sides ev
 
 ### It won't fight
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>what ends an episode</dd><dt class="l">Lesson</dt><dd>if doing nothing pays zero and fighting can pay less, self-play will do nothing.</dd></dl>
+
+The first thing we ran on the new simulator was a smoke test. Both teams dropped next to each other in mid lane,
+levels 6 to 11, with a 40-second cap. If ten heroes sharing one network could learn anything together, a team fight
+seemed the fastest way to find out.
+
+They learned something within the hour. At rollout 50 the games look like a team fight should as one side is wiped in
+under 20 seconds, every round. By rollout 100 nearly half the games were running out the clock, and by rollout 150
+all of them were. Kills per game went from six to zero, and the value loss fell to 0.001, because there was nothing
+left to predict. A recording from rollout 375 shows one straggler being picked off and then ten heroes standing
+apart in mid lane until time runs out.
+
+<!-- FIGURE: the two clips side by side, rollout 50 (wipe in 14–19 s) and rollout 375 (standing apart) -->
+
+<!-- CHART: share of games reaching the cap, and kills per game, against rollout 0–525. Two panels, shared x-axis. -->
+
+Nothing was broken. The reward was zero-sum with shaping for health, so running out the clock paid exactly zero to
+both teams. A fight paid about −1.3 per hero to whichever side had the weaker composition, and the two rosters are
+far from equal: playing random actions, one of them wins 83% of the time. It takes two to fight, and in an open
+lane the weaker side can always walk away. Not fighting is a Nash equilibrium of the reward we wrote, and PPO found
+it in about 100 rollouts.
+
+| | Weaker team engages | Weaker team avoids |
+|---|---|---|
+| **Stronger team engages** | fight: about −1.3 per hero for the weaker side | no fight: 0 for both |
+| **Stronger team avoids** | no fight: 0 for both | no fight: 0 for both |
+
+We tried to price the draw. A penalty of 1.0 for hitting the cap moved the draw rate from 100% to 88%. Doubling it
+moved it back to 93%. A penalty only works on the weaker team once it exceeds what that team expects to lose by
+fighting, and at that point we would be paying it to die.
+
+This is the third time the series has met this equilibrium. In Part 2 the mirror match settled into a standoff with
+both sides ending every episode on 188 HP. In Part 3, two equal Ezreals could always walk away, and the fix was a
+wall around the arena. With ten heroes the fix is the game itself. We put minions in the lanes and towers behind them,
+and standing still starts to lose. At 18:02 the same evening we stopped tuning the fight and switched to full games.
+
 ### It won't end
 
 ### It farms, just as it was asked to...
