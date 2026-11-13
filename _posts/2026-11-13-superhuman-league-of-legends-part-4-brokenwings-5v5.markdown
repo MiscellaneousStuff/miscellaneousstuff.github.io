@@ -257,7 +257,30 @@ As we're now able to train 5v5 agents on modest hardware, in the next part we wi
 
 ## Appendix
 
-### Network Surgery
+### Training Log
 
+| # | When (GMT) | From ckpt | Change | Why | Result |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | Sun 8 Nov 11:26 | v000000 | Fight task: both teams mid, levels 6–11, 40 s cap | smoke the port | Cap rate 2% (r50) → 47% (r100) → 100% (r150); kills 6 → 0; value loss → 0.001. Not fighting = Nash equilibrium of zero-sum + HP shaping (fight ≈ −1.3/hero). Also: 3 h 50 min idle gap (segment 2 never launched), OOM at nseq 4096 |
+| 0b | 17:40 / 17:5x | v000375 / v000475 | Draw penalty 1.0, then 2.0 | price the draw | 100% → 88% → 93%. Abandoned |
+| 1 | 18:02 | v000525 | **Random-start full game**, cap 2,700, γ 0.995 | make avoidance costly by construction | 0.04–0.09M agent-steps/s (cross-map A* ~100× a local path) |
+| 1b | 18:54 | v000575 | env v1.1 1,500-unit target radius, actor CUDA graph, OMP=1 | speed | 0.15–0.21M |
+| 1c | ~21:46 | — | v1.2 **tower-pressure starts** (age U(5,20) min, pre-levelled, outer turret HP 0.4–1), stagger | "6-min games from age 0 never let a turret fall": 0 turrets at the cap | — |
+| 1d | 22:32 | pool ckpt | engine F1–F3 (2× on minion phase), **cap 5,400** | speed/length | 0.33M; **first nexus kills in the project** |
+| 2 | Mon 9 Nov 04:00 | v003800 | **Cap settlement by structure lead** F=0.5 (v1.3; dead damage term removed) | reward audit: economy 43% / structures 32% / **win 0.5%** of return (98% of games capped) | Objectives recovered but policy went passive (kills 24 → 18.4, nexus 3.6 → 2%) |
+| 2b | 05:47 | v004525 | settle 0.3 | — | v004950 best on every reference (+2.04 turrets vs v001350). ~92% of turret kills are the minion floor (idle heroes: 6.83 turrets/game) |
+| 2c | ~09:20 | r5875 | env v1.4: CHAOS mirror centre fixed (6998, 7236) | real obs bug | Ladder dipped on CHAOS side, recovered by v006450 |
+| — | 10:59 | r6053 | **NaN** (loss nan, kl 101); found at 11:45 | fp16 overflow in update, probably | Restart from v006050 with finite guards, clamp counters; ClipLSTM built, left off |
+| — | 09:17–16:52 | v005550–v007350 | Plateau (4 h sideways on the 12-min ladder); **idle-opponent test**: nexus falls 0% within 12 min from spawn, 98% within 30 | "most draws are a time limit" | Paused 16:52 for behaviour analysis: no jungle (blue buff 0.07/game), 38% last-hit share, 93% of deaths to heroes, all five grouped 1.9% of time |
+| 3 | 17:26 / 17:58 | v007350 / v007550 | **cap 8,100 (18 min), γ 0.998 (67 s horizon)**; env **v1.5**: 25% siege starts, tiered turrets (1.5/2.5), nexus damage paid, **win 5 → 10**, settle 0.15 | put the last fight in front of the policy | Plateau broken: normal-start nexus 1–3% → 7.9%, siege 39%; v007650 best on every reference, wins > losses for the first time; 24-min matchup: 30% decided vs ~5% at 12 min |
+| — | 22:15 Mon → Tue 10 Nov 10:46 | v009175 | Pause for Rust benchmarks, then 7 h campaign | — | Resumed at 1.17M (was 0.33M); r6053 NaN lineage quarantined |
+| — | Tue 10 Nov 13:41 | v013225 | (resume after ladder) | — | v013000 beats v009175 18.0 W / 4.7 L (77% draws); retreat-to-fountain behaviour seen in v010050 |
+| 4 | Wed 11 Nov 02:36 (go) | v015625 (surgery) | **Items (26 stat + 22 scripted) + Recall action**, scripted buyer | #28 | Beats bots on real client (Yi game, nexus 29:48); **Recall spam**: 10,309 started, 0 completed in a live game |
+| 5 | 06:16 | v018000 → sr_p1_items | Recall-channel-progress input (obs 2,858 → 2,914), bias −4, Tabi fix | learnability | Input ignored: spam 14.5% → 17.8% of decisions, ≤0.01% complete |
+| 6 | 13:00 | v027600 | 8 s lockout after a cancelled recall (env mask, v1.8) | your call 12:23 | Spam 1.4%, **0 completions** (v036000: 0/19,178) |
+| 7 | 21:08 | v036000 | **Env holds the channel** (--sr-recall-hold) | your call 19:43 | Recalls complete, but policy stops pressing it (~0.00%); purchases while dead |
+| 8 | 23:31 | v043200 | **Gold-spent reward 0.0015** (alive only), recall bias reset −1.5, counters in log | your "do 1 and 2" | Recall works (81–88% complete, 83% gold spent alive, ~1 trip per 1.8 hero-min); nexus endings 49% → 27–30%; **stronger on the ladder** (v044400 0.62 vs v043200) |
+| — | Thu 12 Nov 01:46–03:11 | v046575 | Pause: first lineage **tiebreak Elo ladder** (22 ckpts, 43,264 games, 94.5% capped) | — | 1249 (v009600) → plateau → 1370 → dip 1300 (v043200) → **1465 ± 55 (v046575)**; jungling 0.4 → 67 monster kills/game |
+| 9? | 04:07 decision | v048000 | γ 0.999 + team spirit 0.5 | your "do 2 first" | **Unclear it ever ran**: the log's chain reads v043200 → v046575 → v049225 (~04:54, stop) with no mention of it; a relaunch at γ 0.99926 from v049225 was denied by the permission system at ~04:52 |
 
 ### OpenAI Five game-years per day
