@@ -203,11 +203,15 @@ On the same 64-core GH200, the real C# game server manages about 2,500 decisions
 
 ## Phase 2: Training 5v5 agents
 
-<dl class="lesson"><dt>Bottleneck</dt><dd>what ends an episode, and what pays</dd><dt class="l">Lesson</dt><dd>self-play finds the cheapest equilibrium in your reward, not the game you had in mind.</dd></dl>
+<!--
+Add context on selecting champs
+-->
 
-The setup is deliberately close to OpenAI Five's in June 2018, restrictions included. Two fixed teams of five
-(Ezreal, Garen, Ashe, Veigar, Malphite against Caitlyn, Warwick, Nunu, Master Yi, Ryze), no summoner spells, no
-wards. One network drives all ten heroes, told apart by a champion one-hot. Each hero sees about 2,900 numbers per
+The setup is deliberately close to OpenAI Five's in June 2018, restrictions included.
+Two fixed teams of five
+(Ezreal, Garen, Ashe, Veigar, Malphite against Caitlyn, Warwick, Nunu, Master Yi, Ryze - [full reasoning here](https://miscellaneousstuff.github.io/2026/11/13/superhuman-league-of-legends-part-4-brokenwings-5v5.html#roster-selection)), no summoner spells, no
+wards. One network drives all ten heroes, told apart by a champion one-hot.
+Each hero sees about 2,900 numbers per
 decision under fog of war and acts every 133 ms - 7.5 Hz. Training is PPO with an LSTM: 4,096 games at once, 64 decisions
 per rollout, 2.6 million agent-steps per update, the two teams swapping sides every 1,200 rollouts.
 
@@ -243,6 +247,56 @@ As we're now able to train 5v5 agents on modest hardware, in the next part we wi
 10 champions on modern League of Legends for patch 26.19 and training 5v5 agents on the full game.
 
 ## Appendix
+
+### Roster Selection
+
+Brokenwings isn't a perfect implementation of the game, some existing champs are buggy or incomplete. We filtered down to 38 champions
+that had their abilities implemented correctly and and associated behavioural tree script sourced from Riot's original season 1 lua files.
+For our project we use the intermediate bot difficulty. Most League players will be familiar with these bots as you start learning the game
+by playing against them. Virtually all experienced League players learn to consistently beat intermediate bots. We already implemented
+Ezreal and Garen during the 1v1 phase and then selected 8 further champions based on champion kit diversity:
+- Two ranged attackers: Ashe + Caitlyn
+- Two mages: Veigar + Ryze
+- Two melee tanks/fighters: Malphite + Warwick
+- Two melee junglers: Nunu + Master Yi
+
+They were then randomly composed into teams:
+- Ezreal, Garen, Malphite, Veigar, Ashe
+- Caitlyn, Warwick, Nunu, Master Yi, Ryze
+
+For context we run the same roster against each other for simplicity throughout training by switch which side the roster is playing on.
+We analysed which roster was stronger based on executing random legal actions for ~1400 games and found the roster with
+`Caitlyn, Warwick, Nunu, Master Yi, Ryze` wins about 83% on either side. This motivated the need to swap the rosters throughout training.
+However fixing the buff leak in the Rust fastsim moved the Ezreal side from 22% to 58% (Thu 12 Nov 15:56), so part of it was the simulator.
+
+<!--
+Short version: the record pins down how the pool was built and why Ezreal/Garen are in it, but I could not find a written sentence saying why the *other eight* were chosen. The planning turn where the roster was fixed (Sat 7 Nov, 16:36–16:46) isn't surfaced by search, bw_master's conversation dump for that window is too large for me to read here, and that session isn't in the transcript archive. What follows is what the record does support.
+1. The 38-champion "clean pool" (Sat 7 Nov, 02:20–04:14)
+Your memory is right: it was a stability test on the real server, before anything was ported.
+-
+tools/bots_5v5_fleet.py: 64 bots-only 5v5 games at once on the C# server, forced fights, 45-minute cap, three runs. From the November log (7 Nov section, written from the worker's record):
+  > "Champion pool: 38 champions ran clean across all three runs (Morgana excluded after 4 script exceptions); 51 excluded (20 script exceptions, 3 silent bot trees, Olaf, 27 with no bot tree)."
+-
+Joe, 04:14: *"we have 38 champs we'll use for our 5v5 experiments"*. Committed as docs/5v5/champion_pool.json in d8e55a28 (the orchestrator thread, turn 1, 06:32: "d8e55a28 has a list of 38 champions that ran with no bugs").
+-
+Context for the exclusions, from the 09:10 "which base" analysis: brokenwings is a fan reimplementation with "22 stubbed primitives, 20 champions that throw, Olaf never dies, item hooks never exercised". So "clean" meant: the champion's scripts run a whole 45-minute bot game without a script exception, and it has a behaviour tree that actually acts.
+-
+A consequence that mattered later: because the pool was built from champions that *ran as bots*, every one of the ten has a real behaviour tree. bw_master confirmed this on Mon 9 Nov 09:41 (correcting its own 09:19 claim that only Garen/Malphite/Yi/Ryze had trees): all ten are in "the advanced set from the 1.0.0.141 leak, namespace 'all', about 60 champions… each with its own attack, threat, kill-champion, push-lane, level-up and item-purchase subtrees." That is what made the bot benchmark possible without changing champions.
+2. Ezreal and Garen: already ported
+They weren't chosen on 7 Nov; they were inherited. The September brokenwings 1v1 fastsim (archived session 7993d974, 22–23 Sep) built fastsim/champions.py with Ezreal (43 probes bit-identical) and Garen's kit ("melee AA, Q Decisive Strike…", 8 probes frame-exact, commit 160cc03d). In the 5v5 port they're described as "native" ("Ezreal and Garen are native", 8 Nov 10:29) — no K-agent wrote them; K5 only added 112 probes for them at 23:15 on the night, and the 7 Nov 23:12 reply notes they had "no per-spell probe set recorded on the frozen 5v5 server, unlike the other eight" until then.
+3. The other eight: what the record shows
+-
+Fixed at 16:46 Sat 7 Nov in docs/5v5/port/PLAN_24H.md, as four kit lanes of two: K1 Ashe + Caitlyn, K2 Veigar + Ryze, K3 Malphite + Warwick, K4 Nunu + Master Yi. The pairs are by kit type (two ranged auto-attackers, two mages, two melee tank/fighters, two melee junglers), each a Python kit plus a numba kernel on its own probe set. GameInfo-5v5-port.json (S, 17:40) and CHAMP_NAMES in E's engine (18:30) carry the same ten.
+-
+All eight are in the 38 pool (the pool is the only champion list that existed before 16:36, so the roster was drawn from it).
+-
+Nothing I can find states the per-champion reasoning (e.g. kit simplicity, cast-type coverage, 2011 meta). I'm not going to invent one.
+4. Two facts worth having in the paragraph
+-
+Composition imbalance was discovered, not designed (Sun 8 Nov 09:16, V's side-asymmetry test, random legal actions, ~1,400 games): normal rosters ORDER 0.140 / CHAOS 0.835; swapped ORDER 0.826 / CHAOS 0.144. "The Caitlyn/Warwick/Nunu/MasterYi/Ryze team wins about 83% on either side." That's why the roster swap every segment exists. It persisted in trained play: Thu 13 Nov 04:19 win-ladder, set B wins ~64% with either roster (v038400: 9% vs 67%); and the buff-leak fix moved the Ezreal side from 22% to 58% (Thu 12 Nov 15:56), so part of it was the simulator.
+-
+Lineage of the roster list: docs/5v5/champion_pool.json (38) → PLAN_24H.md (10) → GameInfo-5v5-port.json → CHAMP_NAMES. The 10 Nov #28 text keeps the door open: "Champions beyond the ten in the roster: the clean pool is 38, and each needs a kit port."
+-->
 
 ### Training Log
 
