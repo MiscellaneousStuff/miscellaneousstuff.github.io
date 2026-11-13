@@ -339,6 +339,42 @@ is safe and fighting is risky, who do attempt to group, and who rarely turn a le
 
 ### Recalling
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>an action that only pays if you keep choosing it</dd><dt class="l">Lesson</dt><dd>when a behaviour cannot be explored, change the environment before you change the reward.</dd></dl>
+
+On Wednesday we added items and the Recall spell. Items were easy: a scripted buyer spends each hero's gold
+whenever it stands in the fountain, so there is no new action and nothing to learn. Recall was a new action, added
+to the trained network by surgery (one new output with zero weights, so the policy behaved exactly as before until
+training moved it).
+
+Recall is hard for a sampling policy for a simple reason. It is a channel, and any move order cancels it. An agent
+that picks an action every 133 ms has to pick "do nothing" dozens of times in a row to get home, and the pay-off
+(a full health bar, new items, and whatever those are worth over the next ten minutes) arrives long after the
+decision. It took four attempts.
+
+| Attempt | Change | What the agents did |
+|---|---|---|
+| 1 | Recall as an action | Spam. In one live game they started 10,309 recalls and completed none. |
+| 2 | Show the channel's progress in the observation | Ignored it. Recall rose from 14.5% to 17.8% of decisions; under 0.01% completed. |
+| 3 | Lock Recall out for 8 seconds after a cancelled channel | Less spam (1.4% of decisions), still nothing learned: 0 of 19,178 completed. |
+| 4 | The environment holds the channel once it starts | Recalls completed, and the policy stopped pressing the button. Heroes shopped when they died. |
+
+The fourth attempt made Recall possible. It did not make it worth anything the agent could see, because with a
+67-second horizon the benefit of an item is mostly out of view. The OpenAI Five paper warns about exactly this when
+handing a new action to the model: "the agent might quickly learn never to take a new action". Its reward table
+also has a term we had skipped: 0.0006 per unit of gold "spent on items without using courier", which pays a hero
+for shopping in person. We borrowed it at 0.0015, and only for gold spent while alive, so that dying and shopping
+at the respawn earns nothing. We also reset the Recall output so the policy would explore it afresh.
+
+That worked. Agents now go home about every two minutes, complete 81–88% of the recalls they start, and spend 83%
+of their gold on trips they chose to make. On the real server, in a 45-minute game, 90 of 117 recalls completed.
+The checkpoint a thousand rollouts after the change beat the one before it 62% of the time.
+
+Three of the four attempts changed what the agent could see or was allowed to do, and only the last touched the
+reward. The lockout and the observation were both cheaper than the fix that worked, which is why we tried them
+first, and both taught nothing. What the agent needed was for the commitment to be made on its behalf.
+
+<!-- CHECK: the Recall channel length in this patch, to replace "dozens of times in a row" with the exact count. -->
+
 ### So how good are they?
 
 ## Phase 3: Why won't they end the game?
