@@ -257,6 +257,46 @@ and standing still starts to lose. At 18:02 the same evening we stopped tuning t
 
 ### It won't end
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>the clock: a 12-minute cap and a 27-second horizon</dd><dt class="l">Lesson</dt><dd>an agent can only learn to finish a game if the finish fits inside its episodes and its discount.</dd></dl>
+
+Full games were supposed to make avoidance expensive. First they had to run. The game task trained at 0.04M
+agent-steps a second, twenty times slower than the benchmark, and the cause was not the engine: a path across the
+map costs about 100 times a local one, and an untrained policy orders them constantly. Limiting move targets to
+1,500 units on the agent's side, with no change to any rule, took it to 0.2M, and three bit-identical engine fixes
+took it to 0.33M.
+
+Then they had to matter. Six-minute games from level 1 never saw a turret fall: at the first cap, all 4,096 games
+ended with zero turrets down. So most games now start in the middle: 5 to 20 minutes in, heroes pre-levelled and
+in lane, outer turrets already damaged. With the cap raised to 12 minutes, the first games in the project ended
+with a nexus kill at 22:32 that night.
+
+Almost none of the others did. 98% of games still hit the cap, and a reward audit showed what that meant:
+
+| Share of the return | |
+|---|---:|
+| Economy (gold, XP, last hits) | 43% |
+| Structures | 32% |
+| Fights | 12% |
+| Health and mana shaping | 12% |
+| **Winning** | **0.5%** |
+
+The policy was being paid to farm and push, and almost never to win. We tried paying capped games by structure
+lead. At half the win reward the policy stopped fighting and sat on its leads: kills per game fell from 24 to 18
+and the nexus rate halved. At 0.3 it fought again and kept most of the gain.
+
+Two measurements then put the result in proportion. With idle heroes, the minion waves alone take 6.8 turrets a
+game, so about 92% of the turrets we were crediting to the policy were falling anyway. And against heroes that do
+nothing, the policy took the nexus in 98% of games given 30 minutes, and in 0% given the 12 it trained on. It could
+finish. Its episodes never lasted long enough for it to be paid for finishing, and with γ = 0.995 at 7.5 decisions
+a second, anything more than about 27 seconds away was worth nearly nothing to it anyway.
+
+By rollout 6,750 the ladder had been flat for four hours. So we changed the clock: an 18-minute cap, a 67-second
+horizon (γ = 0.998), a quarter of games starting as a siege with the base already open, damage to the nexus paid
+directly, and the win reward doubled. The plateau broke within the hour. Nexus kills from a normal start went from
+1–3% of games to 8%, and in a 24-minute matchup 30% of games were decided, against about 5% at 12 minutes.
+
+More time, more finished games. It looked like a problem we could keep solving the same way.
+
 ### It farms, just as it was asked to...
 
 ### Recalling
