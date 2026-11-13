@@ -125,6 +125,35 @@ the counting cost more than the work. And nothing was ever freed: the arrays liv
 
 ### Rewrite it in Rust
 
+Bottleneck: the compiler's bookkeeping. Lesson: *profile first; the rewrite was the conclusion, not the plan.*
+
+"Rewrite it in Rust" is usually a punchline. Here the profile had made the case for us: 59% of the engine was spent counting references to arrays that were never freed, and every attempt to fix that inside Numba cost a half-hour compile.
+
+My first estimate for a port was weeks. That priced it as one careful engineer, which isn't how this project works: the whole 5v5 port had taken nine agents 24 hours, and this was a smaller, better-specified job. The behaviour was already pinned down, so the task was translation, with a diff as the judge.
+
+We scoped it as a drop-in. The Rust engine reads and writes the same state arrays as the Numba engine and exposes one step function to Python, so everything around it stayed as it was, and Numba became the oracle. A lead agent spent 25 minutes on the groundwork: a generated description of the state layout, a rulebook for numerics (the same float32 operation order, no fused multiply-add, no fast-math), and a harness that steps both engines from the same recorded state and reports the first array, index and tick where they differ.
+
+Then the engine was cut into nine families (navigation and vision, movement, casting, AI, rules, damage, the kit core, the scripting API, jungle and kits) with one translator agent each.
+
+| | |
+|---|---:|
+| Functions translated | 871 |
+| Lines of Rust | 16,300 |
+| Time for the nine translators | ~35 minutes |
+| Result | bit-identical to Numba on a 4,000-decision replay of the live policy |
+| Speed on one core, same game | 4.3× Numba |
+
+The speedup is larger than the 2.3× that removing reference counting alone would have given. With the counter updates gone, the compiler could finally optimise the code around them. A rebuild after a change takes minutes rather than half an hour, and an overnight tuning pass on the trainer took end-to-end training from 0.33M to about 1.2M agent-steps a second: 40–44 game-years a day on one box, against roughly 80 for OpenAI Five's Rerun on 51,200 cores.
+
+**Facts behind it, all from the log or measured this week**
+
+- **Decision:** 9 November, 20:24. Scope was a drop-in with numba kept as the oracle.
+- **Groundwork:** about 25 minutes by one lead agent, covering the state contract, numeric rulebook and differential harness.
+- **Translation:** nine families, 871 functions, 16,300 lines, about 35 minutes. Bit-identical on the full replay by 21:27, about an hour after the go.
+- **Speed:** 4.3× numba on one core on the same game, measured today. Whole box: 140k decisions per second including observations.
+- **Training throughput:** 0.33 M before, 1.1–1.2 M after. The log calls the overnight work "the 3.7× campaign".
+- **Game-years:** 40–44 a day in training. Rerun's 80 is derived from the paper (57,600 games at half real time).
+
 
 
 ## So where do we go from here?
