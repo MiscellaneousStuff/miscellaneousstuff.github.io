@@ -418,6 +418,45 @@ That is not a weak agent. A weak agent loses. This is something else, and Phase 
 
 ### The suspects
 
+<dl class="lesson"><dt>Bottleneck</dt><dd>too many good explanations</dd><dt class="l">Lesson</dt><dd>when every hypothesis is plausible, none of them has been tested.</dd></dl>
+
+We had agents that farm, fight, push and go home to shop, and games that do not end. There was no shortage of
+reasons, and each came with a precedent in the OpenAI Five paper.
+
+**The horizon.** With γ = 0.998 at 7.5 decisions a second, the agent discounts the future with a horizon of 67
+seconds. A win five minutes away is worth 1% of its value today: 0.11 out of 10. An inhibitor that has just
+respawned is worth 2, right now, every time. Five trained with a horizon of 180 seconds and later 360.
+
+<!-- CHART: what a win N minutes away is worth today, for horizons of 27 s, 67 s, 180 s and 360 s. Make it slidable -->
+
+**The cap.** Every training episode ends by minute 18, and starts somewhere between minute 5 and 32 of a game.
+Nearly all the real endings the critic ever saw came from the quarter of games that start as a siege. An even game
+played through to a finish was not in the data. Five had no cap at all.
+
+**The reward.** Farming is paid three times over, as we saw. Fighting is too. A capped game is settled by structure
+lead, so "ahead at 18 minutes" is itself a paid objective. Against all that, the win is worth 10. Five paid −0.16
+for a last hit and −0.6 for a kill.
+
+**Team spirit.** Each hero keeps 70% of its own reward and shares 30% with the team. Five started there and
+annealed towards sharing everything, because closing a game is a team action and farming is not.
+
+**The model.** The LSTM is trained on windows of 64 decisions, eight and a half seconds. Perhaps it cannot hold a
+plan for longer than that, and a siege is a long plan.
+
+| Suspect | Ours | OpenAI Five | What we decided |
+|---|---|---|---|
+| Reward horizon | 67 s | 180 s → 360 s | 180 s |
+| Episode cap | 18 min | none | 2 hours |
+| Last hit / kill | +0.16 / +1 | −0.16 / −0.6 | negative for both |
+| Win | 10 | 5 | 20, with larger objective rewards |
+| Team spirit | 0.3 | 0.3 → 0.8 | 0.5 |
+| LSTM size and memory | 512 units, 8.5 s windows | 4,096 units, 2.1 s windows | undecided |
+
+All of these were plausible reasons why our agents were constantly running the clock, but we
+decided to take a step back.
+
+Before launching, we stopped to look inside the agents we already had.
+
 ### Peering inside the agents
 
 ### The turn
