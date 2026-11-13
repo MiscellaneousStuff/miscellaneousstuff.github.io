@@ -20,8 +20,8 @@ we focused on porting our findings from Brokenwings to modern League of Legends 
 a faster than real-time simulator for League of Legends which had similar throughput to OpenAI Five.
 
 Now we want to graduate up to full 5v5 games. However before porting over more of modern League of Legends to our
-gameserver, we instead want to validate two things: \
-1. Scaling up fastsim to the full 5v5 game mode \
+gameserver, we instead want to validate two things:
+1. Scaling up fastsim to the full 5v5 game mode
 2. Determining if our current RL methods can handle the full 5v5 game mode given that its game-tree complexity
 is far higher than a simple mid lane Ezreal 1v1
 
@@ -256,5 +256,8 @@ As we're now able to train 5v5 agents on modest hardware, in the next part we wi
 10 champions on modern League of Legends for patch 26.19 and training 5v5 agents on the full game.
 
 ## Appendix
+
+### Network Surgery
+
 
 ### OpenAI Five game-years per day
