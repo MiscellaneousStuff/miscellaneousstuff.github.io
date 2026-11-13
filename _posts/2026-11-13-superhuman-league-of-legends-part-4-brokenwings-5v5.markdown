@@ -77,8 +77,8 @@ In the [last](https://miscellaneousstuff.github.io/2026/11/04/superhuman-league-
 we ported enough of the game engine for an Ezreal 1v1 and when combined with our training infrastructure managed
 to achieve up to 1.95M agent decisions per second.
 
-Now we wanted to do this for the full 5v5 game and set a target of 24 hours for the initial port. Seeing as we
-had the original source code for the game server we can validate behaviour exactly.
+Now we wanted to do this for the full 5v5 game and set a target of 24 hours for the initial port. With Brokenwings
+original source code, we had a perfect oracle to validate behaviour exactly.
 
 Our first approach
 involved porting the game server to a python reference and creating the Numba implementation in parallel - by
