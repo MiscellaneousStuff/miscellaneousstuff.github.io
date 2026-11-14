@@ -705,26 +705,177 @@ As we're now able to train 5v5 agents on modest hardware, in the next part we wi
 
 ## Appendix
 
+### Observation and action space
+
+<!-- Source: fastsim/SR_ENV_CONTRACT.md v1.10 (the code in fastsim/sr_env.py is authoritative). -->
+<!-- CHECK before publishing: (1) Five's "about 16,000 inputs" figure, from memory of the paper; (2) whether fog of war was on in the training runs (the contract has the flag but I did not confirm its value in the run); (3) that Five scripted items, ability builds and courier (from memory of the paper). -->
+
+Each of the ten heroes is its own agent. Every 133 ms of game time (four engine ticks, 7.5 decisions a second, the
+same rate OpenAI Five used) each hero receives one observation of 2,914 numbers and returns one action made of four
+choices. All ten share one network.
+
+#### What a hero sees
+
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">2,914</span><span class="lbl">numbers per hero per decision</span></div>
+<div><span class="num">55</span><span class="lbl">unit slots, 49 numbers each</span></div>
+<div><span class="num">7.5 Hz</span><span class="lbl">one observation every four engine ticks</span></div>
+<div><span class="num">0</span><span class="lbl">pixels: everything is read from game state</span></div>
+</div>
+</figure>
+
+| Block | Size | What is in it |
+|---|---:|---|
+| Self | 51 | Position, health, mana, level, experience, gold, alive or respawning, cooldown, rank and castable flag for Q W E R, basic attack timer, facing, velocity, attack damage and range, last hits, kills, deaths and assists, recent health change, which team, distance to own fountain, which champion, Recall progress |
+| Missiles | 48 | The 8 nearest missiles within 2,500 units: relative position, velocity, whether it is an enemy's |
+| Game | 120 | Game clock, team kills, who is alive and their respawn timers, health and targetability of all 30 structures, inhibitor respawn timers, state of the 12 jungle camps, time to the next minion wave |
+| Units | 2,695 | 55 slots of 49 numbers, described below |
+
+The unit slots are fixed by class, nearest first within each class, and empty slots are zero:
+
+| Slots | Class | Rule |
+|---:|---|---|
+| 5 | Enemy heroes | Always present. Out of sight: last seen position and health, with the time since |
+| 4 | Allied heroes | Always present |
+| 16 | Enemy lane minions | Visible and within 2,000 units |
+| 12 | Allied lane minions | Within 2,000 units |
+| 8 | Jungle monsters | Visible and within 2,000 units |
+| 6 | Enemy structures | The nearest, at any distance |
+| 4 | Allied structures | The nearest, at any distance |
+
+Each slot carries: what kind of unit it is, relative position and distance, health (as a fraction, and measured in
+"my basic attacks"), health change over the last one and three decisions, whether it is in my attack range, whether
+it can be targeted, and whether it is currently attacking me or one of my allies. Hero slots add mana, the four
+cooldowns, facing, velocity, attack damage, range, champion, and whether the hero is channelling Recall.
+
+**One frame of reference.** The purple team sees the map rotated half a turn, so "my base" is always in the same
+corner and "my top outer turret" is always the same slot. One network plays both sides without having to learn the
+map twice.
+
+**What it cannot see.** There is no inventory: items are felt only through the stats they change. There are no buffs
+or debuffs beyond a single "I am disabled" flag. There is no history except the recent health changes; memory is the
+network's job. And a hero sees only 16 enemy minions and 8 monsters at a time, the nearest ones.
+
+For scale, OpenAI Five's observation was about 16,000 numbers per hero. Ours is under a fifth of that, mostly
+because the game has fewer things in it: no items to choose, no courier, no wards, no runes.
+
+#### What a hero can do
+
+One action is four independent choices:
+
+| Head | Options | Meaning |
+|---|---:|---|
+| Move X | 9 | Offset of −400 to +400 units, in steps of 100 |
+| Move Y | 9 | The same, vertically. Zero on both means stop |
+| Ability | 38 | Nothing, basic attack, Q (9 aim bins), W (9), E (8), R (9), Recall |
+| Target | 55 | Which unit slot the attack or spell is aimed at |
+
+That is 169,290 combinations on paper, of which a mask leaves a small fraction legal at any moment.
+
+**Aiming.** Spells are aimed relative to the chosen target, not at a map coordinate. The nine bins for Q, W and R
+are offsets of 0, ±6, ±12, ±20 and ±35 degrees from the line to the target, which is enough to lead a moving enemy.
+E, usually a dash, gets eight compass directions relative to the target. Spells that lock onto a unit or cast on
+self use a single bin.
+
+**Targets.** A target must be visible, targetable, an enemy or a monster, and within 1,500 units. That last rule is
+ours and exists for speed: without it the policy could order an attack on a turret across the map every decision,
+and the pathfinder re-planned the whole route each time, which made the simulator 20 to 28 times slower. To reach a
+far target the agent has to walk there.
+
+**The mask.** A spell is legal only if it is learned, off cooldown, affordable and the hero is not stunned or
+silenced. The heads are sampled independently, so an illegal pairing (say, a unit-targeted spell with a turret as
+the target) falls back to the nearest legal target, or to doing nothing.
+
+#### What the agent does not control
+
+| Decision | Who makes it |
+|---|---|
+| Skill points | Scripted: ultimate whenever available, otherwise a fixed priority per champion |
+| Items | Scripted: each champion walks a fixed build list whenever it is in the shop and can afford the next item |
+| Summoner spells, wards, item actives | Not in the game yet |
+| Champion select | Fixed: two sets of five, swapped between sides |
+
+So these agents decide where to walk, what to hit, when to cast and when to Recall. Everything about builds is
+decided for them. OpenAI Five made the same split: item purchases, ability builds and courier control were
+scripted there too.
+
+#### Two rules that exist only in training
+
+Both were added to get Recall learned, and neither is in the real game.
+
+- **Recall hold.** Once a hero starts Recall it cannot cancel it: for the eight seconds of the channel its only
+  legal action is to stand still. Damage, stuns and death still interrupt it, as in the game. Without this the
+  policy started a Recall and cancelled it one decision later about nine times in ten, and never once experienced
+  finishing one.
+- **Gold spent.** A small reward for gold spent on items while alive, borrowed from Five, so that going back to
+  base to shop is worth something. Covered in the reward appendix.
+
+#### How it changed
+
+| Version | Date | Change | Observation | Ability head |
+|---|---|---|---:|---:|
+| 1.0–1.5 | 8–9 Nov | First 5v5 contract; target radius; tower-pressure and siege starts | 2,858 | 37 |
+| 1.6 | 10 Nov | Scripted items, Recall action | 2,858 | 38 |
+| 1.7 | 11 Nov | Recall made observable (own progress, others channelling) | 2,914 | 38 |
+| 1.8 | 11 Nov | Lockout after a cancelled Recall (later switched off) | 2,914 | 38 |
+| 1.9 | 11 Nov | Recall hold | 2,914 | 38 |
+| 1.10 | 11 Nov | Gold-spent reward | 2,914 | 38 |
+
+Every step was made on the live network without retraining from scratch. New inputs and the new action were added
+with zero weights, so the network's behaviour was identical the moment before and after each change. The surgery
+appendix has the details.
+
+
 ### Roster Selection
 
-Brokenwings isn't a perfect implementation of the game, some existing champs are buggy or incomplete. We filtered down to 38 champions
-that had their abilities implemented correctly and and associated behavioural tree script sourced from Riot's original season 1 lua files.
-For our project we use the intermediate bot difficulty. Most League players will be familiar with these bots as you start learning the game
-by playing against them. Virtually all experienced League players learn to consistently beat intermediate bots. We already implemented
-Ezreal and Garen during the 1v1 phase and then selected 8 further champions based on champion kit diversity:
-- Two ranged attackers: Ashe + Caitlyn
-- Two mages: Veigar + Ryze
-- Two melee tanks/fighters: Malphite + Warwick
-- Two melee junglers: Nunu + Master Yi
+Brokenwings isn't a perfect implementation of the game: some champions are buggy or incomplete. Before porting
+anything we ran a stability test on the real server, 64 bot-only 5v5 games at once with forced fights and a
+45-minute cap, three times over. A champion made the pool if its scripts ran a whole game without an exception
+and it had a behaviour tree, sourced from Riot's original season 1 Lua files, that actually acts.
 
-They were then randomly composed into teams:
-- Ezreal, Garen, Malphite, Veigar, Ashe
-- Caitlyn, Warwick, Nunu, Master Yi, Ryze
+<figure class="fig">
+<div class="stat-row three">
+<div><span class="num">38</span><span class="lbl">champions ran clean in all three runs: the pool</span></div>
+<div><span class="num">51</span><span class="lbl">excluded: 20 script exceptions, 27 with no bot tree, 3 silent trees, and Olaf, who never dies</span></div>
+<div><span class="num">10</span><span class="lbl">picked: Ezreal and Garen from the 1v1 work, and eight more chosen for kit diversity</span></div>
+</div>
+</figure>
 
-For context we run the same roster against each other for simplicity throughout training by switch which side the roster is playing on.
-We analysed which roster was stronger based on executing random legal actions for ~1400 games and found the roster with
-`Caitlyn, Warwick, Nunu, Master Yi, Ryze` wins about 83% on either side. This motivated the need to swap the rosters throughout training.
-However fixing the buff leak in the Rust fastsim moved the Ezreal side from 22% to 58% (Thu 12 Nov 15:56), so part of it was the simulator.
+Because every champion in the pool runs as a bot, all ten have the full intermediate behaviour tree, which is what
+made the bot benchmark possible. Most League players know these bots from learning the game, and virtually all
+experienced players beat them consistently.
+
+Ezreal and Garen were already ported from the 1v1 phase. The other eight were picked in pairs by kit, one pair per
+porting lane, and the ten were then split into two teams at random:
+
+<figure class="fig">
+<div class="roster">
+<div class="rh"></div><div class="rh ez">Ezreal side</div><div class="rh ca">Caitlyn side</div>
+<div class="rk">From the 1v1<span>already ported</span></div><div class="rc"><i class="ez">Ezreal</i><i class="ez">Garen</i></div><div class="rc"></div>
+<div class="rk">Ranged attackers</div><div class="rc"><i class="ez">Ashe</i></div><div class="rc"><i class="ca">Caitlyn</i></div>
+<div class="rk">Mages</div><div class="rc"><i class="ez">Veigar</i></div><div class="rc"><i class="ca">Ryze</i></div>
+<div class="rk">Melee tanks / fighters</div><div class="rc"><i class="ez">Malphite</i></div><div class="rc"><i class="ca">Warwick</i></div>
+<div class="rk">Melee junglers</div><div class="rc"></div><div class="rc"><i class="ca">Nunu</i><i class="ca">Master Yi</i></div>
+</div>
+<figcaption>The two rosters, by kit. The draw was random, and it put both champions from the 1v1 on one side and both junglers on the other. The rosters swap map sides during training, so a roster is named by a champion rather than by ORDER or CHAOS.</figcaption>
+</figure>
+
+The split turned out to be lopsided. Playing random legal actions for about 1,400 games, the Caitlyn side won
+about 83% of the time on either side of the map, which is why the rosters swap sides every 1,200 rollouts in
+training. Not all of it was the champions, though:
+
+<figure class="fig">
+<div class="barlist half">
+  <div class="name">Random legal actions<span>~1,400 games, either map side</span></div>
+  <div class="track"><div class="bar" style="--w: 14%; --c: #a8a69e"></div><span class="val" style="--w: 14%">14%</span></div>
+  <div class="name">v049200, leaking engine<span>uncapped games, before the fixes</span></div>
+  <div class="track"><div class="bar" style="--w: 22%; --c: #eb6834"></div><span class="val" style="--w: 22%">22%</span></div>
+  <div class="name">v049200, fixed engine<span>same weights, buff leak fixed</span></div>
+  <div class="track"><div class="bar" style="--w: 58%"></div><span class="val" style="--w: 58%">58%</span></div>
+</div>
+<figcaption>Win rate of the Ezreal side; the dashed line is an even split. Fixing the buff leak in the Rust engine (Thu 12 Nov, 15:56) moved it from 22% to 58% with the same checkpoint, so a large part of the imbalance was the simulator, not the draft.</figcaption>
+</figure>
 
 <!--
 Short version: the record pins down how the pool was built and why Ezreal/Garen are in it, but I could not find a written sentence saying why the *other eight* were chosen. The planning turn where the roster was fixed (Sat 7 Nov, 16:36–16:46) isn't surfaced by search, bw_master's conversation dump for that window is too large for me to read here, and that session isn't in the transcript archive. What follows is what the record does support.
@@ -766,28 +917,37 @@ Neural network surgery used zero-padding to extend observations and action heads
 add surgery context
 -->
 
-| # | When (GMT) | From ckpt | Change | Why | Result |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 0 | Sun 8 Nov 11:26 | v000000 | Fight task: both teams mid, levels 6–11, 40 s cap | smoke the port | Cap rate 2% (r50) → 47% (r100) → 100% (r150); kills 6 → 0; value loss → 0.001. Not fighting = Nash equilibrium of zero-sum + HP shaping (fight ≈ −1.3/hero). Also: 3 h 50 min idle gap (segment 2 never launched), OOM at nseq 4096 |
-| 0b | 17:40 / 17:5x | v000375 / v000475 | Draw penalty 1.0, then 2.0 | price the draw | 100% → 88% → 93%. Abandoned |
-| 1 | 18:02 | v000525 | **Random-start full game**, cap 2,700, γ 0.995 | make avoidance costly by construction | 0.04–0.09M agent-steps/s (cross-map A* ~100× a local path) |
-| 1b | 18:54 | v000575 | env v1.1 1,500-unit target radius, actor CUDA graph, OMP=1 | speed | 0.15–0.21M |
-| 1c | ~21:46 | — | v1.2 **tower-pressure starts** (age U(5,20) min, pre-levelled, outer turret HP 0.4–1), stagger | "6-min games from age 0 never let a turret fall": 0 turrets at the cap | — |
-| 1d | 22:32 | pool ckpt | engine F1–F3 (2× on minion phase), **cap 5,400** | speed/length | 0.33M; **first nexus kills in the project** |
-| 2 | Mon 9 Nov 04:00 | v003800 | **Cap settlement by structure lead** F=0.5 (v1.3; dead damage term removed) | reward audit: economy 43% / structures 32% / **win 0.5%** of return (98% of games capped) | Objectives recovered but policy went passive (kills 24 → 18.4, nexus 3.6 → 2%) |
-| 2b | 05:47 | v004525 | settle 0.3 | — | v004950 best on every reference (+2.04 turrets vs v001350). ~92% of turret kills are the minion floor (idle heroes: 6.83 turrets/game) |
-| 2c | ~09:20 | r5875 | env v1.4: CHAOS mirror centre fixed (6998, 7236) | real obs bug | Ladder dipped on CHAOS side, recovered by v006450 |
-| — | 10:59 | r6053 | **NaN** (loss nan, kl 101); found at 11:45 | fp16 overflow in update, probably | Restart from v006050 with finite guards, clamp counters; ClipLSTM built, left off |
-| — | 09:17–16:52 | v005550–v007350 | Plateau (4 h sideways on the 12-min ladder); **idle-opponent test**: nexus falls 0% within 12 min from spawn, 98% within 30 | "most draws are a time limit" | Paused 16:52 for behaviour analysis: no jungle (blue buff 0.07/game), 38% last-hit share, 93% of deaths to heroes, all five grouped 1.9% of time |
-| 3 | 17:26 / 17:58 | v007350 / v007550 | **cap 8,100 (18 min), γ 0.998 (67 s horizon)**; env **v1.5**: 25% siege starts, tiered turrets (1.5/2.5), nexus damage paid, **win 5 → 10**, settle 0.15 | put the last fight in front of the policy | Plateau broken: normal-start nexus 1–3% → 7.9%, siege 39%; v007650 best on every reference, wins > losses for the first time; 24-min matchup: 30% decided vs ~5% at 12 min |
-| — | 22:15 Mon → Tue 10 Nov 10:46 | v009175 | Pause for Rust benchmarks, then 7 h campaign | — | Resumed at 1.17M (was 0.33M); r6053 NaN lineage quarantined |
-| — | Tue 10 Nov 13:41 | v013225 | (resume after ladder) | — | v013000 beats v009175 18.0 W / 4.7 L (77% draws); retreat-to-fountain behaviour seen in v010050 |
-| 4 | Wed 11 Nov 02:36 (go) | v015625 (surgery) | **Items (26 stat + 22 scripted) + Recall action**, scripted buyer | #28 | Beats bots on real client (Yi game, nexus 29:48); **Recall spam**: 10,309 started, 0 completed in a live game |
-| 5 | 06:16 | v018000 → sr_p1_items | Recall-channel-progress input (obs 2,858 → 2,914), bias −4, Tabi fix | learnability | Input ignored: spam 14.5% → 17.8% of decisions, ≤0.01% complete |
-| 6 | 13:00 | v027600 | 8 s lockout after a cancelled recall (env mask, v1.8) | Three options (reward item value, hold the channel, a lockout after a cancel). Picked the lockout: the cheapest change, no engine edit, env mask only. Restarted at 13:00. | Spam 1.4%, **0 completions** (v036000: 0/19,178) |
-| 7 | 21:08 | v036000 | **Env holds the channel** (--sr-recall-hold) | The lockout cut the spam and taught nothing: 0 of 19,178 recalls completed at v036000. The environment holds the channel once it starts. | Recalls complete, but policy stops pressing it (~0.00%); purchases while dead |
-| 8 | 23:31 | v043200 | **Gold-spent reward 0.0015** (alive only), recall bias reset −1.5, counters in log | Held recall worked and the policy stopped using it. OpenAI Five's 'no courier' trick -  and a second, milder recall bias reset.  | Recall works (81–88% complete, 83% gold spent alive, ~1 trip per 1.8 hero-min); nexus endings 49% → 27–30%; **stronger on the ladder** (v044400 0.62 vs v043200) |
-| — | Thu 12 Nov 01:46–03:11 | v046575 | Pause: first lineage **tiebreak Elo ladder** (22 ckpts, 43,264 games, 94.5% capped) | — | 1249 (v009600) → plateau → 1370 → dip 1300 (v043200) → **1465 ± 55 (v046575)**; jungling 0.4 → 67 monster kills/game |
+<figure class="fig">
+<div class="tlog-legend"><span class="k-task">task</span><span class="k-env">env</span><span class="k-reward">reward</span><span class="k-engine">engine</span><span class="k-model">model</span><span class="k-incident">incident</span><span class="k-pause">pause / eval</span></div>
+<ol class="tlog">
+<li class="day">Sun 8 Nov</li>
+<li class="k-task"><div class="tl-head"><span class="tl-t">11:26</span><span class="tl-n">#0</span><b>Fight task</b><span class="tl-k">task</span><span class="tl-ck">from v000000</span></div><p>Both teams in mid lane, levels 6–11, a 40-second cap.</p><dl><dt>Why</dt><dd>Smoke-test the port.</dd><dt>Result</dt><dd>Cap rate 2% at rollout 50, 47% at 100, 100% at 150; kills per game 6 → 0; value loss → 0.001. Not fighting is the Nash equilibrium of a zero-sum reward with HP shaping (a fight ≈ −1.3 per hero). Also a 3 h 50 min idle gap (segment 2 never launched) and an out-of-memory error at 4,096 sequences.</dd></dl></li>
+<li class="k-reward"><div class="tl-head"><span class="tl-t">17:40</span><span class="tl-n">#0b</span><b>Draw penalty</b><span class="tl-k">reward</span><span class="tl-ck">from v000375</span></div><p>1.0, then 2.0 from v000475 (17:5x).</p><dl><dt>Why</dt><dd>Price the draw.</dd><dt>Result</dt><dd>Draw rate 100% → 88% → 93%. Abandoned.</dd></dl></li>
+<li class="k-task"><div class="tl-head"><span class="tl-t">18:02</span><span class="tl-n">#1</span><b>Random-start full games</b><span class="tl-k">task</span><span class="tl-ck">from v000525</span></div><p>Cap 2,700 decisions, γ 0.995.</p><dl><dt>Why</dt><dd>Make avoidance costly by construction.</dd><dt>Result</dt><dd>0.04–0.09M agent-steps/s: a cross-map A* path costs ~100× a local one.</dd></dl></li>
+<li class="k-engine"><div class="tl-head"><span class="tl-t">18:54</span><span class="tl-n">#1b</span><b>Speed</b><span class="tl-k">engine</span><span class="tl-ck">from v000575</span></div><p>Env v1.1: 1,500-unit move-target radius, actor CUDA graph, OMP=1.</p><dl><dt>Why</dt><dd>Throughput.</dd><dt>Result</dt><dd>0.15–0.21M agent-steps/s.</dd></dl></li>
+<li class="k-env"><div class="tl-head"><span class="tl-t">~21:46</span><span class="tl-n">#1c</span><b>Tower-pressure starts</b><span class="tl-k">env</span></div><p>Env v1.2: games start 5–20 minutes in (uniform), heroes pre-levelled, outer turrets at 40–100% HP, staggered.</p><dl><dt>Why</dt><dd>Six-minute games from minute 0 never let a turret fall: 0 turrets down at the cap.</dd></dl></li>
+<li class="k-engine"><div class="tl-head"><span class="tl-t">22:32</span><span class="tl-n">#1d</span><b>Engine F1–F3, cap 5,400</b><span class="tl-k">engine</span><span class="tl-ck">from pool</span></div><p>2× on the minion phase; the cap doubled.</p><dl><dt>Why</dt><dd>Speed and game length.</dd><dt>Result</dt><dd>0.33M agent-steps/s. <strong>The first nexus kills in the project.</strong></dd></dl></li>
+<li class="day">Mon 9 Nov</li>
+<li class="k-reward"><div class="tl-head"><span class="tl-t">04:00</span><span class="tl-n">#2</span><b>Capped games settled by structure lead</b><span class="tl-k">reward</span><span class="tl-ck">from v003800</span></div><p>F = 0.5 (env v1.3; a dead damage term removed).</p><dl><dt>Why</dt><dd>Reward audit: economy 43%, structures 32%, winning 0.5% of the return, with 98% of games capped.</dd><dt>Result</dt><dd>Objectives recovered, but the policy went passive: kills 24 → 18.4, nexus kills 3.6% → 2%.</dd></dl></li>
+<li class="k-reward"><div class="tl-head"><span class="tl-t">05:47</span><span class="tl-n">#2b</span><b>Settlement 0.3</b><span class="tl-k">reward</span><span class="tl-ck">from v004525</span></div><dl><dt>Result</dt><dd>v004950 best on every reference (+2.04 turrets vs v001350). About 92% of turret kills are the minion floor: idle heroes still lose 6.83 turrets a game.</dd></dl></li>
+<li class="k-env"><div class="tl-head"><span class="tl-t">~09:20</span><span class="tl-n">#2c</span><b>CHAOS mirror fix</b><span class="tl-k">env</span><span class="tl-ck">from r5875</span></div><p>Env v1.4: the CHAOS mirror centre corrected to (6998, 7236).</p><dl><dt>Why</dt><dd>A real observation bug.</dd><dt>Result</dt><dd>The ladder dipped on the CHAOS side and recovered by v006450.</dd></dl></li>
+<li class="k-incident quiet"><div class="tl-head"><span class="tl-t">10:59</span><b>NaN</b><span class="tl-k">incident</span><span class="tl-ck">from r6053</span></div><p>Loss NaN, KL 101; found at 11:45.</p><dl><dt>Why</dt><dd>Probably an fp16 overflow in the update.</dd><dt>Result</dt><dd>Restarted from v006050 with finite guards and clamped counters; ClipLSTM built and left off.</dd></dl></li>
+<li class="k-pause quiet"><div class="tl-head"><span class="tl-t">09:17–16:52</span><b>Plateau, then a pause</b><span class="tl-k">pause / eval</span><span class="tl-ck">from v005550–v007350</span></div><p>Four hours sideways on the 12-minute ladder. Idle-opponent test: the nexus falls in 0% of games within 12 minutes of spawn, 98% within 30.</p><dl><dt>Why</dt><dd>Most draws are a time limit.</dd><dt>Result</dt><dd>Paused at 16:52 for behaviour analysis: no jungle (blue buff 0.07 a game), 38% last-hit share, 93% of deaths to heroes, all five grouped 1.9% of the time.</dd></dl></li>
+<li class="k-env"><div class="tl-head"><span class="tl-t">17:26</span><span class="tl-n">#3</span><b>The clock</b><span class="tl-k">env</span><span class="tl-ck">from v007350</span></div><p>Cap 8,100 (18 min), γ 0.998 (a 67-second horizon); env v1.5 from v007550 (17:58): 25% siege starts, tiered turrets (1.5 / 2.5), nexus damage paid, win 5 → 10, settlement 0.15.</p><dl><dt>Why</dt><dd>Put the last fight in front of the policy.</dd><dt>Result</dt><dd>Plateau broken: normal-start nexus kills 1–3% → 7.9%, sieges 39%; v007650 best on every reference, more wins than losses for the first time; in a 24-minute matchup 30% of games decided vs ~5% at 12 minutes.</dd></dl></li>
+<li class="k-pause quiet"><div class="tl-head"><span class="tl-t">22:15</span><b>Pause for Rust</b><span class="tl-k">pause / eval</span><span class="tl-ck">from v009175</span></div><p>Rust benchmarks, then a 7-hour campaign; resumed Tue 10 Nov 10:46.</p><dl><dt>Result</dt><dd>Resumed at 1.17M agent-steps/s (was 0.33M); the r6053 NaN lineage quarantined.</dd></dl></li>
+<li class="day">Tue 10 Nov</li>
+<li class="k-pause quiet"><div class="tl-head"><span class="tl-t">13:41</span><b>Resume after a ladder</b><span class="tl-k">pause / eval</span><span class="tl-ck">from v013225</span></div><dl><dt>Result</dt><dd>v013000 beats v009175 18.0 W / 4.7 L (77% draws); retreat-to-fountain behaviour seen in v010050.</dd></dl></li>
+<li class="day">Wed 11 Nov</li>
+<li class="k-model"><div class="tl-head"><span class="tl-t">02:36</span><span class="tl-n">#4</span><b>Items and Recall</b><span class="tl-k">model</span><span class="tl-ck">from v015625</span></div><p>Surgery: 26 stat items and 22 scripted items with a scripted buyer, plus a Recall action.</p><dl><dt>Why</dt><dd>Plan #28.</dd><dt>Result</dt><dd>Beats the bots on the real client (Master Yi game, nexus at 29:48). Recall spam: 10,309 started, 0 completed in a live game.</dd></dl></li>
+<li class="k-model"><div class="tl-head"><span class="tl-t">06:16</span><span class="tl-n">#5</span><b>Recall progress input</b><span class="tl-k">model</span><span class="tl-ck">from v018000</span></div><p>Channel progress added to the observation (2,858 → 2,914 inputs), Recall bias −4, a Tabi fix.</p><dl><dt>Why</dt><dd>Make Recall learnable.</dd><dt>Result</dt><dd>Ignored: Recall rose from 14.5% to 17.8% of decisions, ≤0.01% completed.</dd></dl></li>
+<li class="k-env"><div class="tl-head"><span class="tl-t">13:00</span><span class="tl-n">#6</span><b>Recall lockout</b><span class="tl-k">env</span><span class="tl-ck">from v027600</span></div><p>8 seconds masked after a cancelled Recall (env v1.8).</p><dl><dt>Why</dt><dd>Of three options (reward item value, hold the channel, a lockout), the cheapest: no engine edit, env mask only.</dd><dt>Result</dt><dd>Spam 1.4% of decisions, 0 completions (v036000: 0 of 19,178).</dd></dl></li>
+<li class="k-env"><div class="tl-head"><span class="tl-t">21:08</span><span class="tl-n">#7</span><b>The environment holds the channel</b><span class="tl-k">env</span><span class="tl-ck">from v036000</span></div><p><code>--sr-recall-hold</code>: once started, Recall runs to completion.</p><dl><dt>Why</dt><dd>The lockout cut the spam and taught nothing.</dd><dt>Result</dt><dd>Recalls complete, but the policy stopped pressing it (~0.00%) and shopped when dead.</dd></dl></li>
+<li class="k-reward"><div class="tl-head"><span class="tl-t">23:31</span><span class="tl-n">#8</span><b>Gold-spent reward</b><span class="tl-k">reward</span><span class="tl-ck">from v043200</span></div><p>0.0015 per gold spent while alive (OpenAI Five's 'no courier' term), a second, milder Recall bias reset (−1.5), counters in the log.</p><dl><dt>Why</dt><dd>Held Recall worked and the policy stopped using it.</dd><dt>Result</dt><dd>Recall works: 81–88% completed, 83% of gold spent alive, about one trip per 1.8 hero-minutes; nexus endings 49% → 27–30%; stronger on the ladder (v044400 scores 0.62 vs v043200).</dd></dl></li>
+<li class="day">Thu 12 Nov</li>
+<li class="k-pause quiet"><div class="tl-head"><span class="tl-t">01:46–03:11</span><b>Tiebreak Elo ladder</b><span class="tl-k">pause / eval</span><span class="tl-ck">from v046575</span></div><p>The first lineage ladder: 22 checkpoints, 43,264 games, 94.5% capped.</p><dl><dt>Result</dt><dd>1,249 (v009600) → plateau → 1,370 → dip to 1,300 (v043200) → 1,465 ± 55 (v046575); jungling 0.4 → 67 monster kills a game.</dd></dl></li>
+</ol>
+<figcaption>Every change to the training run, from the first smoke test to the first Elo ladder. Times are GMT. Numbered entries changed the task, the environment, the reward or the model; unnumbered ones are incidents, pauses and evaluations. The weights were never reset: new inputs and outputs were added by surgery.</figcaption>
+</figure>
 
 <!-- ### OpenAI Five game-years per day -->
 
