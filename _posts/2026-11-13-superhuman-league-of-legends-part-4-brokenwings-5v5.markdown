@@ -1004,6 +1004,97 @@ lineage ever played a whole game from minute zero during training.
 
 <!-- CHECK the Five column against the paper before publishing: 159 M parameters and the 4,096-unit LSTM are from memory; "pooled across the team" refers to the cross-hero max-pool in their architecture figure; the batch line is from their compute appendix as I remember it. -->
 
+### How the ladder was built
+
+<!-- Source: scratch ladder2/fit.py, ladder2/play2.py, botladder/{games,fs_games,bot_games}.jsonl and botladder/fit.json. Counts below were recomputed from the game files: 10,688 games in the fit, 43 pairings, sides and rosters exactly balanced, every game ended by nexus. -->
+
+Every rating in this post comes from one rule: a game is won by destroying the nexus, and nothing else counts.
+
+#### The games
+
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">17</span><span class="lbl">entrants: 14 checkpoints, the bots, a random policy and one that never acts</span></div>
+<div><span class="num">10,688</span><span class="lbl">games in the ratings, over 43 pairings</span></div>
+<div><span class="num">100%</span><span class="lbl">ended by a destroyed nexus</span></div>
+<div><span class="num">0</span><span class="lbl">games reached the two-hour cap</span></div>
+</div>
+</figure>
+
+<figure class="fig">
+<div class="spec">
+<div><span>Entrants</span>Fourteen checkpoints from rollout 0 to 49,225, the server's intermediate bots, a policy that picks uniformly among legal actions, and one that never acts</div>
+<div><span>Games per pairing</span>64 to 768, more where two entrants were close</div>
+<div><span>Start</span>A normal game from minute zero: level 1, 475 gold, at the fountain. Not the mid-game starts used in training</div>
+<div><span>Sides and champions</span>Each pairing split exactly evenly between blue and purple, and between the two champion sets</div>
+<div><span>Policy</span>Actions sampled as in training, not the single most likely action</div>
+<div><span>Vision</span>Fog of war on</div>
+<div><span>Engine</span>The fixed simulator for checkpoint games; the fixed C# server for every game involving the bots</div>
+<div><span>Recall</span>Checkpoints from before Recall existed play with it switched off, as they were trained</div>
+</div>
+</figure>
+
+Balancing sides and champion sets inside every pairing matters because both are worth a lot. The set with Caitlyn,
+Warwick, Nunu, Master Yi and Ryze wins 60% of games between equal policies. An unbalanced schedule would have
+rated the champions, not the agents.
+
+#### The rating
+
+We fit a Bradley–Terry model, which is the model behind Elo: each entrant has one number, and the chance that A
+beats B depends only on the difference between their numbers. A gap of 400 points means ten-to-one odds.
+
+<figure class="fig">
+<div class="viz" data-viz="elo-curve"></div>
+<figcaption>What a rating gap means. The curve is the model; the hollow points are the real results of four entrants against the bots, at the gaps the ratings give them. Rollout 1,350 is rated 264 above the bots, which predicts 82%; it won 103 of 128, 80%.</figcaption>
+</figure>
+
+<figure class="fig">
+<ol class="method-steps">
+  <li><b>Fitted all at once</b>The single set of numbers that best explains all 10,688 results together. No update order and no K-factor, as in a running Elo.</li>
+  <li><b>Anchored at zero</b>The untrained network, rollout 0, is fixed at 0. Every other number is a distance from it.</li>
+  <li><b>One imaginary draw</b>A 64–0 pairing alone would put the winner infinitely far ahead. One drawn game per pairing keeps it finite and barely moves anything else.</li>
+  <li><b>300 resamples</b>Games are resampled within each pairing, with replacement, and refit each time; the middle 95% is the interval.</li>
+</ol>
+</figure>
+
+#### How to read the numbers
+
+<figure class="fig">
+<div class="suspects read3">
+<div><h4>Differences beat positions</h4>The best checkpoint is at 2,966, with an interval of 2,875 to 3,119. The gap between the top two is 23, with an interval of 4 to 44, because they played each other 768 times. Far-apart entrants are linked only through chains of opponents, and the uncertainty adds up along the chain.</div>
+<div><h4>Large gaps are chained</h4>Fifteen of the 43 pairings were clean sweeps, such as 256–0, and a sweep only says "at least this far apart". "2,966" is the sum of fourteen rungs, not a measured score against rollout 0.</div>
+<div><h4>The bots are the outside anchor</h4>Everything else is the lineage playing itself. The bots sit at 725, between rollout 600 and rollout 1,350: the only number here an outside reader can reproduce without our checkpoints.</div>
+</div>
+</figure>
+
+#### Two engines, one ladder
+
+The bots exist only in the C# server, so those 640 games were played there, with our policy driving one team
+through the server's own interface and the bots the other. That only works if a checkpoint is the same player on
+both engines. We checked with one pairing played on both:
+
+<figure class="fig">
+<div class="barlist">
+  <div class="name">On the C# server<span>64 games</span></div>
+  <div class="track"><div class="bar" style="--w: 98.4%; --c: #eb6834"></div><span class="val" style="--w: 98.4%">98.4%</span></div>
+  <div class="name">In the simulator<span>256 games</span></div>
+  <div class="track"><div class="bar" style="--w: 98%"></div><span class="val" style="--w: 98%">98.0%</span></div>
+</div>
+<figcaption>Rollout 9,600's win rate against rollout 2,400 on each engine. The 64 server games of this check are not in the ratings, which is why the post says 10,752 games played and 10,688 rated.</figcaption>
+</figure>
+
+#### What it cannot tell you
+
+<figure class="fig">
+<div class="limits">
+<div><b>Nothing about humans</b>There is no human game anywhere in this data.</div>
+<div><b>One difficulty of bot</b>Intermediate is the only setting we played.</div>
+<div><b>One pair of champion sets</b>A different ten champions would be a different ladder.</div>
+<div><b>Trained on a broken game</b>Every checkpoint learned on the simulator before the fixes and is rated after. The ladder measures what they can do on a correct game, not what they were trained to do.</div>
+<div><b>One unexplained dip</b>Rollout 49,200 rates 292 below the checkpoint saved 25 rollouts later. Every weak late checkpoint falls on a multiple of 1,200 rollouts, where training swapped the champion sets, and the two strongest are the only ones that do not. We have not yet tested neighbouring checkpoints to confirm it.</div>
+</div>
+</figure>
+
 ### Roster Selection
 
 Brokenwings isn't a perfect implementation of the game: some champions are buggy or incomplete. Before porting

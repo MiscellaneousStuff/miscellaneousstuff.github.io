@@ -571,6 +571,60 @@
     return draw;
   };
 
+  // Elo / Bradley-Terry: win probability against rating gap, with the gaps the
+  // post talks about, and the observed results against the bots on top.
+  FIGS['elo-curve'] = function (fig) {
+    function pw(d) { return 1 / (1 + Math.pow(10, -d / 400)); }
+    var marks = [
+      { d: 23, k: 'top two checkpoints' }, { d: 292, k: 'the dip: v049225 over v049200' }, { d: 400, k: 'ten-to-one odds' }
+    ];
+    var obs = [
+      { d: 40 - 725, w: 0, g: 128, k: 'Rollout 600 vs bots' }, { d: 11 - 725, w: 0, g: 64, k: 'Random actions vs bots' },
+      { d: 989 - 725, w: 103, g: 128, k: 'Rollout 1,350 vs bots' }, { d: 1251 - 725, w: 128, g: 128, k: 'Rollout 2,400 vs bots' }
+    ];
+    var tip = tooltip(fig);
+    legend(fig, [{ label: 'Bradley–Terry model', color: C.blue, line: true }, { label: 'observed result against the bots', color: C.orange, hollow: true }]);
+    var host = h('div', null, fig);
+    h('div', 'viz-axis-label', fig, 'Rating gap, A minus B (Elo points)');
+    function draw() {
+      host.innerHTML = '';
+      var W = width(fig), narrow = W < 560, H = narrow ? 230 : 260, m = { l: 40, r: 14, t: 14, b: 24 };
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'viz-panel', role: 'img', 'aria-label': 'Probability of winning against rating gap' }, host);
+      var x = linear(-800, 800, m.l, W - m.r), y = linear(0, 1, H - m.b, m.t);
+      [0, 0.25, 0.5, 0.75, 1].forEach(function (v) {
+        el('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: v === 0.5 ? 'viz-ref' : 'viz-grid' }, svg);
+        txt(svg, m.l - 6, y(v) + 3.5, Math.round(v * 100) + '%', 'viz-tick', 'end');
+      });
+      (narrow ? [-800, -400, 0, 400, 800] : [-800, -600, -400, -200, 0, 200, 400, 600, 800]).forEach(function (v) {
+        txt(svg, x(v), H - m.b + 15, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), 'viz-tick', 'middle');
+      });
+      el('line', { x1: x(0), x2: x(0), y1: m.t, y2: H - m.b, class: 'viz-grid' }, svg);
+      var d = '';
+      for (var i = 0; i <= 160; i++) { var g = -800 + i * 10; d += (i ? 'L' : 'M') + x(g).toFixed(1) + ',' + y(pw(g)).toFixed(1); }
+      el('path', { d: d, class: 'viz-line', stroke: C.blue }, svg);
+      marks.forEach(function (mk, i) {
+        var px = x(mk.d), py = y(pw(mk.d));
+        el('line', { x1: px, x2: px, y1: py, y2: H - m.b, stroke: C.blue, 'stroke-dasharray': '2 3', opacity: 0.6 }, svg);
+        el('circle', { cx: px, cy: py, r: 4.5, fill: C.blue, stroke: '#fff', 'stroke-width': 2 }, svg);
+        if (!narrow || i === 2) halo(txt(svg, px - 7, py - 8 - (i === 0 ? 10 : 0), mk.d + ': ' + Math.round(pw(mk.d) * 100) + '%', 'viz-note', 'end'));
+        var hit = el('circle', { cx: px, cy: py, r: 12, fill: 'transparent' }, svg);
+        hover(hit, function (e) { tip.show('<b>Gap of ' + mk.d + '</b> (' + mk.k + ')<br>predicted win rate <b>' + (pw(mk.d) * 100).toFixed(1) + '%</b>', e); }, tip.hide);
+      });
+      obs.forEach(function (o) {
+        var px = x(o.d), py = y(o.w / o.g), pr = pw(o.d);
+        var c = el('circle', { cx: px, cy: py, r: 5, fill: '#fff', stroke: C.orange, 'stroke-width': 2 }, svg);
+        var hit = el('circle', { cx: px, cy: py, r: 12, fill: 'transparent' }, svg);
+        hover(hit, function (e) { c.setAttribute('r', 6.5); tip.show('<b>' + o.k + '</b><br>gap ' + (o.d > 0 ? '+' : '−') + Math.abs(o.d) + ' · predicted <b>' + (pr * 100).toFixed(1) + '%</b><br>observed <b>' + o.w + '–' + (o.g - o.w) + '</b> (' + Math.round(o.w / o.g * 100) + '%)', e); },
+          function () { c.setAttribute('r', 5); tip.hide(); });
+      });
+    }
+    draw();
+    dataTable(fig, ['Pairing', 'Rating gap', 'Predicted', 'Observed'], obs.map(function (o) {
+      return [o.k, (o.d > 0 ? '+' : '−') + Math.abs(o.d), (pw(o.d) * 100).toFixed(1) + '%', o.w + '–' + (o.g - o.w) + ' (' + Math.round(o.w / o.g * 100) + '%)'];
+    }));
+    return draw;
+  };
+
   // ------------------------------------------------------------------ boot
   // Only this file's figures; nodes already rendered are skipped.
   function boot() {

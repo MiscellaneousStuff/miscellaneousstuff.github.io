@@ -1413,3 +1413,14 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
 .vsgrid .vs-o { color: rgba(0, 0, 0, 0.85); font-weight: 500; }
 .vsgrid .vs-o span { display: block; font-size: 12px; font-weight: 400; color: var(--text-faint); }
 @media (max-width: 640px) { .vsgrid { font-size: 12.5px; } .vsgrid > div { padding: 7px 9px; } }
+
+/* ladder appendix (Part 4) */
+.post-content .suspects.read3 > div { font-size: 13px; color: var(--text-muted); }
+.suspects.read3 h4 { color: rgba(0, 0, 0, 0.8); font-size: 11.5px; }
+.limits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (max-width: 640px) { .limits { grid-template-columns: 1fr; } }
+.post-content .limits > div { padding: 10px 14px 11px; border-radius: 4px; background: #f7f6f3; font-size: 12.5px; line-height: 1.45; color: var(--text-muted); }
+.limits b { display: block; margin-bottom: 3px; font-size: 13.5px; font-weight: 600; color: rgba(0, 0, 0, 0.8); }
+.limits b::before { content: "✕"; margin-right: 7px; font-size: 11px; color: #b8461a; }
+.limits > div:last-child { grid-column: 1 / -1; background: hsla(40, 70%, 50%, 0.1); }
+.limits > div:last-child b::before { content: "?"; font-weight: 700; color: #a06b00; }
