@@ -709,6 +709,15 @@ the broken game and is being rated on the fixed one. And the answer to Phase 3's
 was stopping the games from ending, and the agents are slow to end them. We had the order of blame the wrong way
 round.
 
+Everything in this post ran on one GH200, but the engine itself is small. Below, the Rust engine compiled to
+WebAssembly and the best checkpoint on the ladder, rollout 46,575, play a game in your browser. Nothing is recorded:
+every seed is a new game, sampled live.
+
+<figure class="fig">
+<div class="viz" data-viz="live-sim" data-src="/assets/part4/live/"></div>
+<figcaption>Checkpoint v046575 against itself, live: the fastsim engine (Rust, compiled to WebAssembly) and the policy network both run in this page, in a background thread. In a browser tab the engine takes under a millisecond per decision (a quarter of one early in the game, close to an idle GH200 core); the policy, on one CPU thread instead of a GPU batch, takes most of the time. Pick a seed for a new game; "max" runs as fast as your machine allows.</figcaption>
+</figure>
+
 ## So where do we go from here?
 
 As we're now able to train 5v5 agents on modest hardware, in the next part we will work on fully porting

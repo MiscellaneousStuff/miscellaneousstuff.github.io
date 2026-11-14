@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fastsim 5v5 live</title>
+<style>
+:root{
+  --page:#fff; --surface:#fff; --surface-2:#f0efec; --border:#e2e1dc; --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7a7974;
+  --order:#2a78d6; --chaos:#eb6834; --grid:#e8e7e2; --wall:#e7e5df; --walk:#fbfaf7; --grass:#dde9d8; --monster:#7a7974;
+  --dead:#a3a29d; --recall:#8a3ffc; --accent:#2a78d6; --hpbg:#d9d8d2; --hp:#0ca30c; --outline:#1b1b1a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--page);color:var(--ink)}
+body{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;overflow-x:hidden}
+.wrap{max-width:704px;margin:0 auto;padding:2px 1px 4px}
+h1,.sub{display:none}
+.card{border-radius:4px}
+h1{font-size:17px;margin:0 0 2px;font-weight:650}
+.sub{color:var(--ink-2);margin:0 0 10px;font-size:12.5px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 8px}
+.btn{border:1px solid var(--border);background:var(--surface-2);color:var(--ink);border-radius:6px;padding:5px 10px;font:inherit;cursor:pointer;min-width:38px}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink-2);padding:5px 10px;font:inherit;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+.seed{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2);font-size:13px}
+.seed input{width:7.5em;font:inherit;padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink)}
+.clock{font-variant-numeric:tabular-nums;font-weight:650;font-size:16px;margin-left:auto;min-width:6ch;text-align:right}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;min-width:0}
+.mapbox{position:relative}
+#map{width:100%;aspect-ratio:1/1;display:block;border-radius:6px;background:var(--wall)}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;border-radius:6px;background:color-mix(in srgb,var(--surface) 80%,transparent);font-weight:600;color:var(--ink)}
+.overlay.off{display:none}
+.score{display:grid;grid-template-columns:1fr auto 1fr;gap:4px 10px;align-items:center;margin:10px 0 0;font-variant-numeric:tabular-nums}
+.score .side{display:flex;gap:14px;flex-wrap:wrap}
+.score .side.r{justify-content:flex-end;text-align:right}
+.score .k{font-size:11.5px;color:var(--ink-2)} .score .v{font-size:17px;font-weight:650}
+.score .mid{font-size:12px;color:var(--ink-3);text-align:center}
+.o{color:var(--order)} .c{color:var(--chaos)}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media (max-width:560px){.teams{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:12.5px}
+th{text-align:left;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--border);padding:3px 4px;font-size:11.5px}
+td{padding:2px 4px;border-bottom:1px solid var(--grid);white-space:nowrap}
+td.n,th.n{text-align:right}
+tr.dead td{color:var(--ink-3)}
+.sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+#log{list-style:none;margin:0;padding:0;font-size:12.5px;max-height:150px;overflow-y:auto}
+#log li{padding:2px 4px;display:flex;gap:8px}
+#log .t{color:var(--ink-2);min-width:5ch;font-variant-numeric:tabular-nums}
+.h2{font-size:12.5px;font-weight:600;margin:0 0 4px}
+.meta{margin-top:10px;font-size:12px;color:var(--ink-3)}
+.perf{font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:3px 12px;margin:6px 0 0;font-size:11.5px;color:var(--ink-2)}
+.legend i{display:inline-block;vertical-align:-1px;margin-right:4px}
+.err{color:var(--chaos);font-weight:600}
+@media (max-width:480px){.score .side > span:nth-child(n+3){display:none}.controls{gap:6px}.clock{font-size:15px}}
+</style>
+<div class="wrap">
+  <h1>A trained 5v5 policy playing live in your browser</h1>
+  <p class="sub">The fastsim engine (Rust, compiled to WebAssembly) and the policy network run in this page. Every game is new: nothing is recorded.</p>
+  <div class="controls">
+    <button class="btn" id="play" aria-label="Play" disabled>&#9654;</button>
+    <div class="seg" role="group" aria-label="Speed" id="speed">
+      <button data-sp="1" aria-pressed="true">1x</button><button data-sp="4" aria-pressed="false">4x</button><button data-sp="16" aria-pressed="false">16x</button><button data-sp="0" aria-pressed="false">max</button>
+    </div>
+    <span class="seed"><label for="seed">seed</label><input id="seed" type="number" min="1" step="1" value="1"></span>
+    <button class="btn" id="new" disabled>New game</button>
+    <span class="clock" id="clock" aria-label="Game clock">0:00</span>
+  </div>
+  <div class="card">
+    <div class="mapbox"><canvas id="map" width="672" height="672" aria-label="Top-down map of the game"></canvas><div class="overlay" id="overlay">Loading ...</div></div>
+    <div class="legend" aria-label="Map legend">
+      <span><i class="sw" style="background:var(--order)"></i>ORDER</span><span><i class="sw" style="background:var(--chaos)"></i>CHAOS</span>
+      <span>circle: hero (level)</span><span>small square: lane minion</span><span>grey dot: jungle monster</span><span>square T1-T4: turret</span><span>diamond: inhibitor / nexus</span>
+    </div>
+    <div class="score" id="score"></div>
+  </div>
+  <div class="teams"><div class="card"><table id="t0"></table></div><div class="card"><table id="t1"></table></div></div>
+  <div class="card" style="margin-top:10px"><p class="h2">Events</p><ul id="log"></ul></div>
+  <p class="meta"><span class="perf" id="perf"></span><br><span id="about"></span></p>
+</div>
+<script>
+(function(){
+"use strict";
+const FH = 12, HF = 20, SF = 6, TEAM = ["ORDER", "CHAOS"];
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C = {}; ["--order","--chaos","--wall","--walk","--grass","--ink","--ink-3","--monster","--dead","--hpbg","--hp","--surface","--outline","--recall"].forEach(k => C[k] = css(k));
+const tc = t => t ? C["--chaos"] : C["--order"];
+const fmt = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = String(s % 60).padStart(2, "0"); return h ? `${h}:${String(m).padStart(2, "0")}:${ss}` : `${m}:${ss}`; };
+let META = null, F = null, nDec = 0, playing = false, over = false, speed = 1, log = [];
+const worker = new Worker("worker.js");
+const base = new URL(".", location.href).href;
+
+// ---- map
+const map = $("map"), mx = map.getContext("2d");
+let navC = null, NAV = null, WX0, WY0, WW, WH, U = 1;
+function buildNav(){
+  NAV = META.nav; WX0 = NAV.minx; WY0 = NAV.miny; WW = NAV.cell * NAV.nx; WH = NAV.cell * NAV.ny;
+  navC = document.createElement("canvas"); navC.width = NAV.nx; navC.height = NAV.ny;
+  const g = navC.getContext("2d"), im = g.createImageData(NAV.nx, NAV.ny);
+  const hex = h => { const v = parseInt(h.slice(1), 16); return [v >> 16, (v >> 8) & 255, v & 255]; };
+  const cols = [hex(C["--wall"]), hex(C["--walk"]), hex(C["--grass"])];
+  for (let y = 0; y < NAV.ny; y++) for (let x = 0; x < NAV.nx; x++) {
+    const c = cols[NAV.cells.charCodeAt(y * NAV.nx + x) - 48], o = ((NAV.ny - 1 - y) * NAV.nx + x) * 4;
+    im.data[o] = c[0]; im.data[o + 1] = c[1]; im.data[o + 2] = c[2]; im.data[o + 3] = 255;
+  }
+  g.putImageData(im, 0, 0);
+}
+function sizeMap(){ const r = map.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1), w = Math.max(200, Math.round(r.width * d)); if (map.width !== w) { map.width = w; map.height = w; } U = w / 672; }
+const px = x => (x - WX0) / WW * map.width, py = y => map.width - (y - WY0) / WH * map.width;
+const TIER = l => l.endsWith("outer") ? "T1" : l.endsWith("inner") ? "T2" : l.endsWith("inhib") ? "T3" : "T4";
+function label(t, X, Y, sz){ mx.font = `700 ${sz * U}px system-ui,sans-serif`; mx.textAlign = "center"; mx.textBaseline = "middle"; mx.fillStyle = "#fff"; mx.fillText(t, X, Y + .5 * U); }
+function bar(X, Y, w, frac){ const h = 3.5 * U; mx.fillStyle = C["--outline"]; mx.fillRect(X - w / 2 - U, Y - h / 2 - U, w + 2 * U, h + 2 * U); mx.fillStyle = C["--hpbg"]; mx.fillRect(X - w / 2, Y - h / 2, w, h); mx.fillStyle = C["--hp"]; mx.fillRect(X - w / 2, Y - h / 2, w * Math.max(0, Math.min(1, frac)), h); }
+function crossed(X, Y, r){ mx.strokeStyle = C["--dead"]; mx.lineWidth = 2 * U; mx.strokeRect(X - r, Y - r, 2 * r, 2 * r); mx.beginPath(); mx.moveTo(X - r, Y - r); mx.lineTo(X + r, Y + r); mx.moveTo(X + r, Y - r); mx.lineTo(X - r, Y + r); mx.stroke(); }
+function draw(){
+  if (!F || !navC) return;
+  sizeMap();
+  const f = F, W = map.width, u = U;
+  mx.imageSmoothingEnabled = false; mx.drawImage(navC, 0, 0, W, W);
+  const H = i => FH + i * HF, S = k => FH + 10 * HF + k * SF;
+  let o = FH + 10 * HF + f[7] * SF;
+  // turret range rings
+  const rr = 775 / WW * W;
+  META.turrets.forEach((t, k) => { if (t.shrine || !f[S(k) + 4]) return; mx.beginPath(); mx.arc(px(f[S(k)]), py(f[S(k) + 1]), rr, 0, 7);
+    mx.globalAlpha = .06; mx.fillStyle = tc(t.team); mx.fill(); mx.globalAlpha = .4; mx.strokeStyle = tc(t.team); mx.lineWidth = u; mx.stroke(); mx.globalAlpha = 1; });
+  // inhibitors and nexus
+  META.buildings.forEach((b, i) => { const k = 24 + i, X = px(f[S(k)]), Y = py(f[S(k) + 1]), r = (b.nexus ? 13 : 10) * u;
+    if (!f[S(k) + 4]) { crossed(X, Y, r * .8); return; }
+    mx.save(); mx.translate(X, Y); mx.rotate(Math.PI / 4); const q = r * .78; mx.fillStyle = tc(b.team); mx.fillRect(-q, -q, 2 * q, 2 * q);
+    mx.strokeStyle = C["--outline"]; mx.lineWidth = 2 * u; mx.strokeRect(-q, -q, 2 * q, 2 * q); mx.restore();
+    label(b.nexus ? "Nex" : "Inh", X, Y, b.nexus ? 9 : 8); bar(X, Y - r - 5 * u, (b.nexus ? 28 : 22) * u, f[S(k) + 2] / f[S(k) + 3]); });
+  // turrets
+  META.turrets.forEach((t, k) => { if (t.shrine) return; const X = px(f[S(k)]), Y = py(f[S(k) + 1]), r = 7 * u;
+    if (!f[S(k) + 4]) { crossed(X, Y, r); return; }
+    mx.fillStyle = tc(t.team); mx.fillRect(X - r, Y - r, 2 * r, 2 * r); mx.strokeStyle = C["--outline"]; mx.lineWidth = 2 * u; mx.strokeRect(X - r, Y - r, 2 * r, 2 * r);
+    label(TIER(t.label), X, Y, 8); bar(X, Y - r - 5 * u, 20 * u, f[S(k) + 2] / f[S(k) + 3]); });
+  // minions, monsters, missiles
+  mx.lineWidth = u; mx.strokeStyle = C["--outline"];
+  for (let i = 0; i < f[8]; i++, o += 5) { mx.fillStyle = tc(f[o + 4]); const X = px(f[o]), Y = py(f[o + 1]); mx.fillRect(X - 3 * u, Y - 3 * u, 6 * u, 6 * u); mx.strokeRect(X - 3 * u, Y - 3 * u, 6 * u, 6 * u); }
+  mx.fillStyle = C["--monster"];
+  for (let i = 0; i < f[9]; i++, o += 4) { mx.beginPath(); mx.arc(px(f[o]), py(f[o + 1]), 4.5 * u, 0, 7); mx.fill(); mx.stroke(); }
+  for (let i = 0; i < f[10]; i++, o += 3) { mx.fillStyle = tc(f[o + 2]); mx.beginPath(); mx.arc(px(f[o]), py(f[o + 1]), 2.2 * u, 0, 7); mx.fill(); }
+  // heroes (dead under the living)
+  const ord = [...Array(10).keys()].sort((a, b) => f[H(a) + 7] - f[H(b) + 7]);
+  for (const i of ord) { const h = H(i), alive = f[h + 7] > 0, team = i < 5 ? 0 : 1, X = px(f[h]), Y = py(f[h + 1]), r = 9 * u;
+    if (alive && f[h + 19]) { mx.beginPath(); mx.arc(X, Y, r + 4 * u, 0, 7); mx.setLineDash([3 * u, 2 * u]); mx.strokeStyle = C["--recall"]; mx.lineWidth = 2 * u; mx.stroke(); mx.setLineDash([]); }
+    mx.beginPath(); mx.arc(X, Y, r, 0, 7); mx.fillStyle = alive ? tc(team) : C["--dead"]; mx.fill(); mx.lineWidth = 2 * u; mx.strokeStyle = C["--surface"]; mx.stroke();
+    label(String(alive ? f[h + 6] : Math.ceil(f[h + 13])), X, Y, 9);
+    mx.font = `600 ${10.5 * u}px system-ui,sans-serif`; mx.lineWidth = 3 * u; mx.strokeStyle = C["--surface"]; const lbl = META.champions[i];
+    mx.strokeText(lbl, X, Y - r - 10 * u); mx.fillStyle = alive ? C["--ink"] : C["--ink-3"]; mx.fillText(lbl, X, Y - r - 10 * u);
+    if (alive) bar(X, Y - r - 3.5 * u, 22 * u, f[h + 2] / f[h + 3]); }
+}
+
+// ---- scoreboard, tables, log
+function teamStats(f){
+  const H = i => FH + i * HF, S = k => FH + 10 * HF + k * SF, s = [0, 1].map(() => ({ k: 0, nw: 0, tw: 0, inh: 0 }));
+  for (let i = 0; i < 10; i++) { const t = i < 5 ? 0 : 1; s[t].k += f[H(i) + 8]; s[t].nw += f[H(i) + 18]; }
+  META.turrets.forEach((t, k) => { if (!t.shrine && !f[S(k) + 4]) s[1 - t.team].tw++; });
+  META.buildings.forEach((b, i) => { if (!b.nexus && !f[S(24 + i) + 4]) s[1 - b.team].inh++; });
+  return s;
+}
+function drawScore(){
+  const f = F, s = teamStats(f);
+  const cell = (k, v) => `<span><span class="k">${k}</span><br><span class="v">${v}</span></span>`;
+  const side = (t, r) => `<div class="side ${r ? "r" : ""}">${cell("kills", s[t].k)}${cell("net worth", (s[t].nw / 1000).toFixed(1) + "k")}${cell("turrets taken", s[t].tw)}${cell("inhibs taken", s[t].inh)}</div>`;
+  $("score").innerHTML = `<b class="o">ORDER</b><span class="mid">decision ${nDec}</span><b class="c" style="text-align:right">CHAOS</b>` + side(0, 0) + `<span class="mid">vs</span>` + side(1, 1);
+  $("clock").textContent = fmt(f[0] / 1000);
+  for (const t of [0, 1]) {
+    let h = `<tr><th>${TEAM[t]}</th><th class="n">Lvl</th><th class="n">K/D/A</th><th class="n">CS</th><th class="n">Gold</th></tr>`;
+    for (let i = 5 * t; i < 5 * t + 5; i++) { const b = FH + i * HF, alive = f[b + 7] > 0;
+      h += `<tr class="${alive ? "" : "dead"}"><td><span class="sw" style="background:${alive ? tc(t) : C["--dead"]}"></span>${META.champions[i]}${alive ? "" : " (" + Math.ceil(f[b + 13]) + " s)"}</td>`
+        + `<td class="n">${f[b + 6]}</td><td class="n">${f[b + 8]}/${f[b + 9]}/${f[b + 10]}</td><td class="n">${f[b + 12] + f[b + 16]}</td><td class="n">${Math.round(f[b + 11])}</td></tr>`; }
+    $("t" + t).innerHTML = h;
+  }
+}
+function evText(e){
+  if (e.k === "kill") return `${e.by >= 0 ? META.champions[e.by] : "a turret / minion / monster"} killed ${META.champions[e.v]}`;
+  if (e.k === "turret") return `${META.turrets[e.s].label.replace("ORDER ", "ORDER's ").replace("CHAOS ", "CHAOS's ")} destroyed`;
+  if (e.k === "inhib") return `${TEAM[e.team]} inhibitor ${e.up ? "respawned" : "destroyed"}`;
+  return `${TEAM[e.team]} nexus destroyed`;
+}
+function addEvents(ev){
+  if (!ev.length) return;
+  for (const e of ev) {
+    const team = e.k === "kill" ? (e.v < 5 ? 1 : 0) : (e.up ? e.team : 1 - e.team);
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="sw" style="background:${tc(team)};margin-top:5px"></span><span class="t">${fmt(e.t)}</span><span>${evText(e)}</span>`;
+    $("log").prepend(li);
+  }
+  while ($("log").children.length > 200) $("log").lastChild.remove();
+}
+
+// ---- controls
+function setPlaying(on){ playing = on; $("play").innerHTML = on ? "&#10074;&#10074;" : "&#9654;"; $("play").setAttribute("aria-label", on ? "Pause" : "Play"); }
+$("play").onclick = () => { if (over) return; worker.postMessage({ cmd: playing ? "pause" : "play" }); setPlaying(!playing); };
+document.querySelectorAll("#speed button").forEach(b => b.onclick = () => {
+  speed = +b.dataset.sp; document.querySelectorAll("#speed button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  worker.postMessage({ cmd: "speed", speed });
+});
+$("new").onclick = () => {
+  let s = Math.floor(+$("seed").value); if (!(s >= 1)) { s = 1 + Math.floor(Math.random() * 2147483646); }
+  $("seed").value = s; $("log").innerHTML = ""; over = false; $("overlay").classList.add("off");
+  worker.postMessage({ cmd: "new", seed: s, play: true }); setPlaying(true);
+};
+window.addEventListener("resize", () => requestAnimationFrame(draw));
+
+worker.onmessage = ev => {
+  const m = ev.data;
+  if (m.type === "progress") { $("overlay").textContent = m.msg; }
+  else if (m.type === "error") { $("overlay").classList.remove("off"); $("overlay").innerHTML = `<span class="err">${m.msg}</span>`; }
+  else if (m.type === "ready") {
+    META = m.meta; buildNav();
+    $("play").disabled = false; $("new").disabled = false;
+    $("overlay").innerHTML = "Press &#9654; to watch a new game";
+    if (AUTOPLAY) $("play").click();
+    $("about").textContent = `Downloaded ${(m.load.fetched / 1e6).toFixed(1)} MB (engine, world and policy) in ${(m.load.download_ms / 1000).toFixed(1)} s. `
+      + `Roster ORDER ${META.champions.slice(0, 5).join(", ")} vs CHAOS ${META.champions.slice(5).join(", ")}; both teams are the same checkpoint, `
+      + `actions sampled at temperature 1 with the seed above. One decision = 4 engine ticks = 133 ms of game time; 1x is real time. `
+      + `The game ends when a nexus falls (or at 430:58, the LoL clock maximum).`;
+  }
+  else if (m.type === "frame") {
+    F = m.frame; nDec = m.nDec; addEvents(m.events);
+    if (m.over && !over) { over = true; setPlaying(false); const w = F[3]; $("overlay").classList.remove("off");
+      $("overlay").innerHTML = `${w > 0 ? '<span class="o">ORDER</span> wins' : w < 0 ? '<span class="c">CHAOS</span> wins' : "Game over"} at ${fmt(F[0] / 1000)} (${m.nDec} decisions).<br>Press New game for another.`; }
+    drawScore(); requestAnimationFrame(draw);
+    const p = m.perf; $("perf").textContent = m.running ? `${p.dps.toFixed(0)} decisions/s (${(p.dps * 4 / 30).toFixed(1)}x real time) · engine ${p.eng_ms.toFixed(2)} ms + policy ${p.pol_ms.toFixed(1)} ms per decision` : "paused";
+  }
+};
+$("play").addEventListener("click", () => $("overlay").classList.toggle("off", true), { once: true });
+worker.postMessage({ cmd: "init", base, seed: 1 });
+// embedded in the blog: tell the parent how tall the page is, and start on its own when asked to
+if (window.parent !== window) {
+  const report = () => window.parent.postMessage({ fastsimHeight: Math.ceil(document.documentElement.getBoundingClientRect().height) }, "*");
+  new ResizeObserver(report).observe(document.body); report();
+}
+const AUTOPLAY = new URLSearchParams(location.search).has("autoplay");
+})();
+</script>

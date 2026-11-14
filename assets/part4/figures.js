@@ -625,6 +625,28 @@
     return draw;
   };
 
+  // fastsim running in the reader's browser (assets/part4/live/). Nothing is
+  // downloaded until the reader asks: the poster swaps for an iframe on click.
+  FIGS['live-sim'] = function (fig) {
+    var src = fig.getAttribute('data-src') || '/assets/part4/live/';
+    var poster = h('button', 'live-poster', fig);
+    poster.type = 'button';
+    poster.style.backgroundImage = 'url(' + src + 'poster.jpg)';
+    poster.innerHTML = '<span class="live-cta"><span class="live-play" aria-hidden="true">&#9654;</span><b>Run it in your browser</b><small>about 9 MB: the engine, the map and the policy</small></span>';
+    poster.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = src + 'index.html?autoplay';
+      f.title = 'fastsim 5v5, live in the browser';
+      f.className = 'live-frame';
+      f.style.height = '1200px';
+      fig.replaceChild(f, poster);
+      window.addEventListener('message', function (e) {
+        if (e.source === f.contentWindow && e.data && e.data.fastsimHeight) f.style.height = e.data.fastsimHeight + 'px';
+      });
+    });
+    return function () {};
+  };
+
   // ------------------------------------------------------------------ boot
   // Only this file's figures; nodes already rendered are skipped.
   function boot() {
