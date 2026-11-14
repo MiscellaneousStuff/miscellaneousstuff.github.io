@@ -1194,3 +1194,83 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
   .tv-track { order: 5; flex-basis: 100%; }
   .tv-controls .viz-controls { margin-left: auto; }
 }
+
+/* ------------------------------------------------------------------
+   Part 4 components: payoff matrix, suspect and culprit cards, recall
+   attempts, paired mini bars, horizon slider. Charts are drawn by
+   assets/part4/figures.js.
+   ------------------------------------------------------------------ */
+
+/* 2x2 payoff matrix */
+.payoff { display: grid; grid-template-columns: auto 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; font-size: 13.5px; line-height: 1.45; }
+.payoff > div { padding: 12px 14px; background: #fff; }
+.payoff .ph { background: #fbfaf8; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-faint); display: flex; align-items: flex-end; }
+.payoff .ph.row { align-items: center; }
+.payoff .ph.corner { background: #fff; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 12px; }
+.payoff b { display: block; font-size: 15px; font-weight: 600; color: rgba(0, 0, 0, 0.85); }
+.payoff span { color: var(--text-muted); font-size: 12.5px; }
+.payoff .fight { background: hsla(18, 82%, 56%, 0.08); }
+.payoff .fight b { color: #b8461a; }
+.payoff .eq { box-shadow: inset 0 0 0 2px #2a78d6; }
+.payoff .eq b::after { content: "Nash equilibrium"; display: inline-block; margin-left: 8px; padding: 1px 6px; border-radius: 3px; background: rgba(42, 120, 214, 0.1); color: #1c5cab; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 2px; }
+@media (max-width: 640px) { .payoff { font-size: 12.5px; } .payoff > div { padding: 10px; } .payoff .eq b::after { display: block; margin: 4px 0 0; width: max-content; } }
+
+/* suspect cards: ours vs OpenAI Five, and what we decided */
+.suspects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.post-content .suspects > div { padding: 12px 14px 13px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; font-size: 13px; line-height: 1.45; }
+.suspects h4 { margin: 0 0 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+.suspects dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0 0 10px; }
+.suspects dt { color: var(--text-faint); font-size: 12px; }
+.suspects dd { margin: 0; font-weight: 600; color: rgba(0, 0, 0, 0.82); font-variant-numeric: tabular-nums; }
+.suspects dd.five { color: #b8461a; }
+.suspects .plan { padding-top: 8px; border-top: 1px dashed var(--rule); color: var(--text-muted); }
+.suspects .plan::before { content: "Plan "; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #1c5cab; margin-right: 2px; }
+.suspects .plan.open::before { color: var(--text-faint); }
+@media (max-width: 760px) { .suspects { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .suspects { grid-template-columns: 1fr; } }
+
+/* culprit cards: what it looked like vs what it was */
+.culprits { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.post-content .culprits > div { position: relative; padding: 12px 14px 13px; border: 1px solid var(--rule); border-top: 3px solid var(--c, #2a78d6); border-radius: 4px; background: #fff; font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+.culprits .who { display: inline-block; margin-bottom: 6px; padding: 1px 6px; border-radius: 3px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--bg, rgba(42, 120, 214, 0.1)); color: var(--fg, #1c5cab); }
+.culprits b { display: block; margin: 0 0 6px; font-size: 15px; font-weight: 600; color: rgba(0, 0, 0, 0.85); }
+.culprits .saw, .culprits .was { display: block; margin-top: 4px; }
+.culprits .saw::before, .culprits .was::before { display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-faint); }
+.culprits .saw::before { content: "Looked like"; }
+.culprits .was::before { content: "Was"; color: rgba(0, 0, 0, 0.7); }
+.culprits .saw { color: var(--text-faint); }
+.culprits .was { margin-top: 8px; color: rgba(0, 0, 0, 0.78); }
+.culprits .server { --c: #a8a69e; --bg: rgba(0, 0, 0, 0.06); --fg: var(--text-muted); }
+.culprits .ours { --c: #eb6834; --bg: rgba(235, 104, 52, 0.12); --fg: #b8461a; }
+@media (max-width: 640px) { .culprits { grid-template-columns: 1fr; } }
+
+/* recall attempts: four steps, the last one works */
+.post-content .method-steps.attempts li { padding-bottom: 12px; }
+.method-steps.attempts .out { display: block; margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--rule); font-size: 12.5px; color: rgba(0, 0, 0, 0.7); }
+.method-steps.attempts .out em { font-style: normal; font-weight: 600; color: #b8461a; }
+.post-content .method-steps.attempts li.ok { border-top-color: #2a78d6; }
+.method-steps.attempts li.ok .out em { color: #1c5cab; }
+.method-steps.attempts li::before { content: "Attempt " counter(step); }
+
+/* paired mini bars (farm-shift) */
+.p4-mini { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 22px; }
+.p4-mini-cell { min-width: 0; }
+.p4-mini-cell .viz-cell-title { min-height: 2.9em; line-height: 1.35; }
+.p4-mini-cell .viz-cell-title span { display: block; font-size: 11.5px; }
+.p4-mini-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.p4-mini-track { flex: 1; height: 16px; }
+.p4-mini-bar { height: 100%; border-radius: 0 3px 3px 0; }
+.p4-mini-val { min-width: 2.6em; font-size: 12.5px; font-weight: 600; color: rgba(0, 0, 0, 0.8); font-variant-numeric: tabular-nums; }
+.p4-mini-delta { margin-top: 6px; font-size: 18px; font-weight: 600; color: #2a78d6; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .p4-mini { grid-template-columns: 1fr 1fr; } }
+
+/* horizon slider and readout */
+.p4-slider { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); }
+.p4-slider b { color: rgba(0, 0, 0, 0.85); font-variant-numeric: tabular-nums; }
+.p4-slider input { flex: 1 1 200px; accent-color: #2a78d6; }
+.p4-readout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-bottom: 12px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.p4-readout span { display: block; padding: 8px 12px; background: #fff; font-size: 12px; color: var(--text-muted); }
+.p4-readout i { display: inline-block; width: 12px; margin-right: 6px; border-top: 2.5px solid var(--c); vertical-align: middle; }
+.p4-readout b { display: block; font-size: 20px; font-weight: 600; line-height: 1.2; color: rgba(0, 0, 0, 0.85); font-variant-numeric: tabular-nums; }
+.p4-readout small { font-size: 11.5px; color: var(--text-faint); }
+@media (max-width: 640px) { .p4-readout { grid-template-columns: 1fr 1fr; } }

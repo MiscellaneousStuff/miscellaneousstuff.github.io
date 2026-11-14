@@ -15,6 +15,16 @@ first5v5youtubeid: gVDy2AMqbe4
 
 ## Overview
 
+<div class="key-findings" markdown="1">
+In short
+
+- **A 5v5 game at 566× real time on one core.** The Rust port of fastsim runs about 50× more decisions a second than the real server on the same GH200, and trains at 1.2M agent-steps a second.
+- **One network, ten heroes, about 50 hours of training.** It passes the game's own scripted bots within the first four hours.
+- **The agents learned what we paid for**: a draw in fights, farming paid three times over, and Recall only once the environment held the channel for them.
+- **The endless games were the simulator's fault.** Four bugs, two of them copied faithfully from the 2011 server, that a bit-identical diff on short traces could never catch.
+- **Rated on wins in games that end, the run never plateaued**: from 1,251 Elo at rollout 2,400 to 2,966.
+</div>
+
 In the [last](https://miscellaneousstuff.github.io/2026/11/04/superhuman-league-of-legends-part-3-live.html) post,
 we focused on porting our findings from Brokenwings to modern League of Legends (patch 26.19). We managed to create
 a faster than real-time simulator for League of Legends which had similar throughput to OpenAI Five.
@@ -38,32 +48,32 @@ code, brokenwings is open source which means we don't have to worry about the ad
 the fidelity of our game servers implementation. We only have to ensure that we've transpiled the existing game
 server faithfully into a more efficient implementation.
 
-This journey lead to three distinct phases...
+This journey led to three distinct phases, over one week:
+
+<figure class="fig">
+<ol class="timeline" style="--n: 6">
+  <li><span class="when">Sat 7 Nov</span><b>The port</b>38 champions run clean; ten are picked and a 24-hour port plan is written.</li>
+  <li><span class="when">Sun 8 Nov</span><b>First games</b>The fight task collapses into a draw. Full games, and the first nexus kill at 22:32.</li>
+  <li><span class="when">Mon 9 Nov</span><b>The clock</b>An 18-minute cap and a 67-second horizon break the first plateau.</li>
+  <li><span class="when">Tue 10 Nov</span><b>Rust</b>Training goes from 0.33M to 1.17M agent-steps a second.</li>
+  <li><span class="when">Wed 11 Nov</span><b>Items and Recall</b>Four attempts before the agents learn to go home.</li>
+  <li class="now"><span class="when">Thu 12 Nov</span><b>The turn</b>Four engine bugs found and fixed; every game ends.</li>
+</ol>
+<figcaption>The week of 7 November. Phase 1 is the first two days, Phase 2 the middle of the week, and Phase 3 the last.</figcaption>
+</figure>
 
 ## Phase 1: Making 5v5 fast
 
 This stage involved making the 5v5 fastsim version of Brokenwings as fast as our GH200 hardware could possibly run.
-In the end, here is how much each method improved environment throughput.
+In the end, here is how much each method improved environment throughput, measured in years of game experience
+simulated per day:
 
-| Setup | Ticks/s | Decisions/s | Agent-steps/s | Game-years per day |
-|---|---:|---:|---:|---:|
-| Real time, 30 Hz, one game | 30 | 7.5 | 75 | 0.003 |
-| C# server, step mode, one game | 735 | 184 | 1.8k | 0.07 |
-| C# server, step mode, 64 games | 18.8k | 4.7k | 47k | 1.7 |
-| Numba simulator (64 threads), 4,096 games | 313k | 78k | 783k | 29 |
-| Rust engine (60 threads), 2,048 games | 560k | 140k | 1.4 M | 51 |
+<figure class="fig">
+<div class="viz" data-viz="throughput-5v5"></div>
+<figcaption>Game-years of experience simulated per day, log scale, for every way we ran the 5v5 game on one 64-core GH200. Each step is roughly an order of magnitude. The Rust row includes building observations and runs the later, heavier game with items; like for like it is 4.3× Numba. OpenAI Five's 2018 figure of 180 game-years a day used about 128,000 CPU cores.</figcaption>
+</figure>
 
-Note: The Rust row includes building observations and runs the later, heavier
-game with items; like for like it is 4.3x Numba, as in the core table.
-
-Per core (the simulators step 64 games on that core; the server runs one):
-
-| One core, one 5v5 game | Ticks/s | Versus real time |
-|---|---:|---:|
-| Real time | 30 | 1× |
-| C# server, step mode | 735 | 24× |
-| Numba | 4.3k | 144× |
-| Rust | 17.0k | 566× |
+<script src="/assets/part4/figures.js" defer></script>
 
 To start with, our fully working Brokenwings game server with our custom RL bridge could already run full games.
 Using the same approach as OpenAI Five we were able to simulate games and hook them. However
@@ -104,18 +114,10 @@ to 11 seconds but any big engine change still cost a full recompile.
 Cold compilation took between 20-40 minutes per each change. During this
 we also profiled the bottlenecks within the Numba fastsim itself:
 
-| Level | Component | Share |
-|---|---|---:|
-| Environment | Engine | 94.8% |
-| | Building observations | 4.8% |
-| | Decoding actions | 0.4% |
-| | Python glue | 0.15% |
-| Inside the engine | **Numba reference counting** | **58.7%** |
-| | Vision (turret bubbles the largest part) | 12.6% |
-| | Collision and movement | 7.8% |
-| | Pathfinding | 3.3% |
-| | Spell scripts and buffs | 3.1% |
-| | Minion AI | 2.6% |
+<figure class="fig">
+<div class="viz" data-viz="numba-profile"></div>
+<figcaption>Where one environment step of the Numba simulator spent its time. The engine is almost all of it, and inside the engine more than half went to reference counting: bookkeeping on arrays that live for the whole run and are never freed. Vision, the next largest, is mostly the turrets' sight bubbles.</figcaption>
+</figure>
 
 One major step stands out, reference counting. This is used to track if arrays are still in use for garbage
 collection. The issue with our fastsim is that the  whole game state lives in one
@@ -126,7 +128,7 @@ the counting cost more than the work. And nothing was ever freed: the arrays liv
 
 ### Rewrite it in Rust
 
-Bottleneck: the compiler's bookkeeping. Lesson: *profile first; the rewrite was the conclusion, not the plan.*
+<dl class="lesson"><dt>Bottleneck</dt><dd>the compiler's bookkeeping</dd><dt class="l">Lesson</dt><dd>profile first; the rewrite was the conclusion, not the plan.</dd></dl>
 
 "Rewrite it in Rust" is usually a punchline. Here the profile made the case for us as 59% of the engine was spent counting references to arrays that were never freed, and every attempt to fix that inside Numba cost a half-hour compile.
 
@@ -134,13 +136,15 @@ The Rust port re-used the Numba arrays for development speed and also reads and 
 
 Then the engine was cut into nine families (navigation and vision, movement, casting, AI, rules, damage, the kit core, the scripting API, jungle and kits) with one translator agent each.
 
-| | |
-|---|---:|
-| Functions translated | 871 |
-| Lines of Rust | 16,300 |
-| Time for the nine translators | ~35 minutes |
-| Result | bit-identical to Numba on a 4,000-decision replay of the live policy |
-| Speed on one core, same game | 4.3× Numba |
+<figure class="fig">
+<ol class="method-steps">
+  <li><b>Groundwork</b>One lead agent, 25 minutes: a generated map of the state layout, a numerics rulebook (same float32 order, no FMA, no fast-math) and a diff harness.</li>
+  <li><b>Nine translators</b>One agent per engine family, in parallel, about 35 minutes: 871 functions, 16,300 lines of Rust.</li>
+  <li><b>Diff against Numba</b>Step both engines from the same recorded state; report the first array, index and tick that differ.</li>
+  <li><b>Bit-identical</b>On a 4,000-decision replay of the live policy, at 4.3× Numba's speed on one core.</li>
+</ol>
+<figcaption>How the Rust engine was written. Numba became the oracle: the Rust port reads and writes the same state arrays and exposes one step function to Python, so nothing around it changed.</figcaption>
+</figure>
 
 The speedup is larger than the 2.3× that removing reference counting alone would have given. With the counter updates gone,
 the compiler could finally optimise the code around them. A rebuild after a change takes minutes rather than half an hour,
@@ -215,6 +219,16 @@ Each hero sees about 2,900 numbers per
 decision under fog of war and acts every 133 ms - 7.5 Hz. Training is PPO with an LSTM: 4,096 games at once, 64 decisions
 per rollout, 2.6 million agent-steps per update, the two teams swapping sides every 1,200 rollouts.
 
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">1 network</span><span class="lbl">drives all ten heroes, told apart by a champion one-hot</span></div>
+<div><span class="num">2,914</span><span class="lbl">numbers per hero per decision, under fog of war</span></div>
+<div><span class="num">7.5 Hz</span><span class="lbl">one decision every 133 ms</span></div>
+<div><span class="num">2.6M</span><span class="lbl">agent-steps per PPO update: 4,096 games × 64 decisions × 10 heroes</span></div>
+</div>
+<figcaption>The training setup, close to OpenAI Five's in June 2018: fixed rosters, no summoner spells, no wards.</figcaption>
+</figure>
+
 <!-- ### Model and Training Setup -->
 
 ### It won't fight
@@ -241,10 +255,14 @@ far from equal: playing random actions, one of them wins 83% of the time. It tak
 lane the weaker side can always walk away. Not fighting is a Nash equilibrium of the reward we wrote, and PPO found
 it in about 100 rollouts.
 
-| | Weaker team engages | Weaker team avoids |
-|---|---|---|
-| **Stronger team engages** | fight: about −1.3 per hero for the weaker side | no fight: 0 for both |
-| **Stronger team avoids** | no fight: 0 for both | no fight: 0 for both |
+<figure class="fig">
+<div class="payoff">
+<div class="ph corner">Payoff to the weaker team</div><div class="ph">Weaker team engages</div><div class="ph">Weaker team walks away</div>
+<div class="ph row">Stronger team engages</div><div class="fight"><b>Fight</b><span>about −1.3 per hero for the weaker side</span></div><div><b>No fight</b><span>0 for both</span></div>
+<div class="ph row">Stronger team walks away</div><div><b>No fight</b><span>0 for both</span></div><div class="eq"><b>No fight</b><span>0 for both</span></div>
+</div>
+<figcaption>The fight task as a game. Running out the clock pays both teams exactly zero, and only one cell pays anything else, to the weaker team's loss. It takes two to fight, so the weaker side never has a reason to, and walking away is stable for both. PPO found that in about 100 rollouts.</figcaption>
+</figure>
 
 We tried to price the draw. A penalty of 1.0 for hitting the cap moved the draw rate from 100% to 88%. Doubling it
 moved it back to 93%. A penalty only works on the weaker team once it exceeds what that team expects to lose by
@@ -272,13 +290,10 @@ with a nexus kill at 22:32 that night.
 
 Almost none of the others did. 98% of games still hit the cap, and a reward audit showed what that meant:
 
-| Share of the return | |
-|---|---:|
-| Economy (gold, XP, last hits) | 43% |
-| Structures | 32% |
-| Fights | 12% |
-| Health and mana shaping | 12% |
-| **Winning** | **0.5%** |
+<figure class="fig">
+<div class="viz" data-viz="reward-audit"></div>
+<figcaption>What the agents' return was made of in the 12-minute games, with 98% of games hitting the cap. Winning was half a percent of it.</figcaption>
+</figure>
 
 The policy was being paid to farm and push, and almost never to win. We tried paying capped games by structure
 lead. At half the win reward the policy stopped fighting and sat on its leads: kills per game fell from 24 to 18
@@ -305,25 +320,31 @@ When we paused at rollout 7,350 the agents barely farmed. They took 38% of the a
 blue buff in 7 games out of 100, and spent 1.9% of their time grouped as five. Forty thousand rollouts later they
 were different animals:
 
-| Per hero, per 10 minutes | Rollout 2,400 | Rollout 49,200 |
-|---|---:|---:|
-| Lane minion last hits | 26 | 49 |
-| Jungle monster kills | 0.4 | 10 |
-| Deaths | 1.6 | 1.3 |
-| Net worth at the end of the game | 6.0k | 12k |
+<figure class="fig">
+<div class="viz" data-viz="farm-shift"></div>
+<figcaption>Per hero, per 10 minutes, early in the run and at the end. Jungle farming went from almost nothing to ten monsters each.</figcaption>
+</figure>
 
 The jungle is the striking one. By the end a game has about 67 monster kills in it, with the first camp taken
 around two and a half minutes in. Nobody told the agents who should jungle or when, and their answer is not the
 one a player would give. The two champions we picked as junglers mostly stay in lane. The camps go to the ranged
 and caster heroes, who step out of an empty lane to the nearest one and step back:
 
-| Monster last hits per 10 minutes alive | |
-|---|---:|
-| Ryze | 25.7 |
-| Caitlyn | 20.2 |
-| Ezreal | 19.8 |
-| Garen | 9.6 |
-| Warwick | 6.5 |
+<figure class="fig">
+<div class="barlist">
+  <div class="name">Ryze<span>mage</span></div>
+  <div class="track"><div class="bar" style="--w: 100%"></div><span class="val" style="--w: 100%">25.7</span></div>
+  <div class="name">Caitlyn<span>ranged attacker</span></div>
+  <div class="track"><div class="bar" style="--w: 78.6%"></div><span class="val" style="--w: 78.6%">20.2</span></div>
+  <div class="name">Ezreal<span>ranged attacker</span></div>
+  <div class="track"><div class="bar" style="--w: 77%"></div><span class="val" style="--w: 77%">19.8</span></div>
+  <div class="name">Garen<span>melee fighter</span></div>
+  <div class="track"><div class="bar" style="--w: 37.4%; --c: #86b6ef"></div><span class="val" style="--w: 37.4%">9.6</span></div>
+  <div class="name">Warwick<span>melee fighter</span></div>
+  <div class="track"><div class="bar" style="--w: 25.3%; --c: #86b6ef"></div><span class="val" style="--w: 25.3%">6.5</span></div>
+</div>
+<figcaption>Jungle monster last hits per 10 minutes alive, for the heroes that jungle most. The camps go to the ranged and caster heroes, who step out of an empty lane to the nearest one and step back.</figcaption>
+</figure>
 
 Lanes are just as unorthodox. There is no one-one-two split: in the first four minutes Ezreal, Ashe, Veigar,
 Caitlyn and Ryze each spend about half their time mid, while Malphite goes top and Warwick goes bottom.
@@ -351,12 +372,15 @@ that picks an action every 133 ms has to pick "do nothing" dozens of times in a 
 (a full health bar, new items, and whatever those are worth over the next ten minutes) arrives long after the
 decision. It took four attempts.
 
-| Attempt | Change | What the agents did |
-|---|---|---|
-| 1 | Recall as an action | Spam. In one live game they started 10,309 recalls and completed none. |
-| 2 | Show the channel's progress in the observation | Ignored it. Recall rose from 14.5% to 17.8% of decisions; under 0.01% completed. |
-| 3 | Lock Recall out for 8 seconds after a cancelled channel | Less spam (1.4% of decisions), still nothing learned: 0 of 19,178 completed. |
-| 4 | The environment holds the channel once it starts | Recalls completed, and the policy stopped pressing the button. Heroes shopped when they died. |
+<figure class="fig">
+<ol class="method-steps attempts">
+  <li><b>Recall as an action</b>A new output, added by surgery. <span class="out"><em>Spam.</em> In one live game: 10,309 recalls started, none completed.</span></li>
+  <li><b>Show the channel</b>The channel's progress added to the observation. <span class="out"><em>Ignored.</em> Recall rose to 17.8% of decisions; under 0.01% completed.</span></li>
+  <li><b>An 8-second lockout</b>Recall masked after a cancelled channel. <span class="out"><em>Quieter, still nothing.</em> 0 of 19,178 completed.</span></li>
+  <li class="ok"><b>Hold the channel</b>Once started, the environment keeps it going. <span class="out"><em>Recalls complete.</em> Then the policy stopped pressing the button.</span></li>
+</ol>
+<figcaption>Four attempts at teaching Recall. The first three changed what the agent could see or do and taught nothing; the fourth made the commitment on the agent's behalf.</figcaption>
+</figure>
 
 The fourth attempt made Recall possible. It did not make it worth anything the agent could see, because with a
 67-second horizon the benefit of an item is mostly out of view. The OpenAI Five paper warns about exactly this when
@@ -402,11 +426,15 @@ human play: farming is safe, fighting is risky, and nobody knows how to group an
 
 So we removed the cap altogether and ran 1,024 games to see how long they would go.
 
-| | |
-|---|---:|
-| Median game length | 64 minutes |
-| Still running after 2 hours | 23% |
-| Still running after 10 hours, when we stopped them | 11% |
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">64 min</span><span class="lbl">median game, against itself, no cap</span></div>
+<div><span class="num">23%</span><span class="lbl">still running after two hours</span></div>
+<div><span class="num">11%</span><span class="lbl">still running after ten hours, when we stopped them</span></div>
+<div><span class="num">36 min</span><span class="lbl">median game with ten heroes that never move</span></div>
+</div>
+<figcaption>1,024 games of the best checkpoint against itself with the cap removed, and the same with idle heroes for comparison.</figcaption>
+</figure>
 
 For comparison, we ran the same thing with ten heroes that never move. The minion waves alone end that game in
 36 minutes. Our agents, after 128 billion agent-steps of practice, take nearly twice as long as nobody at all, and
@@ -427,7 +455,10 @@ reasons, and each came with a precedent in the OpenAI Five paper.
 seconds. A win five minutes away is worth 1% of its value today: 0.11 out of 10. An inhibitor that has just
 respawned is worth 2, right now, every time. Five trained with a horizon of 180 seconds and later 360.
 
-<!-- CHART: what a win N minutes away is worth today, for horizons of 27 s, 67 s, 180 s and 360 s. Make it slidable -->
+<figure class="fig">
+<div class="viz" data-viz="horizon"></div>
+<figcaption>What a win worth 10 is worth to the agent now, if it is N minutes away. Drag the slider or the chart. At our 67-second horizon a win five minutes out is worth about a tenth of a point, less than one inhibitor kill; at OpenAI Five's 360 seconds it is still worth 4.3.</figcaption>
+</figure>
 
 **The cap.** Every training episode ends by minute 18, and starts somewhere between minute 5 and 32 of a game.
 Nearly all the real endings the critic ever saw came from the quarter of games that start as a siege. An even game
@@ -443,14 +474,17 @@ annealed towards sharing everything, because closing a game is a team action and
 **The model.** The LSTM is trained on windows of 64 decisions, eight and a half seconds. Perhaps it cannot hold a
 plan for longer than that, and a siege is a long plan.
 
-| Suspect | Ours | OpenAI Five | What we decided |
-|---|---|---|---|
-| Reward horizon | 67 s | 180 s → 360 s | 180 s |
-| Episode cap | 18 min | none | 2 hours |
-| Last hit / kill | +0.16 / +1 | −0.16 / −0.6 | negative for both |
-| Win | 10 | 5 | 20, with larger objective rewards |
-| Team spirit | 0.3 | 0.3 → 0.8 | 0.5 |
-| LSTM size and memory | 512 units, 8.5 s windows | 4,096 units, 2.1 s windows | undecided |
+<figure class="fig">
+<div class="suspects">
+<div><h4>Reward horizon</h4><dl><dt>Ours</dt><dd>67 s</dd><dt>Five</dt><dd class="five">180 s → 360 s</dd></dl><div class="plan">180 s</div></div>
+<div><h4>Episode cap</h4><dl><dt>Ours</dt><dd>18 min</dd><dt>Five</dt><dd class="five">none</dd></dl><div class="plan">2 hours</div></div>
+<div><h4>Last hit / kill</h4><dl><dt>Ours</dt><dd>+0.16 / +1</dd><dt>Five</dt><dd class="five">−0.16 / −0.6</dd></dl><div class="plan">negative for both</div></div>
+<div><h4>Win reward</h4><dl><dt>Ours</dt><dd>10</dd><dt>Five</dt><dd class="five">5</dd></dl><div class="plan">20, with larger objective rewards</div></div>
+<div><h4>Team spirit</h4><dl><dt>Ours</dt><dd>0.3</dd><dt>Five</dt><dd class="five">0.3 → 0.8</dd></dl><div class="plan">0.5</div></div>
+<div><h4>LSTM size and memory</h4><dl><dt>Ours</dt><dd>512 units, 8.5 s</dd><dt>Five</dt><dd class="five">4,096 units, 2.1 s</dd></dl><div class="plan open">undecided</div></div>
+</div>
+<figcaption>The suspects against OpenAI Five's settings (the reward appears twice: what it pays per event, and what it pays for the win), and the change we had planned for each. Memory windows are the length of the sequences the LSTM is trained on.</figcaption>
+</figure>
 
 All of these were plausible reasons why our agents were constantly running the clock, but we
 decided to take a step back.
@@ -529,12 +563,15 @@ was broken.
 
 There were four, and between them they explain every game that would not end.
 
-| What we saw | What it looked like | What it was | Whose bug |
-|---|---|---|---|
-| A team camped in the enemy base, killing inhibitors, never touching the nexus | A policy that prefers a repeatable reward to a risky one | Once both nexus turrets are dead and all three inhibitors respawn, the nexus is locked for the rest of the game | The 2011 server's. We copied it faithfully |
-| Empty lanes | A standoff | 150 minions stuck in a pile beside their own inhibitor | The server's again |
-| No new waves, for either team | The same standoff | The pile filled all 192 minion slots, and new spawns were silently dropped | Ours. The server has no limit |
-| One team winning 80% of long games | An unbalanced pair of rosters | After about 15 minutes, new buffs stopped being applied | Ours. A leak in the Rust port |
+<figure class="fig">
+<div class="culprits">
+<div class="server"><span class="who">Server bug, copied</span><b>The nexus that never re-opens</b><span class="saw">a policy that prefers a repeatable reward to a risky one</span><span class="was">once both nexus turrets fall and all three inhibitors respawn, the nexus is locked for good</span></div>
+<div class="server"><span class="who">Server bug, copied</span><b>The pile</b><span class="saw">a standoff in empty lanes</span><span class="was">150 minions stuck in a heap beside their own inhibitor</span></div>
+<div class="ours"><span class="who">Ours</span><b>The pool</b><span class="saw">the same standoff: no new waves for either team</span><span class="was">the pile filled all 192 minion slots and new spawns were silently dropped</span></div>
+<div class="ours"><span class="who">Ours</span><b>The leak</b><span class="saw">one roster winning 80% of long games</span><span class="was">after about 15 minutes, new buffs stopped being applied</span></div>
+</div>
+<figcaption>Four bugs, and between them every game that would not end. The two grey ones are in the 2011 server and we copied them faithfully; the two orange ones are ours, in the fast engine.</figcaption>
+</figure>
 
 **The nexus that never re-opens.** The original map script has a branch to re-open the nexus when an inhibitor
 dies again. It can never run, because it looks up the nexus turrets in a list that dead turrets are never removed
@@ -646,14 +683,10 @@ that the whole run was worth 66 Elo in wins. Counted properly, strength climbs a
 billion agent-steps, or the first 3% of training. A checkpoint from the first evening beats them four games in
 five. Everything since is a climb with no outside reference, which is its own problem for another post.
 
-| Against the bots | Result | Median game |
-|---|---|---:|
-| Does nothing | 0–64 | 26 min |
-| Random actions | 0–64 | 26 min |
-| Rollout 600 | 0–128 | 29 min |
-| Rollout 1,350 | 103–25 | 33 min |
-| Rollout 2,400 | 128–0 | 23 min |
-| Rollout 46,575 | 64–0 | 18 min |
+<figure class="fig">
+<div class="viz" data-viz="vs-bots"></div>
+<figcaption>Every entrant that played the scripted bots, on the real C# server. Rollout 600 never wins; rollout 1,350, from the first evening, wins four games in five; from rollout 2,400 on, the bots never win again, and the games get shorter.</figcaption>
+</figure>
 
 The bot games ran on the real C# server, the rest in the simulator, and the one pairing we played on both agreed:
 98.4% on the server, 98.0% in fastsim. It also made the case for the whole exercise one more time. The 10,000
