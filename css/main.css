@@ -1375,3 +1375,24 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
 .rules2 span { display: block; margin-top: 6px; color: var(--text-muted); }
 @media (max-width: 640px) { .rules2 { grid-template-columns: 1fr; } }
 .post-content .timeline li em { display: block; margin-top: 3px; font-style: normal; font-size: 12px; font-weight: 600; color: #1c5cab; }
+
+/* reward weights (Part 4 appendix) */
+.rwgrid { display: grid; grid-template-columns: minmax(150px, max-content) 72px 84px 1fr; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; font-size: 13px; line-height: 1.45; }
+.rwgrid > div { padding: 7px 12px; border-top: 1px solid var(--rule); }
+.rwgrid > .rw-h { border-top: 0; background: #fbfaf8; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+.rwgrid .num, .rwgrid .rw-o, .rwgrid .rw-f { text-align: right; font-variant-numeric: tabular-nums; }
+.rwgrid .rw-e { color: rgba(0, 0, 0, 0.85); font-weight: 500; }
+.rwgrid .rw-o { font-weight: 600; color: #1c5cab; }
+.rwgrid .rw-f { font-weight: 600; color: #b8461a; }
+.rwgrid .rw-n { color: var(--text-muted); font-size: 12.5px; }
+.rwgrid .same { color: var(--text-faint) !important; font-weight: 400 !important; background: #fcfcfb; }
+.rwgrid .rw-n.same { font-style: italic; }
+.rwgrid .flip { background: hsla(18, 82%, 56%, 0.07); }
+.rwgrid .rw-e.flip { box-shadow: inset 3px 0 0 #eb6834; }
+@media (max-width: 640px) {
+  .rwgrid { grid-template-columns: 1fr 64px 76px; font-size: 12.5px; }
+  .rwgrid .rw-n, .rwgrid .rw-h:nth-child(4) { display: none; }
+  .rwgrid > div { padding: 6px 9px; }
+}
+.post-content .method-steps.pipe li { padding-bottom: 12px; }
+.method-steps.pipe .five { display: block; margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--rule); font-size: 12.5px; color: #b8461a; }

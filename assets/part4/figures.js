@@ -413,6 +413,79 @@
     return draw;
   };
 
+  // Team rewards: ours vs OpenAI Five, paired bars in reward points.
+  FIGS['team-rewards'] = function (fig) {
+    var R = [
+      ['Outer turret', 1, 2.25], ['Inner turret', 1, 3], ['Inhibitor turret', 1.5, 4.5], ['Nexus turret', 2.5, 2.25],
+      ['Inhibitor', 2, 6, 'Five: barracks'], ['Nexus damage, full bar', 4, 5, 'Five: ancient'], ['Win', 10, 5],
+      ['Structure damage, full bar', 1, null, 'Five: none for towers'], ['All enemy barracks down', null, 4], ['Roshan / Baron', null, 5, 'Five: aegis']
+    ];
+    var tip = tooltip(fig);
+    legend(fig, [{ label: 'ours', color: C.blue }, { label: 'OpenAI Five', color: C.orange }]);
+    var host = h('div', null, fig);
+    function draw() {
+      host.innerHTML = '';
+      var W = width(fig), narrow = W < 560, labelW = narrow ? 8 : 170, rowH = narrow ? 50 : 34, top = 6, H = top + R.length * rowH + 22;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'viz-panel', role: 'img', 'aria-label': 'Team rewards, ours against OpenAI Five' }, host);
+      var x0 = labelW, x1 = W - 40, x = linear(0, 10, x0, x1), bh = 10;
+      [0, 2, 4, 6, 8, 10].forEach(function (v) {
+        el('line', { x1: x(v), x2: x(v), y1: top, y2: H - 22, class: v ? 'viz-grid' : 'viz-axis' }, svg);
+        txt(svg, x(v), H - 7, String(v), 'viz-tick', 'middle');
+      });
+      R.forEach(function (r, i) {
+        var y = top + i * rowH + (narrow ? 20 : 6);
+        if (narrow) txt(svg, 0, y - 6, r[0], 'viz-label');
+        else txt(svg, labelW - 12, y + bh + 2, r[0], 'viz-label', 'end');
+        [[r[1], C.blue, 'ours'], [r[2], C.orange, 'OpenAI Five']].forEach(function (b, k) {
+          var yy = y + k * (bh + 2);
+          if (b[0] == null) { txt(svg, x0 + 4, yy + bh - 1, 'none', 'viz-tick', 'start'); return; }
+          var rect = el('rect', { x: x0, y: yy, width: Math.max(2, x(b[0]) - x0), height: bh, rx: 2, fill: b[1] }, svg);
+          txt(svg, x(b[0]) + 5, yy + bh - 1, String(b[0]), 'viz-tick', 'start', 'fill:rgba(0,0,0,0.7)');
+          hover(rect, function (e) { tip.show('<b>' + r[0] + '</b><br>' + swatch(b[1]) + b[2] + ' <b>' + b[0] + '</b>' + (k && r[3] ? '<br>' + r[3] : ''), e); }, tip.hide);
+        });
+      });
+    }
+    draw();
+    dataTable(fig, ['Event', 'Ours', 'Five'], R.map(function (r) { return [r[0] + (r[3] ? ' (' + r[3] + ')' : ''), r[1] == null ? 'none' : String(r[1]), r[2] == null ? 'none' : String(r[2])]; }));
+    return draw;
+  };
+
+  // The sign flip: last hit, kill and assist rewards on a shared axis around zero.
+  FIGS['reward-signs'] = function (fig) {
+    var R = [['Lane minion last hit', 0.16, -0.16], ['Hero kill', 1.0, -0.6], ['Assist', 0.5, 0]];
+    var tip = tooltip(fig);
+    legend(fig, [{ label: 'ours', color: C.blue }, { label: 'OpenAI Five', color: C.orange }]);
+    var host = h('div', null, fig);
+    function draw() {
+      host.innerHTML = '';
+      var W = width(fig), narrow = W < 560, labelW = narrow ? 0 : 150, rowH = narrow ? 58 : 46, top = 18, H = top + R.length * rowH + 24;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'viz-panel', role: 'img', 'aria-label': 'Last hit, kill and assist rewards, ours against OpenAI Five' }, host);
+      var x0 = labelW, x1 = W - 10, x = linear(-1.1, 1.1, x0, x1), bh = 13;
+      [-1, -0.5, 0, 0.5, 1].forEach(function (v) {
+        el('line', { x1: x(v), x2: x(v), y1: top - 6, y2: H - 24, class: v ? 'viz-grid' : 'viz-zero' }, svg);
+        txt(svg, x(v), H - 8, (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), 'viz-tick', 'middle');
+      });
+      txt(svg, x(-0.05), top - 8, '← takes back', 'viz-ref-label', 'end');
+      txt(svg, x(0.05), top - 8, 'pays on top →', 'viz-ref-label', 'start');
+      R.forEach(function (r, i) {
+        var y = top + i * rowH + (narrow ? 18 : 8);
+        if (narrow) txt(svg, 0, y - 4, r[0], 'viz-label');
+        else txt(svg, labelW - 12, y + bh + 4, r[0], 'viz-label', 'end');
+        [[r[1], C.blue, 'ours'], [r[2], C.orange, 'OpenAI Five']].forEach(function (b, k) {
+          var yy = y + k * (bh + 3), v = b[0];
+          if (!v) { txt(svg, x(0) + 5, yy + bh - 2, 'none', 'viz-tick', 'start'); return; }
+          var a = Math.min(x(0), x(v)), w = Math.abs(x(v) - x(0));
+          var rect = el('rect', { x: a, y: yy, width: w, height: bh, rx: 2, fill: b[1] }, svg);
+          var lab = (v > 0 ? '+' : '−') + Math.abs(v);
+          txt(svg, v > 0 ? x(v) + 5 : x(v) - 5, yy + bh - 2, lab, 'viz-tick', v > 0 ? 'start' : 'end', 'fill:rgba(0,0,0,0.75);font-weight:600');
+          hover(rect, function (e) { tip.show('<b>' + r[0] + '</b><br>' + swatch(b[1]) + b[2] + ' <b>' + lab + '</b>', e); }, tip.hide);
+        });
+      });
+    }
+    draw();
+    return draw;
+  };
+
   // ------------------------------------------------------------------ boot
   // Only this file's figures; nodes already rendered are skipped.
   function boot() {

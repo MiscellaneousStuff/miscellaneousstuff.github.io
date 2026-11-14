@@ -847,6 +847,85 @@ with zero weights, so the network's behaviour was identical the moment before an
 appendix has the details.
 
 
+### Reward weights
+
+<!-- Source: fastsim/SR_ENV_CONTRACT.md section 3, 5 and 11, and the args line of the last training segment (runs/sr_p1_items/launch_r49200_50400_045110.log): team_spirit 0.5, sr_w_turret 1/1/1.5/2.5, sr_w_nexus_dmg 4, sr_w_win 10, sr_cap_settle 0.15, sr_w_gold_spent 0.0015. -->
+<!-- CHECK the whole OpenAI Five column against Table 6 of the paper before publishing. It is written from memory. The two values that matter most to the argument are Five's "Last hit -0.16" and "Killed hero -0.6". -->
+
+These are the weights the final checkpoints were trained with, next to OpenAI Five's for the nearest equivalent.
+
+#### Individual rewards
+
+<figure class="fig">
+<div class="rwgrid">
+<div class="rw-h">Event</div><div class="rw-h num">Ours</div><div class="rw-h num">Five</div><div class="rw-h">Note</div>
+<div class="rw-e same">Health gained or lost</div><div class="rw-o same">2.0</div><div class="rw-f same">2.0</div><div class="rw-n same">Per full health bar, on the same curve as Five's: losing health matters more when low</div>
+<div class="rw-e same">Mana gained or lost</div><div class="rw-o same">0.75</div><div class="rw-f same">0.75</div><div class="rw-n same">Per full mana bar</div>
+<div class="rw-e same">Experience gained</div><div class="rw-o same">0.002</div><div class="rw-f same">0.002</div><div class="rw-n same">Per point</div>
+<div class="rw-e same">Gold gained</div><div class="rw-o same">0.006</div><div class="rw-f same">0.006</div><div class="rw-n same">Per gold</div>
+<div class="rw-e same">Death</div><div class="rw-o same">−1.0</div><div class="rw-f same">−1.0</div><div class="rw-n same">Same as Five</div>
+<div class="rw-e diff">Gold spent on items</div><div class="rw-o diff">0.0015</div><div class="rw-f diff">0.0006</div><div class="rw-n diff">Ours only while alive, added on 11 November to make Recall worth learning</div>
+<div class="rw-e flip">Lane minion last hit</div><div class="rw-o flip">+0.16</div><div class="rw-f flip">−0.16</div><div class="rw-n flip">Opposite sign: see below</div>
+<div class="rw-e flip">Monster last hit</div><div class="rw-o flip">+0.16</div><div class="rw-f flip">= last hit</div><div class="rw-n flip"></div>
+<div class="rw-e flip">Hero kill</div><div class="rw-o flip">+1.0</div><div class="rw-f flip">−0.6</div><div class="rw-n flip">Opposite sign: see below</div>
+<div class="rw-e diff">Assist</div><div class="rw-o diff">+0.5</div><div class="rw-f diff">none</div><div class="rw-n diff"></div>
+<div class="rw-e diff">Deny</div><div class="rw-o diff">none</div><div class="rw-f diff">+0.15</div><div class="rw-n diff">Not in League</div>
+</div>
+<figcaption>Individual rewards, ours against OpenAI Five's nearest equivalent. The grey rows are copied from Five unchanged; the rest differ, and three of them have the opposite sign.</figcaption>
+</figure>
+
+#### Team rewards
+
+Shared equally by all five heroes of the team.
+
+<figure class="fig">
+<div class="viz" data-viz="team-rewards"></div>
+<figcaption>Team rewards in reward points, ours against Five's. Five pays more for nearly every structure along the way (the nexus turret is the exception) and half as much for the win; we pay twice Five's win, a third to a half of its price for most structures, and 1.0 per full health bar of damage to any structure. Rows without a bar on one side are rewards that side does not have.</figcaption>
+</figure>
+
+#### What happens to the numbers afterwards
+
+<figure class="fig">
+<ol class="method-steps pipe">
+  <li><b>Team spirit</b>0.5: each hero gets half its own reward and half the team average. <span class="five">Five: raised from 0.3 to 1.0 over training</span></li>
+  <li><b>Zero sum</b>The enemy team's average is subtracted, so the two teams' rewards cancel. <span class="five">Five: the same</span></li>
+  <li><b>Cap settlement</b>A game cut off at the cap pays up to 1.5 by turret and inhibitor lead, in place of a win. <span class="five">Five: no cap, not applicable</span></li>
+  <li><b>No time decay</b>A reward at minute 50 is worth what it was at minute 5. <span class="five">Five: rewards shrink as the game goes on, so late-game farm is worth less</span></li>
+</ol>
+<figcaption>What happens to the raw rewards before PPO sees them, in order. Five also had a lane-assignment penalty for leaving your lane early in the game; we have none.</figcaption>
+</figure>
+
+#### The two signs
+
+Almost every individual weight is copied from Five. Two were not, and they point the other way.
+
+<figure class="fig">
+<div class="viz" data-viz="reward-signs"></div>
+<figcaption>The rewards for a last hit, a kill and an assist, on top of the gold and experience those events already pay. Five subtracts on last hits and kills to take some of that back; we add.</figcaption>
+</figure>
+
+**Last hits.** A last hit already pays twice, through the gold and the experience it gives. Five's table has last
+hit at *minus* 0.16, to take some of that back. Ours has it at *plus* 0.16, on top. That is the "paid three times
+over" from the farming section, and with hindsight it is the first thing to change.
+
+**Kills.** Five takes back 0.6 on a kill for the same reason: the gold and experience are already counted. We add
+1.0, and 0.5 for each assist.
+
+**No time decay.** A minion at minute 50 is worth exactly what it was at minute 5, while the win is worth 10 and
+may be half an hour away. With a discount half-life of 92 seconds, a win 30 minutes off is discounted to almost
+nothing today, and the minion in front of you pays now. The agents farm.
+
+<div class="callout" markdown="1">
+In short
+
+Put together, the table says what the ladder then measured: these agents were paid to get rich and paid again to
+fight, and only weakly paid to win. The fix we had agreed on before the engine bugs intervened was a longer
+horizon, team spirit left at 0.5, a win worth 20, larger objective rewards, and last-hit and kill rewards moved
+toward Five's signs.
+</div>
+
+<!-- CHECK: the weights are those of the final segment. Team spirit, turret tiers, nexus damage and win were changed during the run (the contract's defaults are 0.3, 1/1/1/1, 1.0 and 5.0), so say "final" if a reader might assume they held throughout. -->
+
 ### Roster Selection
 
 Brokenwings isn't a perfect implementation of the game: some champions are buggy or incomplete. Before porting
