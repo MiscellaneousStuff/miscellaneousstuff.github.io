@@ -1396,3 +1396,20 @@ line.viz-grid { stroke: rgba(0, 0, 0, 0.07); }
 }
 .post-content .method-steps.pipe li { padding-bottom: 12px; }
 .method-steps.pipe .five { display: block; margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--rule); font-size: 12.5px; color: #b8461a; }
+
+/* network appendix (Part 4): training spec sheet and Five comparison */
+.spec { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.post-content .spec > div { padding: 9px 14px 10px; background: #fff; font-size: 13px; line-height: 1.45; color: var(--text); }
+.spec span { display: block; margin-bottom: 2px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+.spec > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (max-width: 640px) { .spec { grid-template-columns: 1fr; } }
+.vsgrid { display: grid; grid-template-columns: max-content 1fr 1fr; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; font-size: 13.5px; line-height: 1.45; }
+.vsgrid > div { padding: 9px 14px; border-top: 1px solid var(--rule); }
+.vsgrid > .vs-h { border-top: 0; background: #fbfaf8; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+.vsgrid .vs-h.five { color: #b8461a; box-shadow: inset 0 -2px 0 #eb6834; }
+.vsgrid .vs-h.ours { color: #1c5cab; box-shadow: inset 0 -2px 0 #2a78d6; }
+.vsgrid .vs-k { font-weight: 600; color: rgba(0, 0, 0, 0.85); }
+.vsgrid .vs-f { color: var(--text-muted); }
+.vsgrid .vs-o { color: rgba(0, 0, 0, 0.85); font-weight: 500; }
+.vsgrid .vs-o span { display: block; font-size: 12px; font-weight: 400; color: var(--text-faint); }
+@media (max-width: 640px) { .vsgrid { font-size: 12.5px; } .vsgrid > div { padding: 7px 9px; } }

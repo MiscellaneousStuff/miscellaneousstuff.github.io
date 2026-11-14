@@ -926,6 +926,84 @@ toward Five's signs.
 
 <!-- CHECK: the weights are those of the final segment. Team spirit, turret tiers, nexus damage and win were changed during the run (the contract's defaults are 0.3, 1/1/1/1, 1.0 and 5.0), so say "final" if a reader might assume they held throughout. -->
 
+### Network architecture
+
+<!-- Source: tools/five_policy.py (UnitSetExtractor, FiveHead), tools/fastsim_train.py, and the args line of the last training segment (runs/sr_p1_items/launch_r49200_50400_045110.log). Parameter count checked by hand against the trainer's "policy params 8.07M". -->
+
+The network is a small copy of OpenAI Five's design: encode every unit with the same small network, pool them,
+add the global state, run an LSTM, and pick a target by attention over the units. It has 8.07 million parameters.
+All ten heroes run the same weights, each on its own observation, with its own memory.
+
+<figure class="fig">
+<div class="stat-row">
+<div><span class="num">8.07 M</span><span class="lbl">parameters, shared by all ten heroes</span></div>
+<div><span class="num">85%</span><span class="lbl">of them in the two LSTMs</span></div>
+<div><span class="num">512</span><span class="lbl">LSTM units, for the policy and again for the value</span></div>
+<div><span class="num">0</span><span class="lbl">channels between heroes: teammates coordinate only through what they see</span></div>
+</div>
+</figure>
+
+<figure class="fig">
+<div class="viz" data-viz="network"></div>
+<figcaption>One hero's forward pass. Units go down the left, the hero's own state and the game state down the right; they meet once, then split into separate policy and value LSTMs. The shaded LSTMs hold 85% of the weights. The dashed line is the part taken most directly from Five: the target head scores each unit by how well its encoding matches a query, so the unit encodings double as the keys. Hover a box for details; "Show data" has the layer table.</figcaption>
+</figure>
+
+**Units as a set.** Every unit, whether a hero, a minion or a turret, goes through the same encoder, and each class
+is reduced to one vector by taking the maximum. The network therefore does not care what order minions arrive in or
+how many there are.
+
+**Choosing a target.** The target head does not output "slot 17". It outputs a query, and each unit's score is how
+well its own encoding matches that query. The same encodings that describe the units to the network are the keys it
+picks from, so a unit that looks like a good target scores well wherever it sits in the list. This is the part
+taken most directly from Five.
+
+**Memory.** The only memory is the LSTM state, carried from decision to decision and reset when a game resets.
+Policy and value have separate LSTMs and share only the encoders.
+
+**No communication.** Nothing passes between the five heroes of a team. Each acts on its own observation, which
+includes its allies' positions, health, cooldowns and targets. Whatever teamwork there is comes from that and from
+the reward being partly shared.
+
+**The value function sees what the policy sees.** It is not given the enemy's hidden information or the whole
+team's observations, which is one of the simpler things we could change.
+
+#### How it is trained
+
+<figure class="fig">
+<div class="spec">
+<div><span>Algorithm</span>PPO, clip 0.2, one pass over each rollout (no sample reuse)</div>
+<div><span>Rollout</span>4,096 games × 64 decisions × 10 heroes = 2.6 M agent-steps</div>
+<div><span>Minibatches</span>40 per rollout</div>
+<div><span>Optimiser</span>Adam, learning rate 0.00015, gradient norm clipped at 0.5</div>
+<div><span>Discount</span>0.999 per decision, a half-life of about 92 seconds of game time</div>
+<div><span>GAE λ</span>0.95</div>
+<div><span>Entropy bonus</span>0.01</div>
+<div><span>Value loss weight</span>0.5</div>
+<div><span>Opponents</span>The current policy in 80% of games; in 20%, one side is a past checkpoint drawn from a pool, as in Five</div>
+<div><span>Episode</span>Up to 8,100 decisions (18 minutes), from randomised mid-game starts; a quarter of them sieges</div>
+<div><span>Precision</span>16-bit observations and LSTM, compiled actor and learner</div>
+</div>
+<figcaption>The training settings of the final segment.</figcaption>
+</figure>
+
+The 18-minute episode from a mid-game start is the setting the rest of the post argues with: no agent in this
+lineage ever played a whole game from minute zero during training.
+
+#### Next to OpenAI Five
+
+<figure class="fig">
+<div class="vsgrid">
+<div class="vs-h"></div><div class="vs-h five">OpenAI Five</div><div class="vs-h ours">Ours</div>
+<div class="vs-k">Parameters</div><div class="vs-f">159 million</div><div class="vs-o">8 million<span>about 1/20</span></div>
+<div class="vs-k">LSTM</div><div class="vs-f">4,096 units, one</div><div class="vs-o">512 units, two<span>policy and value separate</span></div>
+<div class="vs-k">Observation</div><div class="vs-f">about 16,000 numbers</div><div class="vs-o">2,914<span>under a fifth</span></div>
+<div class="vs-k">Batch</div><div class="vs-f">about 2 million agent-steps every 2 seconds</div><div class="vs-o">2.6 million every 3.5 seconds</div>
+<div class="vs-k">Team information</div><div class="vs-f">pooled across the team inside the network</div><div class="vs-o">none</div>
+</div>
+</figure>
+
+<!-- CHECK the Five column against the paper before publishing: 159 M parameters and the 4,096-unit LSTM are from memory; "pooled across the team" refers to the cross-hero max-pool in their architecture figure; the batch line is from their compute appendix as I remember it. -->
+
 ### Roster Selection
 
 Brokenwings isn't a perfect implementation of the game: some champions are buggy or incomplete. Before porting

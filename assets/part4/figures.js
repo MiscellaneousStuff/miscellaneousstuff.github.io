@@ -486,6 +486,91 @@
     return draw;
   };
 
+  // The policy/value network as a two-column flow diagram. Left: units, policy.
+  // Right: global state, value. A dashed line carries the unit encodings to the
+  // target head, which scores each unit against a query.
+  FIGS.network = function (fig) {
+    var tip = tooltip(fig);
+    var host = h('div', null, fig);
+    var B = {
+      units:  { t: '55 unit slots', d: '× 49 numbers each', k: 'in' },
+      glob:   { t: 'Self, missiles, game', d: '219 numbers', k: 'in' },
+      uenc:   { t: 'Unit encoder', d: 'shared · 49 → 256 → 128', p: '46k', tip: 'The same two-layer network applied to each of the 55 unit slots' },
+      genc:   { t: 'Global encoder', d: '219 → 256', p: '56k', tip: 'One layer over the self, missile and game blocks' },
+      pool:   { t: 'Max-pool by class', d: '7 × 128 = 896', p: '0', tip: 'Max over each of the 7 unit classes (enemy heroes, allied heroes, enemy minions, allied minions, monsters, enemy structures, allied structures); empty classes give zero' },
+      cat:    { t: 'Concatenate', d: '256 + 896 = 1,152', p: '0', tip: 'Global encoding and the seven pooled vectors' },
+      plstm:  { t: 'Policy LSTM', d: '1,152 → 512 · recurrent', p: '3.41M', k: 'big', tip: 'One layer. Its state is the only memory the policy has, carried from decision to decision' },
+      vlstm:  { t: 'Value LSTM', d: '1,152 → 512 · recurrent', p: '3.41M', k: 'big', tip: 'A second, separate LSTM on the same input; policy and value share only the encoders' },
+      ptrunk: { t: 'Policy trunk', d: '512 → 512 → 512', p: '525k', tip: 'Two layers after the policy LSTM' },
+      vtrunk: { t: 'Value trunk', d: '512 → 512 → 512', p: '525k', tip: 'Two layers after the value LSTM' },
+      target: { t: 'Target', d: 'query · keys → 55', dn: '55 logits', p: '66k', k: 'out', tip: 'A 128-number query from the trunk, dotted with each unit\'s encoding: one logit per unit slot' },
+      act:    { t: 'Move, ability', tn: 'Move, abil.', d: '9 + 9 + 38 logits', dn: '56 logits', p: '29k', k: 'out', tip: 'One linear layer giving the move X, move Y and ability logits' },
+      value:  { t: 'Value', d: 'one number', p: '0.5k', k: 'out', tip: 'The critic\'s estimate of the return' }
+    };
+    function draw() {
+      host.innerHTML = '';
+      var W = width(fig), narrow = W < 560;
+      var ml = narrow ? 20 : 30, gap = narrow ? 10 : 18, colW = (W - ml - gap - 2) / 2;
+      var bh = narrow ? 44 : 46, vg = narrow ? 20 : 22, fT = narrow ? 11.5 : 13, fD = narrow ? 10 : 11.5;
+      var L = ml, R = ml + colW + gap, rows = 7, H = rows * bh + (rows - 1) * vg + 8;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'viz-panel', role: 'img', 'aria-label': 'Network architecture: unit and global encoders, pooling, policy and value LSTMs, and the output heads' }, host);
+      var defs = el('defs', {}, svg), mk = el('marker', { id: 'nw-arr', viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+      el('path', { d: 'M0,0 L8,4 L0,8 z', fill: 'rgba(0,0,0,0.4)' }, mk);
+      var mk2 = el('marker', { id: 'nw-arr2', viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+      el('path', { d: 'M0,0 L8,4 L0,8 z', fill: C.purple }, mk2);
+      function y(r) { return 4 + r * (bh + vg); }
+      var gEdges = el('g', {}, svg), gBoxes = el('g', {}, svg), pos = {};
+      function box(key, x, r, w) {
+        var b = B[key], g = el('g', {}, gBoxes), yy = y(r);
+        var fill = b.k === 'big' ? 'rgba(42,120,214,0.12)' : b.k === 'in' ? '#fbfaf8' : b.k === 'out' ? 'rgba(235,104,52,0.08)' : '#fff';
+        var stroke = b.k === 'big' ? C.blue : b.k === 'out' ? C.orange : 'rgba(0,0,0,0.18)';
+        var rect = el('rect', { x: x, y: yy, width: w, height: bh, rx: 4, fill: fill, stroke: stroke, 'stroke-width': b.k === 'big' ? 1.6 : 1 }, g);
+        var pad = narrow && w < 120 ? 7 : 10, tt = narrow && b.tn ? b.tn : b.t, dd = narrow && b.dn ? b.dn : b.d;
+        txt(g, x + pad, yy + bh / 2 - 3, tt, 'viz-label', 'start', 'font-weight:600;font-size:' + fT + 'px;fill:rgba(0,0,0,0.85)');
+        txt(g, x + pad, yy + bh / 2 + 12, dd, 'viz-tick', 'start', 'font-size:' + fD + 'px');
+        if (b.p && b.p !== '0' && w > 120) txt(g, x + w - 8, yy + bh / 2 - 3, b.p, 'viz-tick', 'end', 'font-weight:600;font-size:' + fD + 'px;fill:' + (b.k === 'big' ? '#1c5cab' : 'rgba(0,0,0,0.5)'));
+        if (b.tip) hover(rect, function (e) { tip.show('<b>' + b.t + '</b> <span style="color:rgba(0,0,0,0.45)">' + (b.p ? b.p + ' parameters' : '') + '</span><br>' + b.tip, e); }, tip.hide);
+        pos[key] = { x: x, y: yy, w: w, cx: x + w / 2, top: yy, bot: yy + bh };
+      }
+      function edge(a, b, ax, bx) {
+        var p = pos[a], q = pos[b], x1 = ax != null ? ax : p.cx, x2 = bx != null ? bx : q.cx, y1 = p.bot, y2 = q.top - 2;
+        var d = x1 === x2 ? 'M' + x1 + ',' + y1 + ' L' + x2 + ',' + y2 : 'M' + x1 + ',' + y1 + ' C' + x1 + ',' + (y1 + y2) / 2 + ' ' + x2 + ',' + (y1 + y2) / 2 + ' ' + x2 + ',' + y2;
+        el('path', { d: d, fill: 'none', stroke: 'rgba(0,0,0,0.3)', 'stroke-width': 1.3, 'marker-end': 'url(#nw-arr)' }, gEdges);
+      }
+      box('units', L, 0, colW); box('glob', R, 0, colW);
+      box('uenc', L, 1, colW); box('genc', R, 1, colW);
+      box('pool', L, 2, colW);
+      var cw = Math.min(W - ml - 2, colW * 1.2); box('cat', ml + (W - ml - 2 - cw) / 2, 3, cw);
+      box('plstm', L, 4, colW); box('vlstm', R, 4, colW);
+      box('ptrunk', L, 5, colW); box('vtrunk', R, 5, colW);
+      var hw = (colW - gap / 2) / 2; box('target', L, 6, hw); box('act', L + hw + gap / 2, 6, hw); box('value', R, 6, colW);
+      edge('units', 'uenc'); edge('glob', 'genc'); edge('uenc', 'pool');
+      edge('pool', 'cat', null, pos.cat.x + pos.cat.w * 0.3); edge('genc', 'cat', null, pos.cat.x + pos.cat.w * 0.7);
+      edge('cat', 'plstm', pos.cat.x + pos.cat.w * 0.3); edge('cat', 'vlstm', pos.cat.x + pos.cat.w * 0.7);
+      edge('plstm', 'ptrunk'); edge('vlstm', 'vtrunk'); edge('ptrunk', 'target'); edge('ptrunk', 'act'); edge('vtrunk', 'value');
+      // keys: unit encodings to the target head, down the left margin
+      var kx = ml / 2, ky1 = pos.uenc.y + bh / 2, ky2 = pos.target.y + bh / 2;
+      el('path', { d: 'M' + pos.uenc.x + ',' + ky1 + ' L' + kx + ',' + ky1 + ' L' + kx + ',' + ky2 + ' L' + (pos.target.x - 2) + ',' + ky2,
+        fill: 'none', stroke: C.purple, 'stroke-width': 1.5, 'stroke-dasharray': '5 3', 'marker-end': 'url(#nw-arr2)' }, gEdges);
+      var lt = txt(svg, kx - 4, (ky1 + ky2) / 2, 'unit encodings are the keys', 'viz-tick', 'middle', 'fill:' + C.purple + ';font-weight:600;font-size:' + (narrow ? 9.5 : 10.5) + 'px');
+      lt.setAttribute('transform', 'rotate(-90 ' + (kx - 4) + ' ' + (ky1 + ky2) / 2 + ')');
+    }
+    draw();
+    dataTable(fig, ['Stage', 'What it does', 'Shape', 'Parameters'], [
+      ['Global encoder', 'One layer over the self, missile and game blocks', '219 → 256', '56k'],
+      ['Unit encoder', 'The same two-layer network applied to each of the 55 unit slots', '49 → 256 → 128', '46k'],
+      ['Pooling', 'Max over each of the 7 unit classes; empty classes give zero', '7 × 128 = 896', '0'],
+      ['Concatenate', 'Global encoding and the seven pooled vectors', '1,152', '0'],
+      ['Policy LSTM', 'One layer', '1,152 → 512', '3.41M'],
+      ['Value LSTM', 'A second, separate LSTM on the same input', '1,152 → 512', '3.41M'],
+      ['Policy trunk', 'Two layers after the policy LSTM', '512 → 512 → 512', '525k'],
+      ['Value trunk', 'Two layers after the value LSTM', '512 → 512 → 512', '525k'],
+      ['Move and ability heads', 'One linear layer giving 9 + 9 + 38 logits', '512 → 56', '29k'],
+      ['Target head', 'A query vector, dotted with each unit\'s 128-number encoding', '512 → 128, then 55 logits', '66k'],
+      ['Value head', 'One number', '512 → 1', '0.5k']]);
+    return draw;
+  };
+
   // ------------------------------------------------------------------ boot
   // Only this file's figures; nodes already rendered are skipped.
   function boot() {
