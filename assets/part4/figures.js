@@ -367,6 +367,52 @@
     });
   };
 
+  // ------------------------------------------------------------ appendix
+
+  // The move grid and the spell-aiming bins, drawn to scale.
+  FIGS['action-space'] = function (fig) {
+    var host = h('div', null, fig);
+    function draw() {
+      host.innerHTML = '';
+      var W = width(fig), narrow = W < 560, PH = 280;
+      var cw = narrow ? W : (W - 28) / 2, H = narrow ? 2 * PH + 16 : PH;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'viz-panel', role: 'img', 'aria-label': 'Move offsets and spell aiming bins' }, host);
+      // move grid: 9 x 9 offsets, -400..400 in steps of 100
+      var g1 = el('g', {}, svg), cx = cw / 2, st = Math.min(23, (cw - 40) / 9), cy = 36 + 4.5 * st;
+      txt(g1, cx, 14, 'Move: 9 × 9 offsets', 'viz-label', 'middle', 'font-weight:600');
+      el('rect', { x: cx - 4.5 * st, y: cy - 4.5 * st, width: 9 * st, height: 9 * st, fill: 'none', stroke: 'rgba(0,0,0,0.12)', rx: 3 }, g1);
+      for (var i = -4; i <= 4; i++) for (var j = -4; j <= 4; j++) {
+        if (!i && !j) continue;
+        el('circle', { cx: cx + i * st, cy: cy + j * st, r: 3, fill: C.blue, opacity: 0.5 }, g1);
+      }
+      el('circle', { cx: cx, cy: cy, r: 8, fill: C.blue, stroke: '#fff', 'stroke-width': 2 }, g1);
+      txt(g1, cx, cy + 4.5 * st + 18, 'hero in the centre; ±400 units, 100 apart; (0, 0) = stop', 'viz-tick', 'middle');
+      // aiming fan, sized so ±35° fits the panel
+      var ox = narrow ? 0 : cw + 28, oy = narrow ? PH + 16 : 0, g2 = el('g', { transform: 'translate(' + ox + ',' + oy + ')' }, svg);
+      txt(g2, cw / 2, 14, 'Aim: angle off the line to the target', 'viz-label', 'middle', 'font-weight:600');
+      var hx = 30, hy = 130, L = Math.min(cw - 90, 160), tx = hx + L;
+      [35, 20, 12, 6, 0, -6, -12, -20, -35].forEach(function (d) {
+        var a = d * Math.PI / 180, x2 = hx + Math.cos(a) * L * 0.96, y2 = hy - Math.sin(a) * L * 0.96;
+        el('line', { x1: hx, y1: hy, x2: x2, y2: y2, stroke: d ? C.blue250 : C.blue, 'stroke-width': d ? 1.4 : 2, 'stroke-dasharray': d ? null : '5 3' }, g2);
+        if (d > 0) txt(g2, x2 + 5, y2 + 3, '±' + d + '°', 'viz-tick', 'start');
+      });
+      el('circle', { cx: hx, cy: hy, r: 8, fill: C.blue, stroke: '#fff', 'stroke-width': 2 }, g2);
+      txt(g2, hx, hy + 24, 'caster', 'viz-note', 'middle');
+      el('circle', { cx: tx, cy: hy, r: 8, fill: C.orange, stroke: '#fff', 'stroke-width': 2 }, g2);
+      txt(g2, tx + 13, hy + 4, 'target', 'viz-note', 'start');
+      txt(g2, tx + 13, hy + 18, 'Q, W, R: 9 bins', 'viz-tick', 'start');
+      // E: eight compass directions relative to the target line
+      var ex = hx + 6, ey = 252, er = 13;
+      for (var k = 0; k < 8; k++) {
+        var b = k * Math.PI / 4;
+        el('line', { x1: ex, y1: ey, x2: ex + Math.cos(b) * er, y2: ey - Math.sin(b) * er, stroke: C.purple, 'stroke-width': 1.5 }, g2);
+      }
+      txt(g2, ex + er + 8, ey + 4, 'E (usually a dash): 8 directions relative to the target', 'viz-note', 'start');
+    }
+    draw();
+    return draw;
+  };
+
   // ------------------------------------------------------------------ boot
   // Only this file's figures; nodes already rendered are skipped.
   function boot() {

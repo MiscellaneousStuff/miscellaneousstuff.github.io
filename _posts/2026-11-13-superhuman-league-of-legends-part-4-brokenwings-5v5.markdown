@@ -725,29 +725,37 @@ choices. All ten share one network.
 </div>
 </figure>
 
-| Block | Size | What is in it |
-|---|---:|---|
-| Self | 51 | Position, health, mana, level, experience, gold, alive or respawning, cooldown, rank and castable flag for Q W E R, basic attack timer, facing, velocity, attack damage and range, last hits, kills, deaths and assists, recent health change, which team, distance to own fountain, which champion, Recall progress |
-| Missiles | 48 | The 8 nearest missiles within 2,500 units: relative position, velocity, whether it is an enemy's |
-| Game | 120 | Game clock, team kills, who is alive and their respawn timers, health and targetability of all 30 structures, inhibitor respawn timers, state of the 12 jungle camps, time to the next minion wave |
-| Units | 2,695 | 55 slots of 49 numbers, described below |
+<figure class="fig">
+<div class="obsbar">
+<div class="ob-self" style="flex: 51"></div><div class="ob-mis" style="flex: 48"></div><div class="ob-game" style="flex: 120"></div><div class="ob-units" style="flex: 2695"><span>Units · 2,695 · 92%</span></div>
+</div>
+<dl class="obskey">
+<dt class="ob-self">Self<span>51</span></dt><dd>Position, health, mana, level, experience, gold, alive or respawning, cooldown, rank and castable flag for Q W E R, basic attack timer, facing, velocity, attack damage and range, last hits, kills, deaths and assists, recent health change, which team, distance to own fountain, which champion, Recall progress</dd>
+<dt class="ob-mis">Missiles<span>48</span></dt><dd>The 8 nearest missiles within 2,500 units: relative position, velocity, whether it is an enemy's</dd>
+<dt class="ob-game">Game<span>120</span></dt><dd>Game clock, team kills, who is alive and their respawn timers, health and targetability of all 30 structures, inhibitor respawn timers, state of the 12 jungle camps, time to the next minion wave</dd>
+<dt class="ob-units">Units<span>2,695</span></dt><dd>55 slots of 49 numbers, described below</dd>
+</dl>
+<figcaption>The 2,914 numbers in one hero's observation, to scale. Almost all of it is the other units on the map.</figcaption>
+</figure>
 
 The unit slots are fixed by class, nearest first within each class, and empty slots are zero:
 
-| Slots | Class | Rule |
-|---:|---|---|
-| 5 | Enemy heroes | Always present. Out of sight: last seen position and health, with the time since |
-| 4 | Allied heroes | Always present |
-| 16 | Enemy lane minions | Visible and within 2,000 units |
-| 12 | Allied lane minions | Within 2,000 units |
-| 8 | Jungle monsters | Visible and within 2,000 units |
-| 6 | Enemy structures | The nearest, at any distance |
-| 4 | Allied structures | The nearest, at any distance |
-
-Each slot carries: what kind of unit it is, relative position and distance, health (as a fraction, and measured in
-"my basic attacks"), health change over the last one and three decisions, whether it is in my attack range, whether
-it can be targeted, and whether it is currently attacking me or one of my allies. Hero slots add mana, the four
-cooldowns, facing, velocity, attack damage, range, champion, and whether the hero is channelling Recall.
+<figure class="fig">
+<div class="slots">
+<div class="sg e"><div class="sg-h"><b>Enemy heroes</b><span>5</span></div><div class="sq"><i></i><i></i><i></i><i></i><i></i></div><p>Always present. Out of sight: last seen position and health, with the time since</p></div>
+<div class="sg a"><div class="sg-h"><b>Allied heroes</b><span>4</span></div><div class="sq"><i></i><i></i><i></i><i></i></div><p>Always present</p></div>
+<div class="sg e"><div class="sg-h"><b>Enemy lane minions</b><span>16</span></div><div class="sq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Visible and within 2,000 units</p></div>
+<div class="sg a"><div class="sg-h"><b>Allied lane minions</b><span>12</span></div><div class="sq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Within 2,000 units</p></div>
+<div class="sg m"><div class="sg-h"><b>Jungle monsters</b><span>8</span></div><div class="sq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Visible and within 2,000 units</p></div>
+<div class="sg e s"><div class="sg-h"><b>Enemy structures</b><span>6</span></div><div class="sq"><i></i><i></i><i></i><i></i><i></i><i></i></div><p>The nearest, at any distance</p></div>
+<div class="sg a s"><div class="sg-h"><b>Allied structures</b><span>4</span></div><div class="sq"><i></i><i></i><i></i><i></i></div><p>The nearest, at any distance</p></div>
+</div>
+<div class="fields">
+<div><span class="fl">Every slot</span><i>kind of unit</i><i>relative position</i><i>distance</i><i>health fraction</i><i>health in my basic attacks</i><i>health change, 1 and 3 decisions</i><i>in my attack range</i><i>targetable</i><i>attacking me or an ally</i></div>
+<div><span class="fl">Hero slots add</span><i>mana</i><i>four cooldowns</i><i>facing</i><i>velocity</i><i>attack damage</i><i>range</i><i>champion</i><i>channelling Recall</i></div>
+</div>
+<figcaption>The 55 unit slots, one square each, 49 numbers per slot. Blue are enemies, grey allies, green neutral; squared-off cells are structures. Each class is sorted nearest first, so slot 1 of enemy minions is always the closest one.</figcaption>
+</figure>
 
 **One frame of reference.** The purple team sees the map rotated half a turn, so "my base" is always in the same
 corner and "my top outer turret" is always the same slot. One network plays both sides without having to learn the
@@ -764,14 +772,19 @@ because the game has fewer things in it: no items to choose, no courier, no ward
 
 One action is four independent choices:
 
-| Head | Options | Meaning |
-|---|---:|---|
-| Move X | 9 | Offset of −400 to +400 units, in steps of 100 |
-| Move Y | 9 | The same, vertically. Zero on both means stop |
-| Ability | 38 | Nothing, basic attack, Q (9 aim bins), W (9), E (8), R (9), Recall |
-| Target | 55 | Which unit slot the attack or spell is aimed at |
-
-That is 169,290 combinations on paper, of which a mask leaves a small fraction legal at any moment.
+<figure class="fig">
+<div class="heads">
+<div><span class="hn">9</span><b>Move X</b>Offset of −400 to +400 units, in steps of 100</div>
+<div class="x">×</div>
+<div><span class="hn">9</span><b>Move Y</b>The same, vertically. Zero on both means stop</div>
+<div class="x">×</div>
+<div><span class="hn">38</span><b>Ability</b>Nothing, basic attack, Q (9 aim bins), W (9), E (8), R (9), Recall</div>
+<div class="x">×</div>
+<div><span class="hn">55</span><b>Target</b>Which unit slot the attack or spell is aimed at</div>
+</div>
+<div class="viz" data-viz="action-space"></div>
+<figcaption>The four action heads. <b>Move:</b> the 81 offsets around the hero, 100 units apart. <b>Aim:</b> how a spell is aimed: Q, W and R pick one of nine angles off the line to the chosen target, E one of eight directions. That is 169,290 combinations on paper, of which a mask leaves a small fraction legal at any moment.</figcaption>
+</figure>
 
 **Aiming.** Spells are aimed relative to the chosen target, not at a map coordinate. The nine bins for Q, W and R
 are offsets of 0, ±6, ±12, ±20 and ±35 degrees from the line to the target, which is enough to lead a moving enemy.
@@ -789,12 +802,17 @@ the target) falls back to the nearest legal target, or to doing nothing.
 
 #### What the agent does not control
 
-| Decision | Who makes it |
-|---|---|
-| Skill points | Scripted: ultimate whenever available, otherwise a fixed priority per champion |
-| Items | Scripted: each champion walks a fixed build list whenever it is in the shop and can afford the next item |
-| Summoner spells, wards, item actives | Not in the game yet |
-| Champion select | Fixed: two sets of five, swapped between sides |
+<figure class="fig">
+<div class="who">
+<div class="who-a"><h4>The agent decides</h4><ul><li>Where to walk</li><li>What to hit</li><li>When and where to cast</li><li>When to Recall</li></ul></div>
+<div class="who-s"><h4>Decided for it</h4><dl>
+<dt>Skill points</dt><dd>Scripted: ultimate whenever available, otherwise a fixed priority per champion</dd>
+<dt>Items</dt><dd>Scripted: each champion walks a fixed build list whenever it is in the shop and can afford the next item</dd>
+<dt>Summoners, wards, item actives</dt><dd>Not in the game yet</dd>
+<dt>Champion select</dt><dd>Fixed: two sets of five, swapped between sides</dd>
+</dl></div>
+</div>
+</figure>
 
 So these agents decide where to walk, what to hit, when to cast and when to Recall. Everything about builds is
 decided for them. OpenAI Five made the same split: item purchases, ability builds and courier control were
@@ -804,23 +822,25 @@ scripted there too.
 
 Both were added to get Recall learned, and neither is in the real game.
 
-- **Recall hold.** Once a hero starts Recall it cannot cancel it: for the eight seconds of the channel its only
-  legal action is to stand still. Damage, stuns and death still interrupt it, as in the game. Without this the
-  policy started a Recall and cancelled it one decision later about nine times in ten, and never once experienced
-  finishing one.
-- **Gold spent.** A small reward for gold spent on items while alive, borrowed from Five, so that going back to
-  base to shop is worth something. Covered in the reward appendix.
+<figure class="fig">
+<div class="rules2">
+<div><b>Recall hold</b>Once a hero starts Recall it cannot cancel it: for the eight seconds of the channel its only legal action is to stand still. Damage, stuns and death still interrupt it, as in the game. <span>Without it, the policy started a Recall and cancelled it one decision later about nine times in ten, and never once finished one.</span></div>
+<div><b>Gold spent</b>A small reward for gold spent on items while alive, borrowed from OpenAI Five, so that going back to base to shop is worth something. <span>Covered in the reward appendix.</span></div>
+</div>
+</figure>
 
 #### How it changed
 
-| Version | Date | Change | Observation | Ability head |
-|---|---|---|---:|---:|
-| 1.0–1.5 | 8–9 Nov | First 5v5 contract; target radius; tower-pressure and siege starts | 2,858 | 37 |
-| 1.6 | 10 Nov | Scripted items, Recall action | 2,858 | 38 |
-| 1.7 | 11 Nov | Recall made observable (own progress, others channelling) | 2,914 | 38 |
-| 1.8 | 11 Nov | Lockout after a cancelled Recall (later switched off) | 2,914 | 38 |
-| 1.9 | 11 Nov | Recall hold | 2,914 | 38 |
-| 1.10 | 11 Nov | Gold-spent reward | 2,914 | 38 |
+<figure class="fig">
+<ol class="timeline" style="--n: 5">
+  <li><span class="when">v1.0–1.5 · 8–9 Nov</span><b>First contract</b>Target radius; tower-pressure and siege starts. <em>2,858 inputs, 37 abilities</em></li>
+  <li><span class="when">v1.6 · 10 Nov</span><b>Items, Recall</b>Scripted items and the Recall action. <em>38 abilities</em></li>
+  <li><span class="when">v1.7 · 11 Nov</span><b>Recall visible</b>Own progress, and others channelling. <em>2,914 inputs</em></li>
+  <li><span class="when">v1.8–1.9 · 11 Nov</span><b>Lockout, then hold</b>A lockout after a cancelled Recall, later switched off; then the hold.</li>
+  <li class="now"><span class="when">v1.10 · 11 Nov</span><b>Gold spent</b>The shopping reward. The contract the final checkpoints trained on.</li>
+</ol>
+<figcaption>How the observation and action contract changed during the run. Only two changes touched the network's shape: Recall added one ability output, and making Recall observable added 56 inputs.</figcaption>
+</figure>
 
 Every step was made on the live network without retraining from scratch. New inputs and the new action were added
 with zero weights, so the network's behaviour was identical the moment before and after each change. The surgery
