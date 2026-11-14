@@ -6,6 +6,7 @@ excerpt: "Now we train 5v5 agents Brokenwings"
 date:   2026-11-13 00:00:00
 tags: ["League of Legends", "Machine Learning", "Reinforcement Learning", "fastsim", "mech interp"]
 first5v5youtubeid: gVDy2AMqbe4
+masterYiYoutubeId: 83QGZ93nj9E
 ---
 
 ## Table of Contents
@@ -288,6 +289,11 @@ ended with zero turrets down. So most games now start in the middle: 5 to 20 min
 in lane, outer turrets already damaged. With the cap raised to 12 minutes, the first games in the project ended
 with a nexus kill at 22:32 that night.
 
+<figure class="fig">
+{% include youtubePlayer.html id=page.first5v5youtubeid %}
+<figcaption>The first 5v5 recording, posted the next morning (9 November): one network driving all ten heroes on the Brokenwings server, from the first day of training.</figcaption>
+</figure>
+
 Almost none of the others did. 98% of games still hit the cap, and a reward audit showed what that meant:
 
 <figure class="fig">
@@ -409,6 +415,11 @@ There are three ways to ask, and by Thursday morning they gave three different a
 policy played 64 games against the server's scripted bots and won 55, drew 8 and lost 1, with 45 kills to 3. Two
 days later, with items, a checkpoint played a full game on the real client and took the nexus in under half an hour.
 This was the first time the agents met anything from outside their own lineage, and it was not close.
+
+<figure class="fig">
+{% include youtubePlayer.html id=page.masterYiYoutubeId %}
+<figcaption>11 November: a full game on the real client from start to finish, following the agent playing Master Yi against the server's scripted bots. It ends with the agents' team taking the nexus at 29:48.</figcaption>
+</figure>
 
 **Against their earlier selves: it depends how you count.** On Thursday we paused training and played 22
 checkpoints from across the run against each other: 43,264 games, each from the start, with the 18-minute cap the
